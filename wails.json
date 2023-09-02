@@ -1,0 +1,24 @@
+{
+    "$schema": "https://wails.io/schemas/config.v2.json",
+    "name": "cnc",
+    "outputfilename": "cnc",
+    "build:dir": "release",
+    "wailsjsdir": "template/src/package",
+    "frontend:dir": "template",
+    "frontend:install": "yarn",
+    "frontend:build": "yarn build",
+    "frontend:dev:watcher": "yarn dev",
+    "frontend:dev:serverUrl": "auto",
+    "devServer": "localhost:34225",
+    "author": {
+        "name": "ARMCNC",
+        "email": "admin@wileho.com"
+    },
+    "info": {
+        "companyName": "ARMCNC",
+        "productName": "ARMCNC",
+        "productVersion": "1.0.0",
+        "copyright": "Copyright © 2019-2022 ARMCNC All Rights Reserved",
+        "comments": "ARMCNC (https://www.armcnc.net)"
+    }
+}
