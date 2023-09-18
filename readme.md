@@ -1,4 +1,4 @@
-# 🛠️ ARMCNC
+# 🛠️ ARMCNC Desktop
 
 ⚡ ARMCNC supporting desktop software. ⚡
 
