@@ -15,6 +15,7 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
@@ -59,6 +60,11 @@ func Init(template embed.FS) {
 				LightModeTitleTextInactive: windows.RGB(187, 187, 187),
 				LightModeBorderInactive:    windows.RGB(60, 63, 65),
 			},
+		},
+		Linux: &linux.Options{
+			Icon:                []byte(""),
+			WindowIsTranslucent: false,
+			WebviewGpuPolicy:    linux.WebviewGpuPolicyAlways,
 		},
 		Debug: options.Debug{
 			OpenInspectorOnStartup: false,
