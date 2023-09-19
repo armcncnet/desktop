@@ -64,7 +64,7 @@ func Init(template embed.FS) {
 		Linux: &linux.Options{
 			Icon:                []byte(""),
 			WindowIsTranslucent: false,
-			WebviewGpuPolicy:    linux.WebviewGpuPolicyOnDemand,
+			WebviewGpuPolicy:    linux.WebviewGpuPolicyNever,
 		},
 		Debug: options.Debug{
 			OpenInspectorOnStartup: false,
