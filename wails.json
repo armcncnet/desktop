@@ -1,7 +1,7 @@
 {
     "$schema": "https://wails.io/schemas/config.v2.json",
-    "name": "cnc",
-    "outputfilename": "cnc",
+    "name": "armcnc",
+    "outputfilename": "armcnc",
     "build:dir": "release",
     "wailsjsdir": "template/src/package",
     "frontend:dir": "template",
