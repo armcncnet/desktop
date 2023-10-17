@@ -1,9 +1,7 @@
 <template>
     <div class="console-view" :class="props.cnc.navigation.select">
         <div class="console-item">
-            <div class="console-main-item">
-
-            </div>
+            <div class="console-main-item"></div>
             <div class="console-main-item">
                 <div class="console-main-header">
                     <div class="console-header-item"></div>
@@ -15,6 +13,13 @@
         </div>
         <div class="console-item">
             <div class="console-right">
+                <div class="console-right-item">
+                    <div class="box">
+                        <el-button class="cnc" type="danger" disabled round @click="onEmergencyStop">紧急停止</el-button>
+                        <el-button class="cnc" type="success" disabled round @click="onDeviceStart">启动设备</el-button>
+                        <el-button class="cnc" type="warning" disabled round @click="onDeviceZeroing">设备回零</el-button>
+                    </div>
+                </div>
                 <div class="console-right-item">
                     <div class="title">
                         <el-text class="cnc">
@@ -59,7 +64,7 @@
                                     <div class="grid-content">150</div>
                                 </el-col>
                                 <el-col :span="4">
-                                    <div class="grid-content">360</div>
+                                    <div class="grid-content">连续</div>
                                 </el-col>
                             </el-row>
                         </div>
@@ -99,7 +104,7 @@
                     <div class="title">
                         <el-text class="cnc">
                             <el-icon><Coordinate /></el-icon>
-                            <span>调试键盘</span>
+                            <span>遥控器</span>
                         </el-text>
                     </div>
                     <div class="box">
@@ -210,6 +215,18 @@ export default defineComponent({
     components: {},
     setup(props, context) {
 
+        function onEmergencyStop(){
+
+        }
+
+        function onDeviceStart(){
+
+        }
+
+        function onDeviceZeroing(){
+
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -220,7 +237,10 @@ export default defineComponent({
 
         return {
             props,
-            icons
+            icons,
+            onEmergencyStop,
+            onDeviceStart,
+            onDeviceZeroing
         }
     }
 });
@@ -275,6 +295,10 @@ export default defineComponent({
     width: 100%;
     min-height: 100%;
 }
+.console-view .console-item .console-right .console-right-item:first-child{
+    margin-bottom: 0;
+    text-align: center;
+}
 .console-view .console-item .console-right .console-right-item{
     width: 100%;
     margin-bottom: 10px;
@@ -285,6 +309,9 @@ export default defineComponent({
 }
 .console-view .console-item .console-right .console-right-item .box{
     width: 100%;
+}
+.console-view .console-item .console-right .console-right-item:first-child .box{
+    padding: 10px;
 }
 .console-view .console-item .console-right .console-right-item .box:deep(.el-row.cnc .el-col){
     margin-bottom: 5px;

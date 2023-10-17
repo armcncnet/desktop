@@ -35,10 +35,10 @@ export default defineComponent({
     setup(props, context) {
 
         function onSelectDevice(device: any){
-            (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.control.port, "/query/inifields/", "GET", {}).then((response: any)=>{
+            (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.control.port, "/config/index", "GET", {}).then((response: any)=>{
                 console.log(response);
                 if(response.code === 0){
-                    if(response.MACHINE){
+                    if(response.data){
                         props.cnc.device.ip = device.ip;
                         (window as any).runtime.EventsEmit("event_message", {type: "connected_device"});
                     }else{

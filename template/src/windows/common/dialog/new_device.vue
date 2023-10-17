@@ -34,9 +34,11 @@ export default defineComponent({
                 return;
             }
             props.cnc.header.dialog.form.loading = true;
-            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.control.port, "/query/inifields/", "GET", {}).then((response: any)=>{
+            console.log(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.control.port);
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.control.port, "/config/index", "GET", {}).then((response: any)=>{
+                console.log(response);
                 if(response.code === 0){
-                    if(response.MACHINE){
+                    if(response.data){
                         props.cnc.device.ip = props.cnc.header.dialog.form.ip;
                         if(props.cnc.device.ips.length > 0){
                             let check = false;
@@ -46,11 +48,11 @@ export default defineComponent({
                                 }
                             });
                             if(!check){
-                                props.cnc.device.ips.push({name: response.MACHINE, ip: props.cnc.header.dialog.form.ip});
+                                props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.header.dialog.form.ip, version: response.data.version});
                                 localStorage.setItem("cnc:device:ips", JSON.stringify(props.cnc.device.ips));
                             }
                         }else{
-                            props.cnc.device.ips.push({name: response.MACHINE, ip: props.cnc.header.dialog.form.ip});
+                            props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.header.dialog.form.ip, version: response.data.version});
                             localStorage.setItem("cnc:device:ips", JSON.stringify(props.cnc.device.ips));
                             console.log(props.cnc.device.ips);
                         }

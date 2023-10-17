@@ -27,13 +27,13 @@ export default defineComponent({
                 alive: false,
                 timed: null,
                 control: {
-                    port: 8000,
+                    port: 10081,
                     socket: false,
                     status: false,
                     data: false
                 },
                 message: {
-                    port: 8001,
+                    port: 10081,
                     socket: false,
                     status: false,
                     data: {

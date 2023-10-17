@@ -75,10 +75,10 @@ export default defineComponent({
         // 连接设备控制消息服务
         function onConnectedDeviceControl(){
             if(!props.cnc.device.control.status){
-                props.cnc.device.control.socket = new WebSocket("ws://" + props.cnc.device.ip + ":" + props.cnc.device.control.port + "/websocket/", undefined);
+                props.cnc.device.control.socket = new WebSocket("ws://" + props.cnc.device.ip + ":" + props.cnc.device.control.port + "/message/service", undefined);
                 props.cnc.device.control.socket.onopen = function () {
                     props.cnc.device.control.status = true;
-                    onConnectedDeviceMessage();
+                    props.cnc.navigation.select = "console";
                 }
                 props.cnc.device.control.socket.onmessage = function (message: any) {
                     let message_json = JSON.parse(message.data);
@@ -88,34 +88,6 @@ export default defineComponent({
                     onDisconnectDevice();
                 }
                 props.cnc.device.control.socket.onclose = function () {
-                    onDisconnectDevice();
-                }
-            }
-        }
-
-        // 连接设备消息服务
-        function onConnectedDeviceMessage(){
-            if(!props.cnc.device.message.status){
-                props.cnc.device.message.socket = new WebSocket("ws://" + props.cnc.device.ip + ":" + props.cnc.device.message.port + "/websocket/", undefined);
-                props.cnc.device.message.socket.onopen = function () {
-                    props.cnc.device.message.status = true;
-                    props.cnc.navigation.select = "console";
-                }
-                props.cnc.device.message.socket.onmessage = function (message: any) {
-                    let message_json = JSON.parse(message.data);
-                    if(message_json.type && message_json.name){
-                        if(message_json.name === "basicInfo"){
-                            props.cnc.device.message.data.basicInfo = message_json.datas;
-                        }
-                        if(message_json.name === "errorInfo"){
-                            console.log(message_json.datas.text);
-                        }
-                    }
-                }
-                props.cnc.device.message.socket.onerror = function () {
-                    onDisconnectDevice();
-                }
-                props.cnc.device.message.socket.onclose = function () {
                     onDisconnectDevice();
                 }
             }

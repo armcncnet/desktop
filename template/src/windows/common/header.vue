@@ -94,32 +94,7 @@
                 </el-tooltip>
             </div>
         </div>
-        <div class="header-item">
-            <div class="item global" @click="onEmergencyStop">
-                <el-tooltip popper-class="cnc" effect="dark" content="紧急停止" placement="bottom">
-                    <el-text class="cnc">
-                        <el-icon><Remove /></el-icon>
-                        <span>紧急停止</span>
-                    </el-text>
-                </el-tooltip>
-            </div>
-            <div class="item global" @click="onDeviceStart">
-                <el-tooltip popper-class="cnc" effect="dark" content="启动设备" placement="bottom">
-                    <el-text class="cnc">
-                        <el-icon><Promotion /></el-icon>
-                        <span>启动设备</span>
-                    </el-text>
-                </el-tooltip>
-            </div>
-            <div class="item global" @click="onDeviceZeroing">
-                <el-tooltip popper-class="cnc" effect="dark" content="设备回零" placement="bottom">
-                    <el-text class="cnc">
-                        <el-icon><Aim /></el-icon>
-                        <span>设备回零</span>
-                    </el-text>
-                </el-tooltip>
-            </div>
-        </div>
+        <div class="header-item"></div>
     </div>
     <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.header.dialog.config.type === 'new_device'" />
 </template>
@@ -193,18 +168,6 @@ export default defineComponent({
 
         }
 
-        function onEmergencyStop(){
-
-        }
-
-        function onDeviceStart(){
-
-        }
-
-        function onDeviceZeroing(){
-
-        }
-
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -224,10 +187,7 @@ export default defineComponent({
             onNewDevice,
             onControlStart,
             onControlSuspend,
-            onControlStop,
-            onEmergencyStop,
-            onDeviceStart,
-            onDeviceZeroing
+            onControlStop
         }
     }
 });
@@ -385,40 +345,6 @@ export default defineComponent({
 .header-main .header-item .item.device .new-device:hover:deep(.el-text){
     cursor: pointer;
     color: #ffffff;
-}
-.header-main .header-item .item.global{
-    width: auto;
-    height: 39px;
-    line-height: 30px;
-    text-align: center;
-    padding: 6px 10px;
-    position: relative;
-}
-.header-main .header-item .item.global:hover{
-    cursor: pointer;
-    background-color: rgba(57, 59, 64, .5);
-}
-.header-main .header-item .item.global:deep(.el-text){
-    height: 27px;
-    display: inline-block;
-    vertical-align: top;
-    color: #999999;
-}
-.header-main .header-item .item.global:deep(.el-text):hover{
-    color: #ffffff;
-}
-.header-main .header-item .item.global:deep(.el-text .el-icon){
-    font-size: 16px;
-}
-.header-main .header-item .item.global:deep(.el-text span){
-    height: 27px;
-    font-size: 12px;
-    line-height: 27px;
-    display: inline-block;
-    vertical-align: top;
-}
-.header-main .header-item .item.global:first-child:deep(.el-text){
-    color: #F56C6C;
 }
 .header-main .header-item .item.control{
     width: 40px;
