@@ -15,9 +15,10 @@
             <div class="console-right">
                 <div class="console-right-item">
                     <div class="box">
-                        <el-button class="cnc" type="danger" disabled round @click="onEmergencyStop">紧急停止</el-button>
-                        <el-button class="cnc" type="success" disabled round @click="onDeviceStart">启动设备</el-button>
-                        <el-button class="cnc" type="warning" disabled round @click="onDeviceZeroing">设备回零</el-button>
+                        <el-button class="cnc" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
+                        <el-button class="cnc" color="#626aef" :icon="icons.Promotion" plain @click="onDeviceStart">启动</el-button>
+                        <el-button class="cnc" type="warning" :icon="icons.Rank" plain @click="onDeviceZeroing">回零</el-button>
+                        <el-button class="cnc" type="primary" :icon="icons.WarningFilled" plain @click="onDeviceZeroing">忽略限位</el-button>
                     </div>
                 </div>
                 <div class="console-right-item">
@@ -67,36 +68,6 @@
                                     <div class="grid-content">连续</div>
                                 </el-col>
                             </el-row>
-                        </div>
-                    </div>
-                </div>
-                <div class="console-right-item">
-                    <div class="title">
-                        <el-text class="cnc">
-                            <el-icon><Operation /></el-icon>
-                            <span>速度(min)</span>
-                        </el-text>
-                    </div>
-                    <div class="box">
-                        <div class="speed-box">
-                            <div class="speed-box-item">
-                                <div class="item">点动速度</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                            <div class="speed-box-item">
-                                <div class="item">最大速度</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                            <div class="speed-box-item">
-                                <div class="item">点转速度</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,6 +171,66 @@
                         </div>
                     </div>
                 </div>
+                <div class="console-right-item">
+                    <div class="title">
+                        <el-text class="cnc">
+                            <el-icon><Operation /></el-icon>
+                            <span>主轴</span>
+                        </el-text>
+                    </div>
+                    <div class="box">
+                        <div class="speed-box">
+                            <div class="speed-box-item">
+                                <div class="item">主轴速度(deg/min)</div>
+                                <div class="item">
+                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
+                                </div>
+                            </div>
+                            <div class="speed-box-item">
+                                <div class="item">主轴倍率(100%)</div>
+                                <div class="item">
+                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
+                                </div>
+                            </div>
+                            <div class="speed-box-item">
+                                <div class="item">主轴进给倍率</div>
+                                <div class="item">
+                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="console-right-item">
+                    <div class="title">
+                        <el-text class="cnc">
+                            <el-icon><Operation /></el-icon>
+                            <span>速度</span>
+                        </el-text>
+                    </div>
+                    <div class="box">
+                        <div class="speed-box">
+                            <div class="speed-box-item">
+                                <div class="item">点动速度(mm/min)</div>
+                                <div class="item">
+                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
+                                </div>
+                            </div>
+                            <div class="speed-box-item">
+                                <div class="item">最大速度(mm/min)</div>
+                                <div class="item">
+                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
+                                </div>
+                            </div>
+                            <div class="speed-box-item">
+                                <div class="item">点转速度(deg/min)</div>
+                                <div class="item">
+                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -258,13 +289,13 @@ export default defineComponent({
     display: block;
 }
 .console-view .console-item{
-    width: calc(100% - 380px);
+    width: calc(100% - 400px);
     height: 100%;
     display: inline-block;
     vertical-align: top;
 }
 .console-view .console-item:last-child{
-    width: 380px;
+    width: 400px;
     padding: 10px;
     background-color: rgba(43, 45, 48, 1);
     border-left: solid 1px rgba(30, 31, 34, 1);
@@ -348,13 +379,11 @@ export default defineComponent({
     margin-bottom: 0;
 }
 .console-view .console-item .console-right .console-right-item .box .speed-box .speed-box-item .item{
-    width: calc(100% - 65px);
+    width: 100%;
     height: 24px;
-    display: inline-block;
-    vertical-align: top;
 }
 .console-view .console-item .console-right .console-right-item .box .speed-box .speed-box-item .item:first-child{
-    width: 65px;
+    width: 100%;
     line-height: 24px;
     font-size: 12px;
     color: #666666;

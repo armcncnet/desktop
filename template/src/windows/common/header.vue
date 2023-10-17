@@ -67,7 +67,7 @@
                 <div class="new-device" @click="onNewDevice">
                     <el-text class="cnc" v-if="!props.cnc.device.control.status && !props.cnc.device.message.status">
                         <el-icon><Connection /></el-icon>
-                        <span>连接新设备</span>
+                        <span>连接设备</span>
                     </el-text>
                     <el-text class="cnc" v-else>
                         <el-icon><Connection /></el-icon>
@@ -96,14 +96,14 @@
         </div>
         <div class="header-item"></div>
     </div>
-    <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.header.dialog.config.type === 'new_device'" />
+    <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.header.dialog.config.type === 'device'" />
 </template>
 
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 import {ElMessageBox} from "element-plus";
-import NewDeviceDialog from "./dialog/new_device.vue";
+import NewDeviceDialog from "./dialog/device.vue";
 export default defineComponent({
     name: "HeaderCommon",
     emits: [],
@@ -135,8 +135,8 @@ export default defineComponent({
 
         function onNewDevice(){
             if(!props.cnc.device.control.status && !props.cnc.device.message.status){
-                props.cnc.header.dialog.config.type = "new_device";
-                props.cnc.header.dialog.config.title = "连接新设备";
+                props.cnc.header.dialog.config.type = "device";
+                props.cnc.header.dialog.config.title = "连接设备";
                 props.cnc.header.dialog.config.width = "400px";
                 props.cnc.header.dialog.config.close = true;
                 props.cnc.header.dialog.form = {

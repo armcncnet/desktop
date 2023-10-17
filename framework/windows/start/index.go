@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  * @file    index.go
- * @author  GEEKROS site:www.geekros.com github:geekros.github.io
+ * @author  ARMCNC site:www.armcnc.net github:armcnc.github.io
  ******************************************************************************
  */
 
@@ -127,7 +127,7 @@ func (start *Api) ServiceRequest(path string, method string, parameter any, toke
 func (start *Api) onRequest(request *http.Request, contentType string, token string) (io.ReadCloser, error) {
 
 	request.Header.Set("Content-Type", contentType)
-	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 GEEKCNC/1.0.0")
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 ARMCNC/1.0.0")
 	request.Header.Set("Account-Token", token)
 
 	HttpClient := &http.Client{

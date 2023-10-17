@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  * @file    framework.go
- * @author  GEEKROS site:www.geekros.com github:geekros.github.io
+ * @author  ARMCNC site:www.armcnc.net github:armcnc.github.io
  ******************************************************************************
  */
 

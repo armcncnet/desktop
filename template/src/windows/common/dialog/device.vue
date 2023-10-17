@@ -17,7 +17,7 @@
 import {defineComponent, onBeforeUnmount, onMounted} from "vue";
 import {ElMessage} from "element-plus";
 export default defineComponent({
-    name: "NewDeviceDialog",
+    name: "DeviceDialog",
     emits: [],
     props: ["cnc"],
     components: {},
