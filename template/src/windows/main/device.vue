@@ -35,7 +35,7 @@ export default defineComponent({
     setup(props, context) {
 
         function onSelectDevice(device: any){
-            (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.control.port, "/config/index", "GET", {}).then((response: any)=>{
+            (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
                 console.log(response);
                 if(response.code === 0){
                     if(response.data){

@@ -14,12 +14,7 @@
         <div class="console-item">
             <div class="console-right">
                 <div class="console-right-item">
-                    <div class="box">
-                        <el-button class="cnc" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
-                        <el-button class="cnc" color="#626aef" :icon="icons.Promotion" plain @click="onDeviceStart">启动</el-button>
-                        <el-button class="cnc" type="warning" :icon="icons.Rank" plain @click="onDeviceZeroing">回零</el-button>
-                        <el-button class="cnc" type="primary" :icon="icons.WarningFilled" plain @click="onDeviceZeroing">忽略限位</el-button>
-                    </div>
+
                 </div>
                 <div class="console-right-item">
                     <div class="title">
@@ -340,9 +335,6 @@ export default defineComponent({
 }
 .console-view .console-item .console-right .console-right-item .box{
     width: 100%;
-}
-.console-view .console-item .console-right .console-right-item:first-child .box{
-    padding: 10px;
 }
 .console-view .console-item .console-right .console-right-item .box:deep(.el-row.cnc .el-col){
     margin-bottom: 5px;

@@ -65,7 +65,7 @@
             </div>
             <div class="item device">
                 <div class="new-device" @click="onNewDevice">
-                    <el-text class="cnc" v-if="!props.cnc.device.control.status && !props.cnc.device.message.status">
+                    <el-text class="cnc" v-if="!props.cnc.device.message.status">
                         <el-icon><Connection /></el-icon>
                         <span>连接设备</span>
                     </el-text>
@@ -84,17 +84,32 @@
                 </el-tooltip>
             </div>
             <div class="item control" @click="onControlSuspend">
+                <el-tooltip popper-class="cnc" effect="dark" content="执行下一行" placement="bottom">
+                    <el-icon><Expand /></el-icon>
+                </el-tooltip>
+            </div>
+            <div class="item control" @click="onControlSuspend">
                 <el-tooltip popper-class="cnc" effect="dark" content="暂停" placement="bottom">
                     <el-icon><VideoPause /></el-icon>
                 </el-tooltip>
             </div>
             <div class="item control" @click="onControlStop">
                 <el-tooltip popper-class="cnc" effect="dark" content="停止" placement="bottom">
-                    <el-icon><WarningFilled /></el-icon>
+                    <el-icon><Remove /></el-icon>
                 </el-tooltip>
             </div>
         </div>
-        <div class="header-item"></div>
+        <div class="header-item">
+            <div class="item global">
+                <el-button class="cnc" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
+            </div>
+            <div class="item global">
+                <el-button class="cnc" type="danger" color="#5e4eff" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
+            </div>
+            <div class="item global">
+                <el-button class="cnc" type="warning" :icon="icons.Rank" @click="onDeviceZero">回零</el-button>
+            </div>
+        </div>
     </div>
     <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.header.dialog.config.type === 'device'" />
 </template>
@@ -134,7 +149,7 @@ export default defineComponent({
         }
 
         function onNewDevice(){
-            if(!props.cnc.device.control.status && !props.cnc.device.message.status){
+            if(!props.cnc.device.message.status){
                 props.cnc.header.dialog.config.type = "device";
                 props.cnc.header.dialog.config.title = "连接设备";
                 props.cnc.header.dialog.config.width = "400px";
@@ -168,6 +183,21 @@ export default defineComponent({
 
         }
 
+        function onEmergencyStop(){
+            let message = {command: "desktop:control:device:estop"}
+            props.cnc.device.message.socket.send(JSON.stringify(message));
+        }
+
+        function onDeviceStart(){
+            let message = {command: "desktop:control:device:start"}
+            props.cnc.device.message.socket.send(JSON.stringify(message));
+        }
+
+        function onDeviceZero(){
+            let message = {command: "desktop:control:device:zero"}
+            props.cnc.device.message.socket.send(JSON.stringify(message));
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -187,7 +217,10 @@ export default defineComponent({
             onNewDevice,
             onControlStart,
             onControlSuspend,
-            onControlStop
+            onControlStop,
+            onEmergencyStop,
+            onDeviceStart,
+            onDeviceZero
         }
     }
 });
@@ -199,17 +232,19 @@ export default defineComponent({
     height: 40px;
 }
 .header-main .header-item{
-    width: 33.33%;
+    width: 400px;
     height: 40px;
     display: inline-block;
     vertical-align: top;
 }
 .header-main .header-item:nth-child(2){
+    width: calc(100% - 800px);
     text-align: center;
     padding: 5px 10px;
 }
 .header-main .header-item:last-child{
-    text-align: right;
+    width: 400px;
+    text-align: center;
     padding: 0 10px;
 }
 .header-main .header-item .item{
@@ -364,5 +399,13 @@ export default defineComponent({
 }
 .header-main .header-item .item.control:hover:deep(.el-icon){
     color: #ffffff;
+}
+.header-main .header-item .item.global{
+    width: auto;
+    height: 39px;
+    line-height: 30px;
+    text-align: center;
+    padding: 3px 10px;
+    position: relative;
 }
 </style>

@@ -34,8 +34,8 @@ export default defineComponent({
                 return;
             }
             props.cnc.header.dialog.form.loading = true;
-            console.log(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.control.port);
-            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.control.port, "/config/index", "GET", {}).then((response: any)=>{
+            console.log(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.message.port);
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
                 console.log(response);
                 if(response.code === 0){
                     if(response.data){

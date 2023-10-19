@@ -5,12 +5,6 @@
         <div class="footer-item">
             <div class="item">
                 <el-text class="cnc">
-                    <el-icon><ChatLineRound /></el-icon>
-                    <span>{{props.cnc.device.control.status ? "已连接" : "未连接"}}</span>
-                </el-text>
-            </div>
-            <div class="item">
-                <el-text class="cnc">
                     <el-icon><ChatDotRound /></el-icon>
                     <span>{{props.cnc.device.message.status ? "已连接" : "未连接"}}</span>
                 </el-text>

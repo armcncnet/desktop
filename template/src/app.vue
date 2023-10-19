@@ -26,12 +26,6 @@ export default defineComponent({
                 ips: [],
                 alive: false,
                 timed: null,
-                control: {
-                    port: 10081,
-                    socket: false,
-                    status: false,
-                    data: false
-                },
                 message: {
                     port: 10081,
                     socket: false,
@@ -44,6 +38,10 @@ export default defineComponent({
                     port: 8080,
                     socket: false,
                     status: false
+                },
+                machine: {
+                    status: false,
+                    config: false
                 }
             },
             header: {

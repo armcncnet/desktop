@@ -74,20 +74,28 @@ export default defineComponent({
 
         // 连接设备控制消息服务
         function onConnectedDeviceControl(){
-            if(!props.cnc.device.control.status){
-                props.cnc.device.control.socket = new WebSocket("ws://" + props.cnc.device.ip + ":" + props.cnc.device.control.port + "/message/service", undefined);
-                props.cnc.device.control.socket.onopen = function () {
-                    props.cnc.device.control.status = true;
+            if(!props.cnc.device.message.status){
+                props.cnc.device.message.socket = new WebSocket("ws://" + props.cnc.device.ip + ":" + props.cnc.device.message.port + "/message/service", undefined);
+                props.cnc.device.message.socket.onopen = function () {
+                    props.cnc.device.message.status = true;
                     props.cnc.navigation.select = "console";
                 }
-                props.cnc.device.control.socket.onmessage = function (message: any) {
+                props.cnc.device.message.socket.onmessage = function (message: any) {
                     let message_json = JSON.parse(message.data);
-                    console.log(message_json);
+                    if(message_json.command){
+                        if(message_json.command === "launch:machine:config"){
+                            props.cnc.device.machine.config = message_json.data;
+                        }
+                        if(message_json.command === "launch:machine:status"){
+                            props.cnc.device.machine.status = message_json.data;
+                            console.log(props.cnc.device.machine.status);
+                        }
+                    }
                 }
-                props.cnc.device.control.socket.onerror = function () {
+                props.cnc.device.message.socket.onerror = function () {
                     onDisconnectDevice();
                 }
-                props.cnc.device.control.socket.onclose = function () {
+                props.cnc.device.message.socket.onclose = function () {
                     onDisconnectDevice();
                 }
             }
@@ -95,10 +103,6 @@ export default defineComponent({
 
         // 断开设备
         function onDisconnectDevice(){
-            if(props.cnc.device.control.status){
-                props.cnc.device.control.status = false;
-                props.cnc.device.control.socket.close();
-            }
             if(props.cnc.device.message.status){
                 props.cnc.device.message.status = false;
                 props.cnc.device.message.socket.close();
