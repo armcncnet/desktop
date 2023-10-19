@@ -205,6 +205,50 @@
 .el-button.cnc{
     font-size: 12px;
 }
+.el-button.el-cnc-button{
+    width: auto;
+    min-width: 40px;
+    height: 30px;
+    text-align: center;
+    background-color: rgba(30, 31, 34, .6);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, .1);
+    padding: 0 10px;
+    color: #999999;
+}
+.el-button.el-cnc-button:hover{
+    background-color: rgba(30, 31, 34, .8);
+    border: 1px solid rgba(0, 0, 0, .1);
+    color: #ffffff;
+}
+.el-button.el-cnc-button:focus{
+    background-color: rgba(30, 31, 34, .6);
+    border: 1px solid rgba(0, 0, 0, .1);
+    color: #999999;
+}
+.el-button.el-cnc-button .el-icon{
+    font-size: 16px;
+}
+.el-button.el-cnc-button.el-button--danger .el-icon{
+    color: #f56c6c;
+}
+.el-button.el-cnc-button.el-button--primary .el-icon{
+    color: #5e4eff;
+}
+.el-button.el-cnc-button span{
+    width: auto;
+    height: 30px;
+    line-height: 32px;
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.el-button.el-cnc-button.active {
+    box-shadow: inset 0 0 2px 3px rgba(0, 0, 0, .2);
+    background-color: rgba(30, 31, 34, .8);
+    border: 1px solid rgba(0, 0, 0, .5);
+    color: #ffffff;
+}
 
 .el-message.cnc{
     background-color: rgba(57, 59, 64, 1);

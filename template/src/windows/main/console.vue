@@ -1,7 +1,9 @@
 <template>
     <div class="console-view" :class="props.cnc.navigation.select">
         <div class="console-item">
-            <div class="console-main-item"></div>
+            <div class="console-main-item">
+                <SimulationConsole ref="simulationConsole" :cnc="props.cnc" />
+            </div>
             <div class="console-main-item">
                 <div class="console-main-header">
                     <div class="console-header-item"></div>
@@ -13,9 +15,7 @@
         </div>
         <div class="console-item">
             <div class="console-right">
-                <div class="console-right-item">
-
-                </div>
+                <div class="console-right-item"></div>
                 <div class="console-right-item">
                     <div class="title">
                         <el-text class="cnc">
@@ -234,11 +234,14 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
+import SimulationConsole from "./console/simulation.vue";
 export default defineComponent({
     name: "ConsoleMain",
     emits: [],
     props: ["cnc"],
-    components: {},
+    components: {
+        SimulationConsole
+    },
     setup(props, context) {
 
         function onEmergencyStop(){

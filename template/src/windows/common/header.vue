@@ -78,36 +78,28 @@
             </div>
         </div>
         <div class="header-item">
-            <div class="item control" @click="onControlStart">
-                <el-tooltip popper-class="cnc" effect="dark" content="运行" placement="bottom">
-                    <el-icon><VideoPlay /></el-icon>
-                </el-tooltip>
-            </div>
-            <div class="item control" @click="onControlSuspend">
-                <el-tooltip popper-class="cnc" effect="dark" content="执行下一行" placement="bottom">
-                    <el-icon><Expand /></el-icon>
-                </el-tooltip>
-            </div>
-            <div class="item control" @click="onControlSuspend">
-                <el-tooltip popper-class="cnc" effect="dark" content="暂停" placement="bottom">
-                    <el-icon><VideoPause /></el-icon>
-                </el-tooltip>
-            </div>
-            <div class="item control" @click="onControlStop">
-                <el-tooltip popper-class="cnc" effect="dark" content="停止" placement="bottom">
-                    <el-icon><Remove /></el-icon>
-                </el-tooltip>
-            </div>
+            <el-tooltip popper-class="cnc" effect="dark" content="运行" placement="bottom">
+                <el-button class="el-cnc-button active" :icon="icons.VideoPlay" @click="onControlStart"></el-button>
+            </el-tooltip>
+            <el-tooltip popper-class="cnc" effect="dark" content="执行下一行" placement="bottom">
+                <el-button class="el-cnc-button" :icon="icons.Expand" @click="onControlSuspend"></el-button>
+            </el-tooltip>
+            <el-tooltip popper-class="cnc" effect="dark" content="暂停" placement="bottom">
+                <el-button class="el-cnc-button" :icon="icons.VideoPause" @click="onControlSuspend"></el-button>
+            </el-tooltip>
+            <el-tooltip popper-class="cnc" effect="dark" content="停止" placement="bottom">
+                <el-button class="el-cnc-button" :icon="icons.Remove" @click="onControlStop"></el-button>
+            </el-tooltip>
         </div>
         <div class="header-item">
             <div class="item global">
-                <el-button class="cnc" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
+                <el-button class="el-cnc-button" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
             </div>
             <div class="item global">
-                <el-button class="cnc" type="danger" color="#5e4eff" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
+                <el-button class="el-cnc-button" type="primary" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
             </div>
             <div class="item global">
-                <el-button class="cnc" type="warning" :icon="icons.Rank" @click="onDeviceZero">回零</el-button>
+                <el-button class="el-cnc-button" type="warning" :icon="icons.Rank" @click="onDeviceZero">回零</el-button>
             </div>
         </div>
     </div>
@@ -379,25 +371,6 @@ export default defineComponent({
 }
 .header-main .header-item .item.device .new-device:hover:deep(.el-text){
     cursor: pointer;
-    color: #ffffff;
-}
-.header-main .header-item .item.control{
-    width: 40px;
-    height: 30px;
-    line-height: 36px;
-    text-align: center;
-    background-color: rgba(30, 31, 34, .8);
-    border-radius: 4px;
-    margin: 0 5px;
-}
-.header-main .header-item .item.control:hover{
-    cursor: pointer;
-}
-.header-main .header-item .item.control:deep(.el-icon){
-    font-size: 16px;
-    color: #999999;
-}
-.header-main .header-item .item.control:hover:deep(.el-icon){
     color: #ffffff;
 }
 .header-main .header-item .item.global{

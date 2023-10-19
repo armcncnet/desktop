@@ -24,8 +24,6 @@ export default defineComponent({
             device: {
                 ip: "",
                 ips: [],
-                alive: false,
-                timed: null,
                 message: {
                     port: 10081,
                     socket: false,
