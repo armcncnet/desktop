@@ -1,5 +1,5 @@
 <template>
-    <div class="device-view" :class="props.cnc.navigation.select">
+    <div class="device-view">
         <div class="device-main">
             <div class="device-box">
                 <div class="box-title">
@@ -28,7 +28,7 @@ import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted}
 import * as icons from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 export default defineComponent({
-    name: "DeviceMain",
+    name: "DeviceConsole",
     emits: [],
     props: ["cnc"],
     components: {},
@@ -83,10 +83,6 @@ export default defineComponent({
     height: 100%;
     background-color: rgba(30, 31, 34, 1);
     overflow-y: auto;
-    display: none;
-}
-.device-view.device{
-    display: block;
 }
 .device-view .device-main{
     padding: 30px;

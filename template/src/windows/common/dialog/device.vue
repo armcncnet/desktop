@@ -34,9 +34,7 @@ export default defineComponent({
                 return;
             }
             props.cnc.header.dialog.form.loading = true;
-            console.log(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.message.port);
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
-                console.log(response);
                 if(response.code === 0){
                     if(response.data){
                         props.cnc.device.ip = props.cnc.header.dialog.form.ip;
@@ -54,7 +52,6 @@ export default defineComponent({
                         }else{
                             props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.header.dialog.form.ip, version: response.data.version});
                             localStorage.setItem("cnc:device:ips", JSON.stringify(props.cnc.device.ips));
-                            console.log(props.cnc.device.ips);
                         }
                         (window as any).runtime.EventsEmit("event_message", {type: "connected_device"});
                         dialogClose(false);

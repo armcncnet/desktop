@@ -6,34 +6,34 @@
                     <el-icon><Place /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'program' ? 'select' : ''" @click="onNavigation('program')">
+            <div class="item" :class="props.cnc.navigation.select === 'program' ? 'select' : ''" @click="onNavigation('program')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="G程序" placement="right">
                     <el-icon><Finished /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'plugin' ? 'select' : ''" @click="onNavigation('plugin')">
+            <div class="item" :class="props.cnc.navigation.select === 'plugin' ? 'select' : ''" @click="onNavigation('plugin')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="插件" placement="right">
                     <el-icon><Grid /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'blade' ? 'select' : ''" @click="onNavigation('blade')">
+            <div class="item" :class="props.cnc.navigation.select === 'blade' ? 'select' : ''" @click="onNavigation('blade')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="刀库" placement="right">
                     <el-icon><MessageBox /></el-icon>
                 </el-tooltip>
             </div>
         </div>
         <div class="navigation-item">
-            <div class="item" :class="props.cnc.navigation.select === 'settings' ? 'select' : ''" @click="onNavigation('settings')">
+            <div class="item" :class="props.cnc.navigation.select === 'settings' ? 'select' : ''" @click="onNavigation('settings')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="设置" placement="right">
                     <el-icon><Tools /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" @click="onDeviceRestart">
+            <div class="item" @click="onDeviceRestart" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="重启设备" placement="right">
                     <el-icon><RefreshRight /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" @click="onDeviceShutdown">
+            <div class="item" @click="onDeviceShutdown" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="设备关机" placement="right">
                     <el-icon><SwitchButton /></el-icon>
                 </el-tooltip>

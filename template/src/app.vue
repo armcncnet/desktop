@@ -57,7 +57,7 @@ export default defineComponent({
                 }
             },
             navigation: {
-                select: "device"
+                select: "console"
             }
         });
 

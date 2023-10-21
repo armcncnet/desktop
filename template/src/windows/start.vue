@@ -9,7 +9,6 @@
                     <NavigationCommon ref="navigationCommon" :cnc="props.cnc" />
                 </div>
                 <div class="main-box-item">
-                    <DeviceMain ref="deviceMain" :cnc="props.cnc" />
                     <ConsoleMain ref="consoleMain" :cnc="props.cnc" />
                     <ProgramMain ref="programMain" :cnc="props.cnc" />
                     <PluginMain ref="pluginMain" :cnc="props.cnc" />
@@ -32,7 +31,6 @@ import NoSleep from "nosleep.js";
 import HeaderCommon from "./common/header.vue";
 import FooterCommon from "./common/footer.vue";
 import NavigationCommon from "./common/navigation.vue";
-import DeviceMain from "./main/device.vue";
 import ConsoleMain from "./main/console.vue";
 import ProgramMain from "./main/program.vue";
 import PluginMain from "./main/plugin.vue";
@@ -46,7 +44,6 @@ export default defineComponent({
         HeaderCommon,
         FooterCommon,
         NavigationCommon,
-        DeviceMain,
         ConsoleMain,
         ProgramMain,
         PluginMain,
@@ -85,6 +82,7 @@ export default defineComponent({
                     if(message_json.command){
                         if(message_json.command === "launch:machine:config"){
                             props.cnc.device.machine.config = message_json.data;
+                            console.log(props.cnc.device.machine.config);
                         }
                         if(message_json.command === "launch:machine:status"){
                             props.cnc.device.machine.status = message_json.data;
@@ -107,7 +105,7 @@ export default defineComponent({
                 props.cnc.device.message.status = false;
                 props.cnc.device.message.socket.close();
             }
-            props.cnc.navigation.select = "device";
+            props.cnc.navigation.select = "console";
         }
 
         onBeforeMount(() => {

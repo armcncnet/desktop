@@ -1,5 +1,6 @@
 <template>
-    <div class="console-view" :class="props.cnc.navigation.select">
+    <DeviceConsole ref="deviceConsole" :cnc="props.cnc" v-if="!props.cnc.device.message.status" />
+    <div class="console-view" :class="props.cnc.navigation.select" v-else>
         <div class="console-item">
             <div class="console-main-item">
                 <SimulationConsole ref="simulationConsole" :cnc="props.cnc" />
@@ -234,12 +235,14 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
+import DeviceConsole from "./console/device.vue";
 import SimulationConsole from "./console/simulation.vue";
 export default defineComponent({
     name: "ConsoleMain",
     emits: [],
     props: ["cnc"],
     components: {
+        DeviceConsole,
         SimulationConsole
     },
     setup(props, context) {
@@ -357,8 +360,8 @@ export default defineComponent({
     background-color: rgba(30, 31, 34, .5);
 }
 .console-view .console-item .console-right .console-right-item .box .step .grid-content.select{
-    background-color: #5e4eff;
-    color: #ffffff;
+    background-color: rgba(30, 31, 34, .8);
+    color: #5e4eff;
 }
 .console-view .console-item .console-right .console-right-item .box .speed-box{
     width: 100%;

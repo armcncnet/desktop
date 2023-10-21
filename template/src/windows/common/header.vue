@@ -78,27 +78,27 @@
             </div>
         </div>
         <div class="header-item">
-            <el-tooltip popper-class="cnc" effect="dark" content="运行" placement="bottom">
-                <el-button class="el-cnc-button active" :icon="icons.VideoPlay" @click="onControlStart"></el-button>
+            <el-tooltip popper-class="cnc" effect="dark" content="运行" placement="bottom" v-if="props.cnc.device.message.status">
+                <el-button class="el-cnc-button" :icon="icons.VideoPlay" @click="onControlStart"></el-button>
             </el-tooltip>
-            <el-tooltip popper-class="cnc" effect="dark" content="执行下一行" placement="bottom">
+            <el-tooltip popper-class="cnc" effect="dark" content="执行下一行" placement="bottom" v-if="props.cnc.device.message.status">
                 <el-button class="el-cnc-button" :icon="icons.Expand" @click="onControlSuspend"></el-button>
             </el-tooltip>
-            <el-tooltip popper-class="cnc" effect="dark" content="暂停" placement="bottom">
+            <el-tooltip popper-class="cnc" effect="dark" content="暂停" placement="bottom" v-if="props.cnc.device.message.status">
                 <el-button class="el-cnc-button" :icon="icons.VideoPause" @click="onControlSuspend"></el-button>
             </el-tooltip>
-            <el-tooltip popper-class="cnc" effect="dark" content="停止" placement="bottom">
+            <el-tooltip popper-class="cnc" effect="dark" content="停止" placement="bottom" v-if="props.cnc.device.message.status">
                 <el-button class="el-cnc-button" :icon="icons.Remove" @click="onControlStop"></el-button>
             </el-tooltip>
         </div>
         <div class="header-item">
-            <div class="item global">
+            <div class="item global" v-if="props.cnc.device.message.status">
                 <el-button class="el-cnc-button" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
             </div>
-            <div class="item global">
+            <div class="item global" v-if="props.cnc.device.message.status">
                 <el-button class="el-cnc-button" type="primary" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
             </div>
-            <div class="item global">
+            <div class="item global" v-if="props.cnc.device.message.status">
                 <el-button class="el-cnc-button" type="warning" :icon="icons.Rank" @click="onDeviceZero">回零</el-button>
             </div>
         </div>
