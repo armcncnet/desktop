@@ -6,12 +6,7 @@
                 <SimulationConsole ref="simulationConsole" :cnc="props.cnc" />
             </div>
             <div class="console-main-item">
-                <div class="console-main-header">
-                    <div class="console-header-item"></div>
-                    <div class="console-header-item"></div>
-                    <div class="console-header-item"></div>
-                </div>
-                <div class="console-main-footer"></div>
+                <FooterConsole ref="footerConsole" :cnc="props.cnc" />
             </div>
         </div>
         <div class="console-item">
@@ -233,35 +228,27 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
+import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, nextTick} from "vue";
 import * as icons from "@element-plus/icons";
 import DeviceConsole from "./console/device.vue";
 import SimulationConsole from "./console/simulation.vue";
+import FooterConsole from "./console/footer.vue";
 export default defineComponent({
-    name: "ConsoleMain",
+    name: "ConsoleStart",
     emits: [],
     props: ["cnc"],
     components: {
         DeviceConsole,
-        SimulationConsole
+        SimulationConsole,
+        FooterConsole
     },
     setup(props, context) {
 
-        function onEmergencyStop(){
-
-        }
-
-        function onDeviceStart(){
-
-        }
-
-        function onDeviceZeroing(){
-
-        }
-
         onBeforeMount(() => {});
 
-        onMounted(() => {});
+        onMounted(() => {
+
+        });
 
         onBeforeUnmount(() => {});
 
@@ -269,10 +256,7 @@ export default defineComponent({
 
         return {
             props,
-            icons,
-            onEmergencyStop,
-            onDeviceStart,
-            onDeviceZeroing
+            icons
         }
     }
 });
@@ -310,18 +294,6 @@ export default defineComponent({
     height: 240px;
     background-color: rgba(43, 45, 48, .5);
     border-top: solid 1px rgba(30, 31, 34, .8);
-}
-.console-view .console-item .console-main-item .console-main-header{
-    width: 100%;
-    height: 40px;
-    background-color: rgba(43, 45, 48, .5);
-    border-bottom: solid 1px rgba(30, 31, 34, .8);
-}
-.console-view .console-item .console-main-item .console-main-header .console-header-item{
-    width: 33.33%;
-    height: 40px;
-    display: inline-block;
-    vertical-align: top;
 }
 .console-view .console-item .console-right{
     width: 100%;

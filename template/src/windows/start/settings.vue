@@ -1,6 +1,6 @@
 <template>
-    <div class="program-view" :class="props.cnc.navigation.select">
-        <el-empty class="cnc" description="program" :image-size="30" />
+    <div class="settings-view" :class="props.cnc.navigation.select">
+        <el-empty class="cnc" description="settings" :image-size="30" />
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 export default defineComponent({
-    name: "ProgramMain",
+    name: "SettingsStart",
     emits: [],
     props: ["cnc"],
     components: {},
@@ -31,13 +31,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.program-view{
+.settings-view{
     width: 100%;
     height: 100%;
     background-color: rgba(30, 31, 34, 1);
     display: none;
 }
-.program-view.program{
+.settings-view.settings{
     display: block;
 }
 </style>

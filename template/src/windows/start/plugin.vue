@@ -1,6 +1,6 @@
 <template>
-    <div class="blade-view" :class="props.cnc.navigation.select">
-        <el-empty class="cnc" description="blade" :image-size="30" />
+    <div class="plugin-view" :class="props.cnc.navigation.select">
+        <el-empty class="cnc" description="plugin" :image-size="30" />
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 export default defineComponent({
-    name: "BladeMain",
+    name: "PluginStart",
     emits: [],
     props: ["cnc"],
     components: {},
@@ -31,13 +31,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.blade-view{
+.plugin-view{
     width: 100%;
     height: 100%;
     background-color: rgba(30, 31, 34, 1);
     display: none;
 }
-.blade-view.blade{
+.plugin-view.plugin{
     display: block;
 }
 </style>

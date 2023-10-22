@@ -65,13 +65,14 @@ export default class Simulation {
 
         _this.engine.control_camera = new THREE.PerspectiveCamera(45, _this.container.clientWidth / _this.container.clientHeight, 0.1, 20000);
         _this.engine.control_camera.name = "default_camera";
-        _this.engine.control_camera.position.set(0, -5, 5);
+        _this.engine.control_camera.position.set(0, -10, 5);
         _this.engine.control_camera.lookAt(0, 0, 0);
         _this.engine.control_camera.up.set(0, 0, 1);
         _this.engine.control = new OrbitControls(_this.engine.control_camera, _this.container);
         _this.engine.control.enabled = true;
-        _this.engine.control.minDistance = 1; // 相机距离观察目标最小距离
-        _this.engine.control.maxDistance = 80; // 相机距离观察目标最大距离
+        _this.engine.control.mouseButtons.RIGHT = 0; // 禁用右键拖拽
+        _this.engine.control.minDistance = 5; // 相机距离观察目标最小距离
+        _this.engine.control.maxDistance = 20; // 相机距离观察目标最大距离
         _this.engine.control.maxPolarAngle = Math.PI / 2;
         _this.engine.control.enableDamping = true;
         _this.engine.control.dampingFactor = 0.2; // 视角惯性量

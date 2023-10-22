@@ -67,7 +67,7 @@
                 <div class="new-device" @click="onNewDevice">
                     <el-text class="cnc" v-if="!props.cnc.device.message.status">
                         <el-icon><Connection /></el-icon>
-                        <span>连接设备</span>
+                        <span>连接新设备</span>
                     </el-text>
                     <el-text class="cnc" v-else>
                         <el-icon><Connection /></el-icon>
@@ -143,7 +143,7 @@ export default defineComponent({
         function onNewDevice(){
             if(!props.cnc.device.message.status){
                 props.cnc.header.dialog.config.type = "device";
-                props.cnc.header.dialog.config.title = "连接设备";
+                props.cnc.header.dialog.config.title = "连接新设备";
                 props.cnc.header.dialog.config.width = "400px";
                 props.cnc.header.dialog.config.close = true;
                 props.cnc.header.dialog.form = {

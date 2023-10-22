@@ -9,11 +9,11 @@
                     <NavigationCommon ref="navigationCommon" :cnc="props.cnc" />
                 </div>
                 <div class="main-box-item">
-                    <ConsoleMain ref="consoleMain" :cnc="props.cnc" />
-                    <ProgramMain ref="programMain" :cnc="props.cnc" />
-                    <PluginMain ref="pluginMain" :cnc="props.cnc" />
-                    <BladeMain ref="bladeMain" :cnc="props.cnc" />
-                    <SettingsMain ref="settingsMain" :cnc="props.cnc" />
+                    <ConsoleStart ref="consoleStart" :cnc="props.cnc" />
+                    <ProgramStart ref="programStart" :cnc="props.cnc" />
+                    <PluginStart ref="pluginStart" :cnc="props.cnc" />
+                    <BladeStart ref="bladeStart" :cnc="props.cnc" />
+                    <SettingsStart ref="settingsStart" :cnc="props.cnc" />
                 </div>
             </div>
         </div>
@@ -25,17 +25,17 @@
 
 <script lang="ts">
 import {defineComponent, nextTick, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted} from "vue";
-import {ElLoading} from "element-plus";
+import {ElLoading, ElMessage} from "element-plus";
 import * as icons from "@element-plus/icons";
 import NoSleep from "nosleep.js";
 import HeaderCommon from "./common/header.vue";
 import FooterCommon from "./common/footer.vue";
 import NavigationCommon from "./common/navigation.vue";
-import ConsoleMain from "./main/console.vue";
-import ProgramMain from "./main/program.vue";
-import PluginMain from "./main/plugin.vue";
-import BladeMain from "./main/blade.vue";
-import SettingsMain from "./main/settings.vue";
+import ConsoleStart from "./start/console.vue";
+import ProgramStart from "./start/program.vue";
+import PluginStart from "./start/plugin.vue";
+import BladeStart from "./start/blade.vue";
+import SettingsStart from "./start/settings.vue";
 export default defineComponent({
     name: "Start",
     emits: [],
@@ -44,11 +44,11 @@ export default defineComponent({
         HeaderCommon,
         FooterCommon,
         NavigationCommon,
-        ConsoleMain,
-        ProgramMain,
-        PluginMain,
-        BladeMain,
-        SettingsMain
+        ConsoleStart,
+        ProgramStart,
+        PluginStart,
+        BladeStart,
+        SettingsStart
     },
     setup(props, context) {
 
@@ -82,11 +82,12 @@ export default defineComponent({
                     if(message_json.command){
                         if(message_json.command === "launch:machine:config"){
                             props.cnc.device.machine.config = message_json.data;
-                            console.log(props.cnc.device.machine.config);
                         }
                         if(message_json.command === "launch:machine:status"){
                             props.cnc.device.machine.status = message_json.data;
-                            console.log(props.cnc.device.machine.status);
+                        }
+                        if(message_json.command === "launch:status"){
+                            props.cnc.device.status = message_json.data;
                         }
                     }
                 }

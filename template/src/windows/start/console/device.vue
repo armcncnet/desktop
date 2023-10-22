@@ -14,6 +14,9 @@
                             <div class="grid-content" @click="onSelectDevice(item)">
                                 <div class="device-name">{{item.name}}</div>
                                 <div class="device-ip">{{item.ip}}</div>
+                                <div class="device-loading" v-if="props.cnc.device.loading">
+                                    <el-icon class="is-loading"><Loading /></el-icon>
+                                </div>
                             </div>
                         </el-col>
                     </el-row>
@@ -35,13 +38,17 @@ export default defineComponent({
     setup(props, context) {
 
         function onSelectDevice(device: any){
+            props.cnc.device.loading = true;
             (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
-                console.log(response);
+                console.log(response.data);
                 if(response.code === 0){
                     if(response.data){
                         props.cnc.device.ip = device.ip;
+                        props.cnc.device.machine.path = response.data.machine;
                         (window as any).runtime.EventsEmit("event_message", {type: "connected_device"});
+                        props.cnc.device.loading = false;
                     }else{
+                        props.cnc.device.loading = false;
                         ElMessage.closeAll();
                         ElMessage({
                             message: "设备连接失败，请检查后重新尝试",
@@ -50,6 +57,7 @@ export default defineComponent({
                         });
                     }
                 }else{
+                    props.cnc.device.loading = false;
                     ElMessage.closeAll();
                     ElMessage({
                         message: "设备连接失败，请检查后重新尝试",
@@ -134,5 +142,14 @@ export default defineComponent({
     height: 20px;
     line-height: 20px;
     color: #666666;
+}
+.device-view .device-main .device-box .device-item .grid-content .device-loading{
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
 }
 </style>

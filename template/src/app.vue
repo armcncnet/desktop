@@ -24,6 +24,8 @@ export default defineComponent({
             device: {
                 ip: "",
                 ips: [],
+                loading: false,
+                status: false,
                 message: {
                     port: 10081,
                     socket: false,
@@ -33,11 +35,12 @@ export default defineComponent({
                     }
                 },
                 camera: {
-                    port: 8080,
+                    port: 10091,
                     socket: false,
                     status: false
                 },
                 machine: {
+                    path: "",
                     status: false,
                     config: false
                 }

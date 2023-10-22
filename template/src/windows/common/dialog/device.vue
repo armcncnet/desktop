@@ -38,6 +38,7 @@ export default defineComponent({
                 if(response.code === 0){
                     if(response.data){
                         props.cnc.device.ip = props.cnc.header.dialog.form.ip;
+                        props.cnc.device.machine.path = response.data.machine;
                         if(props.cnc.device.ips.length > 0){
                             let check = false;
                             props.cnc.device.ips.forEach((item: any, index: any, array: any)=>{
@@ -81,6 +82,7 @@ export default defineComponent({
                 close();
             }
             props.cnc.header.dialog.status = false;
+            props.cnc.header.dialog.form.loading = false;
             setTimeout(()=>{
                 props.cnc.header.dialog.config.type = "";
                 props.cnc.header.dialog.form = {
