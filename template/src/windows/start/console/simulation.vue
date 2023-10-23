@@ -61,6 +61,8 @@ export default defineComponent({
 
         function onSimulation(){
             if(!(window as any).simulation){
+                let world: any = document.getElementById("world");
+                world.innerHTML = "";
                 (window as any).simulation = new Simulation((message: any)=>{
                     console.log(message);
                 });

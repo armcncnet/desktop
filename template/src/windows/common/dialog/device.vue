@@ -6,7 +6,7 @@
                     <el-input class="cnc" v-model="props.cnc.header.dialog.form.ip" placeholder="请输入设备的IP地址" maxlength="140" autocomplete="off" spellcheck="false" style="width: 200px" />
                 </el-form-item>
                 <el-form-item label="">
-                    <el-button color="#5e4eff" class="cnc" :loading="props.cnc.header.dialog.form.loading" type="primary" @click="onDevice">连接设备</el-button>
+                    <el-button color="#5e4eff" :loading="props.cnc.header.dialog.form.loading" type="primary" @click="onDevice">连接设备</el-button>
                 </el-form-item>
             </el-form>
         </div>

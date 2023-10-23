@@ -1,0 +1,206 @@
+@charset "UTF-8";
+
+.monaco-editor .margin{
+    background-color: rgba(43, 45, 48, .5) !important;
+}
+.monaco-editor .monaco-editor-background{
+    background-color: rgba(30, 31, 34, 1) !important;
+}
+.monaco-editor, .monaco-editor-background, .monaco-editor .inputarea.ime-input{
+    background-color: rgba(30, 31, 34, 1) !important;
+}
+.monaco-editor .margin-view-overlays .line-numbers{
+    font-size: 12px !important;
+}
+.monaco-editor .margin-view-overlays .codicon{
+    width: auto !important;
+    left: auto !important;
+    right: 0 !important;
+}
+.monaco-editor .margin-view-overlays .codicon:before{
+    font-size: 12px !important;
+}
+.monaco-editor .decorationsOverviewRuler{
+    width: 5px !important;
+}
+.monaco-editor .scrollbar.vertical{
+    width: 5px !important;
+}
+.monaco-editor .scrollbar.horizontal{
+    height: 5px !important;
+}
+.monaco-editor .scrollbar.horizontal .slider{
+    height: 5px !important;
+}
+.monaco-editor .margin-view-overlays{
+    background-color: rgba(0, 0, 0, .3) !important;
+}
+.monaco-editor .margin-view-overlays .line-numbers{
+    left: 5px !important;
+}
+.monaco-editor .minimap{
+    width: 50px !important;
+    left: auto !important;
+    right: 0 !important;
+    z-index: 1 !important;
+}
+.monaco-editor .minimap .minimap-decorations-layer{
+    background-color: rgba(43, 45, 48, .5) !important;
+}
+.monaco-editor .minimap .minimap-slider-horizontal{
+    background-color: rgba(43, 45, 48, .8) !important;
+    cursor: pointer;
+}
+.monaco-editor .scroll-decoration{
+    box-shadow: none !important;
+}
+
+.blocks-editor .blocklyPath {
+    stroke: rgba(0, 0, 0, .3);
+    stroke-opacity: .3;
+}
+.blocks-editor .blocklyTreeRoot {
+    padding: 0;
+}
+.blocks-editor .blocklySvg {
+    background-color: rgba(30, 31, 34, 1) !important;
+}
+.blocks-editor .blocklyFlyoutBackground {
+    border-radius: 0 !important;
+}
+.blocks-editor .blocklyFlyoutButtonBackground {
+    stroke: #4FA0FF;
+    fill: #4FA0FF;
+}
+.blocks-editor .blocklyDropDownDiv {
+    z-index: 20000 !important;
+}
+.blocklyWidgetDiv .goog-menuitem-content, .blocks-editor .blocklyDropDownDiv .goog-menuitem-content {
+    font-size: 12px !important;
+}
+.blocklyWidgetDiv .goog-menuitem-disabled .goog-menuitem-content, .blocks-editor .blocklyDropDownDiv .goog-menuitem-disabled .goog-menuitem-content {
+    color: #666666 !important;
+}
+.blocklyWidgetDiv .goog-menu {
+    background-color: rgba(0, 0, 0, .8) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+.blocklyWidgetDiv .goog-menuitem-content {
+    color: #999999 !important;
+}
+.blocklyWidgetDiv .goog-menu::-webkit-scrollbar {
+    display: none !important;
+}
+.blocklyWidgetDiv .goog-menuitem, .blocklyDropDownDiv .goog-menuitem{
+    font-size: 12px !important;
+}
+.blocks-editor .blocklyToolboxDiv {
+    background-color: rgba(0, 0, 0, .05) !important;
+    height: 100% !important;
+    z-index: 5 !important;
+}
+.blocks-editor .blocklyToolboxDiv::-webkit-scrollbar {
+    display: none !important;
+}
+.blocks-editor .blocklyToolboxDiv.blocklyToolboxDelete {
+    line-height: 100%;
+    text-align: center;
+}
+.blocks-editor .blocklyToolboxDiv.blocklyToolboxDelete:after {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 74px;
+    height: 100%;
+    line-height: 100%;
+    background-color: rgba(254, 108, 108, .6);
+    background-position: center 40%;
+    background-size: 80%;
+    background-repeat: no-repeat
+}
+.blocks-editor .injectionDiv .Blockly-tree-item {
+    height: 64px;
+}
+.blocks-editor .blocklyFlyoutBackground {
+    fill: rgba(0, 0, 0, .1) !important;
+}
+.blocks-editor .blocklyScrollbarHorizontal, .blocks-editor .blocklyScrollbarVertical {
+    display: none !important;
+}
+.blocks-editor .injectionDiv .blocklyTreeRow {
+    width: 74px;
+    height: 64px;
+    box-sizing: border-box;
+    border: none;
+    text-align: center;
+    position: relative;
+    padding: 10px 0 !important;
+}
+.blocks-editor .injectionDiv .blocklyTreeIcon {
+    display: block !important;
+    text-align: center;
+    background-image: none;
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+.blocks-editor .injectionDiv .blocklyTreeIcon {
+    margin-bottom: 5px;
+}
+.blocks-editor .injectionDiv .blocklyTreeRow:after {
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    height: 0;
+    width: 100%;
+    content: "";
+    border-bottom: 1px solid rgba(0, 0, 0, 0)
+}
+.blocks-editor .injectionDiv .blocklyTreeRow .blocklyTreeIcon:after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-size: 100% 100%
+}
+.blocks-editor .injectionDiv .blocklyTreeRow:hover, .blocks-editor .injectionDiv .blocklyTreeRow.blocklyTreeSelected {
+    background-color: rgba(43, 43, 43, 0) !important;
+    cursor: pointer;
+}
+.blocks-editor .injectionDiv .blocklyTreeLabel {
+    font-size: 12px;
+    color: #666666 !important;
+}
+.blocks-editor .injectionDiv .blocklyTreeRow:hover .blocklyTreeLabel, .blocks-editor .injectionDiv .blocklyTreeRow.blocklyTreeSelected .blocklyTreeLabel {
+    cursor: pointer;
+    color: #999999 !important;
+}
+.blocks-editor .zelos-renderer.classic-theme .blocklyNonEditableText > text, .blocks-editor .zelos-renderer.classic-theme .blocklyEditableText > text, .editor-view .editor-item .main-item .blocks-editor .zelos-renderer.classic-theme .blocklyNonEditableText > g > text, .editor-view .editor-item .main-item .blocks-editor .zelos-renderer.classic-theme .blocklyEditableText > g > text {
+    font-size: 11pt !important;
+}
+.blocks-editor .blocklyFlyoutButton{
+    width: 100px !important;
+    height: 35px !important;
+    padding: 10px 10px !important;
+}
+.blocks-editor .blocklyFlyoutButton:hover{
+    cursor: pointer;
+}
+.blocks-editor .blocklyFlyoutButton .blocklyFlyoutButtonShadow{
+    width: 100px !important;
+    height: 35px !important;
+}
+.blocks-editor .blocklyFlyoutButton .blocklyFlyoutButtonBackground{
+    width: 100px !important;
+    height: 35px !important;
+}
+.blocks-editor .blocklyFlyoutButton .blocklyText{
+    font-size: 14px !important;
+    dominant-baseline: central;
+    text-anchor: middle;
+}

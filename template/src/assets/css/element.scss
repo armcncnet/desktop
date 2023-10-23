@@ -21,6 +21,9 @@
     font-size: 12px;
     color: #666666;
 }
+.el-empty.cnc.none .el-empty__description{
+    display: none;
+}
 
 .el-row.cnc .el-col{
     margin-bottom: 20px;
@@ -201,13 +204,18 @@
     cursor: pointer;
     color: #ffffff;
 }
+.el-input.cnc.none .el-input__wrapper{
+    height: 30px;
+    border: 0;
+    background-color: rgba(30, 31, 34, .5);
+}
 
 .el-button.cnc{
     font-size: 12px;
 }
-.el-button.el-cnc-button{
+.el-button.cnc{
     width: auto;
-    min-width: 40px;
+    min-width: 30px;
     height: 30px;
     text-align: center;
     background-color: rgba(30, 31, 34, .6);
@@ -216,29 +224,29 @@
     padding: 0 10px;
     color: #999999;
 }
-.el-button.el-cnc-button:hover{
+.el-button.cnc:hover{
     background-color: rgba(30, 31, 34, .8);
     border: 1px solid rgba(0, 0, 0, .1);
     color: #ffffff;
 }
-.el-button.el-cnc-button:focus{
+.el-button.cnc:focus{
     background-color: rgba(30, 31, 34, .6);
     border: 1px solid rgba(0, 0, 0, .1);
     color: #999999;
 }
-.el-button.el-cnc-button .el-icon{
+.el-button.cnc .el-icon{
     font-size: 16px;
 }
-.el-button.el-cnc-button.el-button--danger .el-icon{
+.el-button.cnc.el-button--danger .el-icon{
     color: #f56c6c;
 }
-.el-button.el-cnc-button.el-button--primary .el-icon{
+.el-button.cnc.el-button--primary .el-icon{
     color: #5e4eff;
 }
-.el-button.el-cnc-button.el-button--warning .el-icon{
+.el-button.cnc.el-button--warning .el-icon{
     color: #E6A23C;
 }
-.el-button.el-cnc-button span{
+.el-button.cnc span{
     width: auto;
     height: 30px;
     line-height: 32px;
@@ -246,7 +254,7 @@
     display: inline-block;
     vertical-align: middle;
 }
-.el-button.el-cnc-button.active {
+.el-button.cnc.active {
     box-shadow: inset 0 0 2px 3px rgba(0, 0, 0, .2);
     background-color: rgba(30, 31, 34, .8);
     border: 1px solid rgba(0, 0, 0, .5);
@@ -371,4 +379,13 @@
 }
 .el-slider.cnc .el-input-number .el-input .el-input__wrapper input{
     color: #999999;
+}
+
+.el-tag.cnc{
+    background-color: rgba(30, 31, 34, .5);
+    border: 0;
+    color: #666666;
+    font-size: 12px;
+    border-radius: 2px;
+    margin-right: 5px;
 }

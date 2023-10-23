@@ -61,6 +61,13 @@ export default defineComponent({
             },
             navigation: {
                 select: "console"
+            },
+            machine: {
+                loading: false,
+                search_keyword: "",
+                items: [],
+                item: false,
+                item_loading: false,
             }
         });
 
@@ -75,4 +82,5 @@ export default defineComponent({
 <style>
 @import "./assets/css/base.scss";
 @import "./assets/css/element.scss";
+@import "./assets/css/editor.scss";
 </style>

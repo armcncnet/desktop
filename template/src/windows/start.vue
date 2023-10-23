@@ -10,9 +10,9 @@
                 </div>
                 <div class="main-box-item">
                     <ConsoleStart ref="consoleStart" :cnc="props.cnc" />
+                    <MachineStart ref="machineStart" :cnc="props.cnc" />
                     <ProgramStart ref="programStart" :cnc="props.cnc" />
                     <PluginStart ref="pluginStart" :cnc="props.cnc" />
-                    <BladeStart ref="bladeStart" :cnc="props.cnc" />
                     <SettingsStart ref="settingsStart" :cnc="props.cnc" />
                 </div>
             </div>
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import {defineComponent, nextTick, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted} from "vue";
-import {ElLoading, ElMessage} from "element-plus";
+import {ElLoading} from "element-plus";
 import * as icons from "@element-plus/icons";
 import NoSleep from "nosleep.js";
 import HeaderCommon from "./common/header.vue";
@@ -34,7 +34,7 @@ import NavigationCommon from "./common/navigation.vue";
 import ConsoleStart from "./start/console.vue";
 import ProgramStart from "./start/program.vue";
 import PluginStart from "./start/plugin.vue";
-import BladeStart from "./start/blade.vue";
+import MachineStart from "./start/machine.vue";
 import SettingsStart from "./start/settings.vue";
 export default defineComponent({
     name: "Start",
@@ -45,9 +45,9 @@ export default defineComponent({
         FooterCommon,
         NavigationCommon,
         ConsoleStart,
+        MachineStart,
         ProgramStart,
         PluginStart,
-        BladeStart,
         SettingsStart
     },
     setup(props, context) {
@@ -58,7 +58,9 @@ export default defineComponent({
                 onConnectedDevice();
             }
             if(message.type && message.type === "disconnect_device"){
-                onDisconnectDevice();
+                if(props.cnc.device.message.status){
+                    onDisconnectDevice();
+                }
             }
         });
 
@@ -92,10 +94,14 @@ export default defineComponent({
                     }
                 }
                 props.cnc.device.message.socket.onerror = function () {
-                    onDisconnectDevice();
+                    if(props.cnc.device.message.status){
+                        onDisconnectDevice();
+                    }
                 }
                 props.cnc.device.message.socket.onclose = function () {
-                    onDisconnectDevice();
+                    if(props.cnc.device.message.status){
+                        onDisconnectDevice();
+                    }
                 }
             }
         }
@@ -103,8 +109,9 @@ export default defineComponent({
         // 断开设备
         function onDisconnectDevice(){
             if(props.cnc.device.message.status){
-                props.cnc.device.message.status = false;
                 props.cnc.device.message.socket.close();
+                props.cnc.device.message.socket = false;
+                props.cnc.device.message.status = false;
             }
             props.cnc.navigation.select = "console";
         }

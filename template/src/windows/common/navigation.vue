@@ -6,19 +6,19 @@
                     <el-icon><Place /></el-icon>
                 </el-tooltip>
             </div>
+            <div class="item" :class="props.cnc.navigation.select === 'machine' ? 'select' : ''" @click="onNavigation('machine')" v-if="props.cnc.device.message.status">
+                <el-tooltip popper-class="cnc" effect="dark" content="机床" placement="right">
+                    <el-icon><Files /></el-icon>
+                </el-tooltip>
+            </div>
             <div class="item" :class="props.cnc.navigation.select === 'program' ? 'select' : ''" @click="onNavigation('program')" v-if="props.cnc.device.message.status">
-                <el-tooltip popper-class="cnc" effect="dark" content="G程序" placement="right">
-                    <el-icon><Finished /></el-icon>
+                <el-tooltip popper-class="cnc" effect="dark" content="程序" placement="right">
+                    <el-icon><Tickets /></el-icon>
                 </el-tooltip>
             </div>
             <div class="item" :class="props.cnc.navigation.select === 'plugin' ? 'select' : ''" @click="onNavigation('plugin')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="插件" placement="right">
                     <el-icon><Grid /></el-icon>
-                </el-tooltip>
-            </div>
-            <div class="item" :class="props.cnc.navigation.select === 'blade' ? 'select' : ''" @click="onNavigation('blade')" v-if="props.cnc.device.message.status">
-                <el-tooltip popper-class="cnc" effect="dark" content="刀库" placement="right">
-                    <el-icon><MessageBox /></el-icon>
                 </el-tooltip>
             </div>
         </div>
@@ -55,6 +55,7 @@ export default defineComponent({
         function onNavigation(navigation: any){
             if(props.cnc.navigation.select !== navigation){
                 props.cnc.navigation.select = navigation;
+                (window as any).runtime.EventsEmit("event_page", {type: "page_" + navigation});
             }
         }
 
