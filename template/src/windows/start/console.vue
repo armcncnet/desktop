@@ -6,223 +6,11 @@
                 <SimulationConsole ref="simulationConsole" :cnc="props.cnc" />
             </div>
             <div class="console-main-item">
-                <FooterConsole ref="footerConsole" :cnc="props.cnc" />
+                <BottomConsole ref="bottomConsole" :cnc="props.cnc" />
             </div>
         </div>
         <div class="console-item">
-            <div class="console-right">
-                <div class="console-right-item"></div>
-                <div class="console-right-item">
-                    <div class="title">
-                        <el-text class="cnc">
-                            <el-icon><ScaleToOriginal /></el-icon>
-                            <span>步长(mm)</span>
-                        </el-text>
-                    </div>
-                    <div class="box">
-                        <div class="step">
-                            <el-row class="cnc" :gutter="5">
-                                <el-col :span="4">
-                                    <div class="grid-content">0.01</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">0.05</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">0.1</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">0.5</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content select">1</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">5</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">10</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">20</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">50</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">100</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">150</div>
-                                </el-col>
-                                <el-col :span="4">
-                                    <div class="grid-content">连续</div>
-                                </el-col>
-                            </el-row>
-                        </div>
-                    </div>
-                </div>
-                <div class="console-right-item">
-                    <div class="title">
-                        <el-text class="cnc">
-                            <el-icon><Coordinate /></el-icon>
-                            <span>遥控器</span>
-                        </el-text>
-                    </div>
-                    <div class="box">
-                        <div class="keyboard">
-                            <el-row class="cnc" :gutter="5">
-                                <el-col :span="6">
-                                    <div class="grid-content none"></div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowUpBold /></el-icon>
-                                        </div>
-                                        <div class="name">Y+</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content none"></div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowUpBold /></el-icon>
-                                        </div>
-                                        <div class="name">Z+</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowLeftBold /></el-icon>
-                                        </div>
-                                        <div class="name">X-</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowDownBold /></el-icon>
-                                        </div>
-                                        <div class="name">Y-</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowRightBold /></el-icon>
-                                        </div>
-                                        <div class="name">X+</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowDownBold /></el-icon>
-                                        </div>
-                                        <div class="name">Z-</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowLeftBold /></el-icon>
-                                        </div>
-                                        <div class="name">B-</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowRightBold /></el-icon>
-                                        </div>
-                                        <div class="name">B+</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowLeftBold /></el-icon>
-                                        </div>
-                                        <div class="name">C-</div>
-                                    </div>
-                                </el-col>
-                                <el-col :span="6">
-                                    <div class="grid-content">
-                                        <div class="icon">
-                                            <el-icon><ArrowRightBold /></el-icon>
-                                        </div>
-                                        <div class="name">C+</div>
-                                    </div>
-                                </el-col>
-                            </el-row>
-                        </div>
-                    </div>
-                </div>
-                <div class="console-right-item">
-                    <div class="title">
-                        <el-text class="cnc">
-                            <el-icon><Operation /></el-icon>
-                            <span>主轴</span>
-                        </el-text>
-                    </div>
-                    <div class="box">
-                        <div class="speed-box">
-                            <div class="speed-box-item">
-                                <div class="item">主轴速度(deg/min)</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                            <div class="speed-box-item">
-                                <div class="item">主轴倍率(100%)</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                            <div class="speed-box-item">
-                                <div class="item">主轴进给倍率</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="console-right-item">
-                    <div class="title">
-                        <el-text class="cnc">
-                            <el-icon><Operation /></el-icon>
-                            <span>速度</span>
-                        </el-text>
-                    </div>
-                    <div class="box">
-                        <div class="speed-box">
-                            <div class="speed-box-item">
-                                <div class="item">点动速度(mm/min)</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                            <div class="speed-box-item">
-                                <div class="item">最大速度(mm/min)</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                            <div class="speed-box-item">
-                                <div class="item">点转速度(deg/min)</div>
-                                <div class="item">
-                                    <el-slider class="cnc" size="small" show-input :show-input-controls="false" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <RightConsole ref="rightConsole" :cnc="props.cnc" />
         </div>
     </div>
 </template>
@@ -232,7 +20,8 @@ import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted,
 import * as icons from "@element-plus/icons";
 import DeviceConsole from "./console/device.vue";
 import SimulationConsole from "./console/simulation.vue";
-import FooterConsole from "./console/footer.vue";
+import BottomConsole from "./console/bottom.vue";
+import RightConsole from "./console/right.vue";
 export default defineComponent({
     name: "ConsoleStart",
     emits: [],
@@ -240,7 +29,8 @@ export default defineComponent({
     components: {
         DeviceConsole,
         SimulationConsole,
-        FooterConsole
+        BottomConsole,
+        RightConsole
     },
     setup(props, context) {
 
@@ -294,111 +84,5 @@ export default defineComponent({
     height: 240px;
     background-color: rgba(43, 45, 48, .5);
     border-top: solid 1px rgba(30, 31, 34, .8);
-}
-.console-view .console-item .console-right{
-    width: 100%;
-    min-height: 100%;
-}
-.console-view .console-item .console-right .console-right-item:first-child{
-    margin-bottom: 0;
-    text-align: center;
-}
-.console-view .console-item .console-right .console-right-item{
-    width: 100%;
-    margin-bottom: 10px;
-}
-.console-view .console-item .console-right .console-right-item .title{
-    width: 100%;
-    margin-bottom: 10px;
-}
-.console-view .console-item .console-right .console-right-item .box{
-    width: 100%;
-}
-.console-view .console-item .console-right .console-right-item .box:deep(.el-row.cnc .el-col){
-    margin-bottom: 5px;
-}
-.console-view .console-item .console-right .console-right-item .box .step .grid-content{
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    background-color: rgba(30, 31, 34, .3);
-    border-radius: 4px;
-    color: #999999;
-}
-.console-view .console-item .console-right .console-right-item .box .step .grid-content:hover{
-    cursor: pointer;
-    color: #ffffff;
-    background-color: rgba(30, 31, 34, .5);
-}
-.console-view .console-item .console-right .console-right-item .box .step .grid-content.select{
-    background-color: rgba(30, 31, 34, .8);
-    color: #5e4eff;
-}
-.console-view .console-item .console-right .console-right-item .box .speed-box{
-    width: 100%;
-    background-color: rgba(30, 31, 34, .3);
-    border-radius: 4px;
-    padding: 15px;
-}
-.console-view .console-item .console-right .console-right-item .box .speed-box .speed-box-item{
-    width: 100%;
-    margin-bottom: 15px;
-}
-.console-view .console-item .console-right .console-right-item .box .speed-box .speed-box-item:last-child{
-    margin-bottom: 0;
-}
-.console-view .console-item .console-right .console-right-item .box .speed-box .speed-box-item .item{
-    width: 100%;
-    height: 24px;
-}
-.console-view .console-item .console-right .console-right-item .box .speed-box .speed-box-item .item:first-child{
-    width: 100%;
-    line-height: 24px;
-    font-size: 12px;
-    color: #666666;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard{
-    width: 100%;
-    padding: 0 15px;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content{
-    width: 100%;
-    height: 65px;
-    text-align: center;
-    background-color: rgba(30, 31, 34, .3);
-    border: solid 1px rgba(30, 31, 34, .5);
-    border-radius: 4px;
-    color: #999999;
-    padding: 10px;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content.none{
-    background-color: rgba(30, 31, 34, 0);
-    border: solid 1px rgba(30, 31, 34, 0);
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content:not(.none):hover{
-    cursor: pointer;
-    color: #ffffff;
-    background-color: #5e4eff;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content .icon{
-    width: 100%;
-    height: 25px;
-    line-height: 25px;
-    text-align: center;
-    color: #5e4eff;
-    font-size: 16px;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content:not(.none):hover .icon{
-    color: #ffffff;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content .name{
-    width: 100%;
-    height: 20px;
-    line-height: 20px;
-    color: #999999;
-}
-.console-view .console-item .console-right .console-right-item .box .keyboard .grid-content:not(.none):hover .name{
-    color: #ffffff;
 }
 </style>

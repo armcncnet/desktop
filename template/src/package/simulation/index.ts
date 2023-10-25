@@ -99,7 +99,6 @@ export default class Simulation {
         _this.engine.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         _this.engine.renderer.toneMappingExposure = 1.0;
         _this.engine.renderer.autoClear = false;
-        _this.engine.renderer.outputEncoding = THREE.sRGBEncoding;
         _this.engine.renderer.updateSize = _this.engine.renderer.setSize;
         _this.container.appendChild(_this.engine.renderer.domElement);
 

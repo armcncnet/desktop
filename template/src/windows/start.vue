@@ -21,6 +21,7 @@
             <FooterCommon ref="footerCommon" :cnc="props.cnc" />
         </div>
     </div>
+    <SelectLayer ref="selectLayer" :cnc="props.cnc" v-if="props.cnc.layer.select" />
 </template>
 
 <script lang="ts">
@@ -36,6 +37,7 @@ import ProgramStart from "./start/program.vue";
 import PluginStart from "./start/plugin.vue";
 import MachineStart from "./start/machine.vue";
 import SettingsStart from "./start/settings.vue";
+import SelectLayer from "./layer/select.vue";
 export default defineComponent({
     name: "Start",
     emits: [],
@@ -48,7 +50,8 @@ export default defineComponent({
         MachineStart,
         ProgramStart,
         PluginStart,
-        SettingsStart
+        SettingsStart,
+        SelectLayer
     },
     setup(props, context) {
 
@@ -82,11 +85,9 @@ export default defineComponent({
                 props.cnc.device.message.socket.onmessage = function (message: any) {
                     let message_json = JSON.parse(message.data);
                     if(message_json.command){
-                        if(message_json.command === "launch:machine:config"){
-                            props.cnc.device.machine.config = message_json.data;
-                        }
                         if(message_json.command === "launch:machine:status"){
                             props.cnc.device.machine.status = message_json.data;
+                            console.log(props.cnc.device.machine.status);
                         }
                         if(message_json.command === "launch:status"){
                             props.cnc.device.status = message_json.data;
@@ -114,6 +115,12 @@ export default defineComponent({
                 props.cnc.device.message.status = false;
             }
             props.cnc.navigation.select = "console";
+        }
+
+        document.onkeydown = function(event: any) {
+            if(event.key === "Tab"){
+                event.preventDefault();
+            }
         }
 
         onBeforeMount(() => {

@@ -47,7 +47,6 @@ export default defineComponent({
 
             editor_data.onKeyDown((key: any)=>{
                 if (key.code === "KeyS" && key.ctrlKey) {
-
                     let code = editor_data.getValue();
                     (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update/ini/content", "POST", {path: props.cnc.machine.item.path, content: code}).then((response: any)=>{
                         if(response.code === 0){

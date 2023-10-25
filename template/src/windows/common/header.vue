@@ -99,7 +99,7 @@
                 <el-button class="cnc" type="primary" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
             </div>
             <div class="item global" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" type="warning" :icon="icons.Rank" @click="onDeviceZero">回零</el-button>
+                <el-button class="cnc" type="warning" :icon="icons.DeleteLocation" @click="onDeviceZero">忽略限位</el-button>
             </div>
         </div>
     </div>

@@ -1,11 +1,13 @@
 <template>
-    <div class="console-footer">
-        <div class="console-main-header">
-            <div class="console-header-item"></div>
-            <div class="console-header-item"></div>
-            <div class="console-header-item"></div>
+    <div class="bottom-view">
+        <div class="bottom-header">
+            <div class="bottom-header-item">
+                <div class="">12</div>
+            </div>
+            <div class="bottom-header-item"></div>
+            <div class="bottom-header-item"></div>
         </div>
-        <div class="console-main-footer">
+        <div class="bottom-footer">
             <div class="code-box">
                 <div class="code-line">
                     <div class="item">1</div>
@@ -28,7 +30,7 @@
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 export default defineComponent({
-    name: "FooterConsole",
+    name: "BottomConsole",
     emits: [],
     props: ["cnc"],
     components: {},
@@ -51,53 +53,53 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.console-footer{
+.bottom-view{
     width: 100%;
     height: 100%;
 }
-.console-footer .console-main-header{
+.bottom-view .bottom-header{
     width: 100%;
     height: 40px;
     background-color: rgba(43, 45, 48, .5);
     border-bottom: solid 1px rgba(30, 31, 34, .8);
 }
-.console-footer .console-main-header .console-header-item{
+.bottom-view .bottom-header .bottom-header-item{
     width: 33.33%;
     height: 40px;
     display: inline-block;
     vertical-align: top;
     padding: 5px;
 }
-.console-footer .console-main-footer{
+.bottom-view .bottom-footer{
     width: 100%;
     height: calc(100% - 40px);
     overflow-y: auto;
 }
-.console-footer .console-main-footer .code-box{
+.bottom-view .bottom-footer .code-box{
     width: 100%;
 }
-.console-footer .console-main-footer .code-box .code-line{
+.bottom-view .bottom-footer .code-box .code-line{
     width: 100%;
     height: 24px;
     line-height: 24px;
     color: #666666;
 }
-.console-footer .console-main-footer .code-box .code-line:hover{
+.bottom-view .bottom-footer .code-box .code-line:hover{
     color: #999999;
 }
-.console-footer .console-main-footer .code-box .code-line .item{
+.bottom-view .bottom-footer .code-box .code-line .item{
     width: auto;
     height: 24px;
     display: inline-block;
     vertical-align: top;
 }
-.console-footer .console-main-footer .code-box .code-line .item:first-child{
+.bottom-view .bottom-footer .code-box .code-line .item:first-child{
     width: 50px;
     color: #666666;
     text-align: right;
     padding-right: 5px;
 }
-.console-footer .console-main-footer .code-box .code-line .item:last-child{
+.bottom-view .bottom-footer .code-box .code-line .item:last-child{
     width: calc(100% - 50px);
 }
 </style>

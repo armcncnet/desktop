@@ -41,8 +41,7 @@ export default defineComponent({
                 },
                 machine: {
                     path: "",
-                    status: false,
-                    config: false
+                    status: false
                 }
             },
             header: {
@@ -62,12 +61,54 @@ export default defineComponent({
             navigation: {
                 select: "console"
             },
+            console: {
+                right: {
+                    axes: [
+                        {
+                            name: "X",
+                            value: 0.00
+                        },
+                        {
+                            name: "Y",
+                            value: 0.00
+                        },
+                        {
+                            name: "Z",
+                            value: 0.00
+                        },
+                        {
+                            name: "B",
+                            value: 0.00
+                        },
+                        {
+                            name: "C",
+                            value: 0.00
+                        }
+                    ],
+                    coordinate: {
+                        value: "P0 G53",
+                        options: [
+                            {
+                                label: "P0 G53",
+                                value: "P0 G53"
+                            },
+                            {
+                                label: "P1 G54",
+                                value: "P1 G54"
+                            }
+                        ]
+                    }
+                }
+            },
             machine: {
                 loading: false,
                 search_keyword: "",
                 items: [],
                 item: false,
                 item_loading: false,
+            },
+            layer: {
+                select: false
             }
         });
 
