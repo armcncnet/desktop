@@ -41,7 +41,7 @@ export default defineComponent({
                 },
                 machine: {
                     path: "",
-                    status: false
+                    info: false
                 }
             },
             header: {
@@ -86,15 +86,80 @@ export default defineComponent({
                         }
                     ],
                     coordinate: {
-                        value: "P0 G53",
+                        value: 0,
                         options: [
                             {
                                 label: "P0 G53",
-                                value: "P0 G53"
+                                value: 0
                             },
                             {
                                 label: "P1 G54",
-                                value: "P1 G54"
+                                value: 1
+                            },
+                            {
+                                label: "P2 G55",
+                                value: 2
+                            },
+                            {
+                                label: "P3 G56",
+                                value: 3
+                            },
+                            {
+                                label: "P4 G57",
+                                value: 4
+                            },
+                            {
+                                label: "P5 G58",
+                                value: 5
+                            },
+                            {
+                                label: "P6 G59",
+                                value: 6
+                            },
+                            {
+                                label: "P7 G59.1",
+                                value: 7
+                            },
+                            {
+                                label: "P8 G59.2",
+                                value: 8
+                            },
+                            {
+                                label: "P9 G59.3",
+                                value: 9
+                            }
+                        ]
+                    },
+                    step: {
+                        value: 1,
+                        items: [
+                            {
+                                label: "10",
+                                value: 10
+                            },
+                            {
+                                label: "5",
+                                value: 5
+                            },
+                            {
+                                label: "1",
+                                value: 1
+                            },
+                            {
+                                label: "0.5",
+                                value: 0.5
+                            },
+                            {
+                                label: "0.1",
+                                value: 0.1
+                            },
+                            {
+                                label: "0.05",
+                                value: 0.05
+                            },
+                            {
+                                label: "0.01",
+                                value: 0.01
                             }
                         ]
                     }

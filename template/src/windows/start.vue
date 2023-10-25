@@ -85,11 +85,18 @@ export default defineComponent({
                 props.cnc.device.message.socket.onmessage = function (message: any) {
                     let message_json = JSON.parse(message.data);
                     if(message_json.command){
-                        if(message_json.command === "launch:machine:status"){
-                            props.cnc.device.machine.status = message_json.data;
-                            console.log(props.cnc.device.machine.status);
+                        if(message_json.command === "launch:machine:info"){
+                            props.cnc.device.status = true;
+                            props.cnc.device.machine.info = message_json.data;
+                            if(props.cnc.device.machine.info.user_data.increments){
+                                props.cnc.console.right.step.items = [];
+                                props.cnc.device.machine.info.user_data.increments.split(",").forEach((item: any) => {
+                                    props.cnc.console.right.step.items.push({label: item.replace("mm", ""), value: parseFloat(item.replace("mm", ""))});
+                                });
+                            }
+                            props.cnc.console.right.coordinate.value = props.cnc.device.machine.info.g5x_index;
                         }
-                        if(message_json.command === "launch:status"){
+                        if(message_json.command === "launch:restart"){
                             props.cnc.device.status = message_json.data;
                         }
                     }
@@ -115,6 +122,7 @@ export default defineComponent({
                 props.cnc.device.message.status = false;
             }
             props.cnc.navigation.select = "console";
+            props.cnc.device.machine.info = false;
         }
 
         document.onkeydown = function(event: any) {

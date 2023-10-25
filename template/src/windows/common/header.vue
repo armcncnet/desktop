@@ -109,7 +109,7 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import NewDeviceDialog from "./dialog/device.vue";
 export default defineComponent({
     name: "HeaderCommon",
@@ -176,18 +176,45 @@ export default defineComponent({
         }
 
         function onEmergencyStop(){
-            let message = {command: "desktop:control:device:estop"}
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            if(props.cnc.device.machine.info){
+                let message = {command: "desktop:control:device:estop"}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }else{
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "设备未就绪，请稍等",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+            }
         }
 
         function onDeviceStart(){
-            let message = {command: "desktop:control:device:start"}
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            if(props.cnc.device.machine.info){
+                let message = {command: "desktop:control:device:start"}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }else{
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "设备未就绪，请稍等",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+            }
         }
 
         function onDeviceZero(){
-            let message = {command: "desktop:control:device:zero"}
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            if(props.cnc.device.machine.info){
+                let message = {command: "desktop:control:device:zero"}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }else{
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "设备未就绪，请稍等",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+            }
         }
 
         onBeforeMount(() => {});
