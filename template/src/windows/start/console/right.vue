@@ -248,21 +248,23 @@ export default defineComponent({
         }
 
         function handleRockerDown(event: any, value: string){
-            let axis = value.substr(0,1);
-            let direction = value.substr(1,1);
-            let speed = 0;
-            let increment = props.cnc.console.right.step.value;
-            if(["a", "b", "c"].includes(axis)){
-                speed = 240;
-            }else{
-                speed = 1200;
-            }
-            if(direction === "-"){
-                speed = 0 - speed;
-            }
+            if(props.cnc.header.right.enabled == "allow"){
+                let axis = value.substr(0,1);
+                let direction = value.substr(1,1);
+                let speed = 0;
+                let increment = props.cnc.console.right.step.value;
+                if(["a", "b", "c"].includes(axis)){
+                    speed = 240;
+                }else{
+                    speed = 1200;
+                }
+                if(direction === "-"){
+                    speed = 0 - speed;
+                }
 
-            let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}}
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+                let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
         }
 
         function handleRockerUp(event: any, value: string){
@@ -348,7 +350,8 @@ export default defineComponent({
     color: #ffffff;
 }
 .right-view .right-step .box .step.select{
-    color: #5e4eff;
+    color: #ffffff;
+    border-bottom: 4px solid #5e4eff;
 }
 .right-view .right-rocker{
     width: 100%;
