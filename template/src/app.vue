@@ -56,6 +56,17 @@ export default defineComponent({
                     form: {
                         loading: false
                     }
+                },
+                centre: {
+                    start: "",
+                    next: "",
+                    pause: "",
+                    stop: "",
+                },
+                right: {
+                    estop: "",
+                    enabled: "",
+                    limit: ""
                 }
             },
             navigation: {
@@ -63,26 +74,26 @@ export default defineComponent({
             },
             console: {
                 right: {
-                    axes: [
+                    axis: [
                         {
                             name: "X",
-                            value: 0.00
+                            value: 0.000
                         },
                         {
                             name: "Y",
-                            value: 0.00
+                            value: 0.000
                         },
                         {
                             name: "Z",
-                            value: 0.00
+                            value: 0.000
                         },
                         {
                             name: "B",
-                            value: 0.00
+                            value: 0.000
                         },
                         {
                             name: "C",
-                            value: 0.00
+                            value: 0.000
                         }
                     ],
                     coordinate: {
@@ -131,7 +142,7 @@ export default defineComponent({
                         ]
                     },
                     step: {
-                        value: 1,
+                        value: -1,
                         items: [
                             {
                                 label: "10",
@@ -162,7 +173,9 @@ export default defineComponent({
                                 value: 0.01
                             }
                         ]
-                    }
+                    },
+                    home: "",
+                    zero: ""
                 }
             },
             machine: {

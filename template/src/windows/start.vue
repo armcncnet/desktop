@@ -90,11 +90,51 @@ export default defineComponent({
                             props.cnc.device.machine.info = message_json.data;
                             if(props.cnc.device.machine.info.user_data.increments){
                                 props.cnc.console.right.step.items = [];
-                                props.cnc.device.machine.info.user_data.increments.split(",").forEach((item: any) => {
+                                props.cnc.device.machine.info.user_data.increments.forEach((item: any) => {
                                     props.cnc.console.right.step.items.push({label: item.replace("mm", ""), value: parseFloat(item.replace("mm", ""))});
                                 });
+                                props.cnc.console.right.step.items.push({label: "连续", value: -1});
                             }
                             props.cnc.console.right.coordinate.value = props.cnc.device.machine.info.g5x_index;
+                            props.cnc.console.right.axis = [];
+                            props.cnc.device.machine.info.user_data.coordinates.forEach((item: any, index: any, array: any)=>{
+                                props.cnc.console.right.axis.push({name: item, index: index, value: 0.000});
+                            });
+                            props.cnc.header.right.limit = "allow";
+                            if(props.cnc.device.machine.info.user_data.task_state == 1){
+                                props.cnc.header.right.estop = "";
+                                props.cnc.header.right.enabled = "";
+                                props.cnc.header.centre.start = "";
+                                props.cnc.header.centre.next = "";
+                                props.cnc.header.centre.pause = "";
+                                props.cnc.header.centre.stop = "";
+                                props.cnc.console.right.home = "";
+                                props.cnc.console.right.zero = "";
+                            }
+                            if(props.cnc.device.machine.info.user_data.task_state == 2){
+                                props.cnc.header.right.estop = "active";
+                                props.cnc.header.right.enabled = "allow";
+                                props.cnc.header.centre.start = "";
+                                props.cnc.header.centre.next = "";
+                                props.cnc.header.centre.pause = "";
+                                props.cnc.header.centre.stop = "";
+                                props.cnc.console.right.home = "";
+                                props.cnc.console.right.zero = "";
+                            }
+                            if(props.cnc.device.machine.info.user_data.task_state == 4){
+                                props.cnc.header.right.estop = "active";
+                                props.cnc.header.right.enabled = "active";
+                                props.cnc.header.centre.start = "allow";
+                                props.cnc.header.centre.next = "allow";
+                                props.cnc.header.centre.pause = "allow";
+                                props.cnc.header.centre.stop = "allow";
+                                props.cnc.console.right.home = "allow";
+                                props.cnc.console.right.zero = "allow";
+                            }
+                            // console.log(props.cnc.device.machine.info);
+                        }
+                        if(message_json.command === "launch:machine:error"){
+                            console.log(message_json.message);
                         }
                         if(message_json.command === "launch:restart"){
                             props.cnc.device.status = message_json.data;

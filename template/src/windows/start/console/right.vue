@@ -1,7 +1,7 @@
 <template>
     <div class="right-view">
-        <div class="right-axes">
-            <el-table class="cnc" :data="props.cnc.console.right.axes" stripe style="width: 100%">
+        <div class="right-axis">
+            <el-table class="cnc" :data="props.cnc.console.right.axis" stripe style="width: 100%">
                 <el-table-column label="轴" width="50">
                     <template #default="scope">{{scope.row.name}}</template>
                 </el-table-column>
@@ -10,7 +10,7 @@
                 </el-table-column>
                 <el-table-column label="回零" width="80">
                     <template #default="scope">
-                        <el-icon><LocationFilled /></el-icon>
+                        <el-icon @click="onHome(scope.row.index + '')"><LocationFilled /></el-icon>
                     </template>
                 </el-table-column>
                 <el-table-column label="零点偏移" width="80">
@@ -28,10 +28,10 @@
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" type="danger" :icon="icons.LocationFilled" >全部回零</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="danger" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" type="danger" :icon="icons.MapLocation" >重置零点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.zero" :disabled="props.cnc.console.right.zero === ''" type="danger" :icon="icons.MapLocation" >重置零点</el-button>
             </div>
         </div>
         <div class="right-step">
@@ -138,7 +138,7 @@
         </div>
         <div class="right-configure">
             <div class="configure-group">
-                <div class="group-title">主轴转速(转/分钟)</div>
+                <div class="group-title">主轴转速(degree/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" :show-input-controls="false" />
@@ -149,7 +149,7 @@
                 </div>
             </div>
             <div class="configure-group">
-                <div class="group-title">主轴转速倍率(百分比)</div>
+                <div class="group-title">主轴转速倍率(%)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" :show-input-controls="false" />
@@ -160,7 +160,42 @@
                 </div>
             </div>
             <div class="configure-group">
-                <div class="group-title">主轴进给倍率(百分比)</div>
+                <div class="group-title">主轴进给倍率(%)</div>
+                <div class="group-slider">
+                    <div class="slider-item">
+                        <el-slider class="cnc" size="small" :show-input-controls="false" />
+                    </div>
+                    <div class="slider-item">
+                        <div class="el-cnc-input">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-configure">
+            <div class="configure-group">
+                <div class="group-title">点动速度(mm/min)</div>
+                <div class="group-slider">
+                    <div class="slider-item">
+                        <el-slider class="cnc" size="small" :show-input-controls="false" />
+                    </div>
+                    <div class="slider-item">
+                        <div class="el-cnc-input">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="configure-group">
+                <div class="group-title">最大速度(mm/min)</div>
+                <div class="group-slider">
+                    <div class="slider-item">
+                        <el-slider class="cnc" size="small" :show-input-controls="false" />
+                    </div>
+                    <div class="slider-item">
+                        <div class="el-cnc-input">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="configure-group">
+                <div class="group-title">点动转速(degree/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" :show-input-controls="false" />
@@ -201,6 +236,11 @@ export default defineComponent({
             }
         }
 
+        function onHome(axis: string){
+            let message = {command: "desktop:control:device:home", data: axis}
+            props.cnc.device.message.socket.send(JSON.stringify(message));
+        }
+
         function setStep(item: any){
             if(props.cnc.console.right.step !== item.value){
                 props.cnc.console.right.step.value = item.value;
@@ -208,8 +248,8 @@ export default defineComponent({
         }
 
         function handleRockerDown(event: any, value: string){
-            let axis = value.substring(0,1);
-            let direction = value.substring(1,1);
+            let axis = value.substr(0,1);
+            let direction = value.substr(1,1);
             let speed = 0;
             let increment = props.cnc.console.right.step.value;
             if(["a", "b", "c"].includes(axis)){
@@ -220,12 +260,14 @@ export default defineComponent({
             if(direction === "-"){
                 speed = 0 - speed;
             }
-            let message = {command: "desktop:control:jog:start", axis: axis, speed: speed, increment: increment}
+
+            let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}}
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
         function handleRockerUp(event: any, value: string){
-            let message = {command: "desktop:control:jog:stop"}
+            let axis = value.substr(0,1);
+            let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
@@ -241,6 +283,7 @@ export default defineComponent({
             props,
             icons,
             setCoordinate,
+            onHome,
             setStep,
             handleRockerDown,
             handleRockerUp
@@ -267,7 +310,7 @@ export default defineComponent({
     vertical-align: top;
     text-align: center;
 }
-.right-view .right-axes{
+.right-view .right-axis{
     width: 100%;
     margin-bottom: 10px;
 }
@@ -302,7 +345,7 @@ export default defineComponent({
 }
 .right-view .right-step .box .step:hover{
     cursor: pointer;
-    color: #999999;
+    color: #ffffff;
 }
 .right-view .right-step .box .step.select{
     color: #5e4eff;

@@ -234,6 +234,16 @@
     border: 1px solid rgba(0, 0, 0, .5);
     color: #ffffff;
 }
+.el-button.cnc.is-disabled{
+    background-color: rgba(30, 31, 34, .2);
+    border: 1px solid rgba(0, 0, 0, .2);
+    color: #666666;
+}
+.el-button.cnc.is-disabled:hover{
+    background-color: rgba(30, 31, 34, .2);
+    border: 1px solid rgba(0, 0, 0, .2);
+    color: #666666;
+}
 
 .el-message.cnc{
     background-color: rgba(57, 59, 64, 1);
