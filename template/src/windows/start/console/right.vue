@@ -269,8 +269,11 @@ export default defineComponent({
 
         function handleRockerUp(event: any, value: string){
             let axis = value.substr(0,1);
-            let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            let increment = props.cnc.console.right.step.value;
+            if(increment === -1) {
+                let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
         }
 
         onBeforeMount(() => {});
