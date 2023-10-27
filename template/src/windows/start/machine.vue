@@ -17,11 +17,14 @@
                         <div class="title">{{item.name}}</div>
                         <div class="describe">{{item.describe}}</div>
                         <div class="tag">
-                            <el-tag class="cnc" size="small" v-if="item.control_type === 0">仿真模拟</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control_type === 1">GPIO</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control_type === 2">Arduino</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control_type === 3">MACH3</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control_type === 4">EtherCAT</el-tag>
+                            <el-tag class="cnc" size="small" style="color: #ffffff; background-color: #5e4eff" v-if="props.cnc.device.machine.path === item.path">
+                                <el-icon><Check /></el-icon>
+                            </el-tag>
+                            <el-tag class="cnc" size="small" v-if="item.control === 0">仿真模拟</el-tag>
+                            <el-tag class="cnc" size="small" v-else-if="item.control === 1">GPIO</el-tag>
+                            <el-tag class="cnc" size="small" v-else-if="item.control === 2">Arduino</el-tag>
+                            <el-tag class="cnc" size="small" v-else-if="item.control === 3">MACH3</el-tag>
+                            <el-tag class="cnc" size="small" v-else-if="item.control === 4">EtherCAT</el-tag>
                             <el-tag class="cnc" size="small" v-else>-</el-tag>
                             <el-tag class="cnc" size="small">{{item.coordinate}}</el-tag>
                         </div>

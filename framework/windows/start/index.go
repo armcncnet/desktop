@@ -15,6 +15,9 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"runtime"
+	"strings"
 	"time"
 )
 
@@ -34,6 +37,37 @@ func Init() *Api {
 
 func (start *Api) Startup(ctx context.Context) {
 	start.ctx = ctx
+}
+
+func (start *Api) GetPlatform() string {
+	platform := ""
+	switch runtime.GOOS {
+	case "windows":
+		platform = "Windows"
+	case "darwin":
+		platform = "Darwin"
+	case "linux":
+		platform = "Linux"
+		content, err := os.ReadFile("/etc/os-release")
+		if err == nil {
+			lines := strings.Split(string(content), "\n")
+			for _, line := range lines {
+				if strings.HasPrefix(line, "ID=") {
+					switch {
+					case strings.Contains(line, "ubuntu"):
+						platform = "Ubuntu"
+					case strings.Contains(line, "debian"):
+						platform = "Debian"
+					default:
+						platform = "Linux"
+					}
+				}
+			}
+		}
+	default:
+		platform = "-"
+	}
+	return platform
 }
 
 func (start *Api) Shutdown(ctx context.Context) {

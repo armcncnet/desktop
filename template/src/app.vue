@@ -21,6 +21,7 @@ export default defineComponent({
             }),
             sleep: false, // 控制休眠状态
             fullscreen: false, // 全屏状态切换
+            platform: "-",
             device: {
                 ip: "",
                 ips: [],

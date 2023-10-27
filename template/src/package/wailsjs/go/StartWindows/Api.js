@@ -6,6 +6,10 @@ export function DeviceRequest(arg1, arg2, arg3, arg4) {
   return window['go']['StartWindows']['Api']['DeviceRequest'](arg1, arg2, arg3, arg4);
 }
 
+export function GetPlatform() {
+  return window['go']['StartWindows']['Api']['GetPlatform']();
+}
+
 export function ServiceRequest(arg1, arg2, arg3, arg4) {
   return window['go']['StartWindows']['Api']['ServiceRequest'](arg1, arg2, arg3, arg4);
 }

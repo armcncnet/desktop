@@ -4,4 +4,6 @@ import {StartWindows} from '../models';
 
 export function DeviceRequest(arg1:string,arg2:string,arg3:string,arg4:any):Promise<{[key: string]: any}>;
 
+export function GetPlatform():Promise<string>;
+
 export function ServiceRequest(arg1:string,arg2:string,arg3:any,arg4:string):Promise<StartWindows.ReturnResponse>;

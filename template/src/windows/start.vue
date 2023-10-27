@@ -190,6 +190,9 @@ export default defineComponent({
                 if(ips){
                     props.cnc.device.ips = JSON.parse(ips);
                 }
+                (window as any).go.StartWindows.Api.GetPlatform().then((platform: string)=>{
+                    props.cnc.platform = platform;
+                });
                 props.cnc.loading.close();
             });
         });

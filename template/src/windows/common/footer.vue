@@ -10,6 +10,9 @@
                 </el-text>
             </div>
             <div class="item">
+                {{props.cnc.platform}}
+            </div>
+            <div class="item">
                 <el-text class="cnc">
                     <el-icon><Bell /></el-icon>
                     <span>ARMCNC 1.0.0</span>
