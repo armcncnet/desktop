@@ -93,11 +93,8 @@ export default class Simulation {
 
         _this.engine.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
         _this.engine.renderer.setClearColor(0xf9f9f9, 1);
-        _this.engine.renderer.setPixelRatio(window.devicePixelRatio);
+        _this.engine.renderer.setPixelRatio(1);
         _this.engine.renderer.sortObjects = false;
-        // _this.engine.renderer.shadowMapSoft = true;
-        // _this.engine.renderer.toneMapping = THREE.LinearToneMapping;
-        // _this.engine.renderer.toneMappingExposure = 1.0;
         _this.engine.renderer.autoClear = false;
         _this.engine.renderer.updateSize = _this.engine.renderer.setSize;
         _this.container.appendChild(_this.engine.renderer.domElement);
