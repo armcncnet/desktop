@@ -10,12 +10,12 @@
                 </el-table-column>
                 <el-table-column label="回零" width="80">
                     <template #default="scope">
-                        <el-icon @click="onHome(scope.row.index + '')"><LocationFilled /></el-icon>
+                        <el-icon :class="scope.row.home === 1 ? 'homed' : ''" @click="onHome(scope.row.index + '')" v-if="props.cnc.header.right.enabled === 'active'"><LocationFilled /></el-icon>
                     </template>
                 </el-table-column>
                 <el-table-column label="零点偏移" width="80">
                     <template #default="scope">
-                        <el-icon><MapLocation /></el-icon>
+                        <el-icon v-if="props.cnc.header.right.enabled === 'active'"><MapLocation /></el-icon>
                     </template>
                 </el-table-column>
             </el-table>
@@ -28,10 +28,10 @@
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="danger" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="warning" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.zero" :disabled="props.cnc.console.right.zero === ''" type="danger" :icon="icons.MapLocation" >重置零点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.zero" :disabled="props.cnc.console.right.zero === ''" type="warning" :icon="icons.MapLocation" >重置零点</el-button>
             </div>
         </div>
         <div class="right-step">
@@ -47,96 +47,32 @@
         <div class="right-rocker">
             <div class="rocker-box">
                 <el-row :gutter="5">
-                    <el-col :span="6">
-                        <div class="channel"></div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'y+')" @mouseup="handleRockerUp($event, 'y+')">
+                    <el-col :span="6" v-for="(item, index) in props.cnc.console.right.rocker" :key="index">
+                        <div class="channel" :class="item.hide ? 'hide' : ''" @mousedown="handleRockerDown($event, item.value)" @mouseup="handleRockerUp($event, item.value)">
                             <div class="icon">
-                                <el-icon><ArrowUp /></el-icon>
+                                <el-icon v-if="item.arrow === 'up'"><ArrowUp /></el-icon>
+                                <el-icon v-if="item.arrow === 'down'"><ArrowDown /></el-icon>
+                                <el-icon v-if="item.arrow === 'left'"><ArrowLeft /></el-icon>
+                                <el-icon v-if="item.arrow === 'right'"><ArrowRight /></el-icon>
                             </div>
-                            <div class="name">Y</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel"></div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'z+')" @mouseup="handleRockerUp($event, 'z+')">
-                            <div class="icon">
-                                <el-icon><ArrowUp /></el-icon>
-                            </div>
-                            <div class="name">Z</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'x-')" @mouseup="handleRockerUp($event, 'x-')">
-                            <div class="icon">
-                                <el-icon><ArrowLeft /></el-icon>
-                            </div>
-                            <div class="name">X</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'y-')" @mouseup="handleRockerUp($event, 'y-')">
-                            <div class="icon">
-                                <el-icon><ArrowDown /></el-icon>
-                            </div>
-                            <div class="name">Y</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'x+')" @mouseup="handleRockerUp($event, 'x+')">
-                            <div class="icon">
-                                <el-icon><ArrowRight /></el-icon>
-                            </div>
-                            <div class="name">X</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'z-')" @mouseup="handleRockerUp($event, 'z-')">
-                            <div class="icon">
-                                <el-icon><ArrowDown /></el-icon>
-                            </div>
-                            <div class="name">Z</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'b-')" @mouseup="handleRockerUp($event, 'b-')">
-                            <div class="icon">
-                                <el-icon><ArrowLeft /></el-icon>
-                            </div>
-                            <div class="name">B</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'b+')" @mouseup="handleRockerUp($event, 'b+')">
-                            <div class="icon">
-                                <el-icon><ArrowRight /></el-icon>
-                            </div>
-                            <div class="name">B</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'c-')" @mouseup="handleRockerUp($event, 'c-')">
-                            <div class="icon">
-                                <el-icon><ArrowLeft /></el-icon>
-                            </div>
-                            <div class="name">C</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="channel" @mousedown="handleRockerDown($event, 'c+')" @mouseup="handleRockerUp($event, 'c+')">
-                            <div class="icon">
-                                <el-icon><ArrowRight /></el-icon>
-                            </div>
-                            <div class="name">C</div>
+                            <div class="name">{{item.name}}</div>
                         </div>
                     </el-col>
                 </el-row>
             </div>
         </div>
         <div class="right-configure">
+            <div class="configure-tools">
+                <div class="configure-tools-item">
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowLeft">反转</el-button>
+                </div>
+                <div class="configure-tools-item">
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.TurnOff">启动主轴</el-button>
+                </div>
+                <div class="configure-tools-item">
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowRight">正转</el-button>
+                </div>
+            </div>
             <div class="configure-group">
                 <div class="group-title">主轴转速(degree/min)</div>
                 <div class="group-slider">
@@ -214,12 +150,13 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {Bottom} from "@element-plus/icons-vue";
+import {ArrowRight, Bottom} from "@element-plus/icons-vue";
 export default defineComponent({
     name: "RightConsole",
     emits: [],
     props: ["cnc"],
     components: {
+        ArrowRight,
         Bottom
     },
     setup(props, context) {
@@ -269,10 +206,10 @@ export default defineComponent({
             }
         }
 
-        function handleRockerUp(event: any, value: string){
-            let axis = value.substr(0,1);
+        function handleRockerUp(event: any, value: string) {
+            let axis = value.substr(0, 1);
             let increment = props.cnc.console.right.step.value;
-            if(increment === -1) {
+            if (increment === -1) {
                 let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
@@ -321,6 +258,9 @@ export default defineComponent({
     width: 100%;
     margin-bottom: 10px;
 }
+.right-view .right-axis .el-icon.homed{
+    color: #5e4eff;
+}
 .right-view .right-step{
     width: 100%;
     margin-bottom: 10px;
@@ -368,6 +308,7 @@ export default defineComponent({
     margin: 0 auto;
 }
 .right-view .right-rocker .rocker-box:deep(.el-col){
+    height: 50px;
     margin-bottom: 5px;
 }
 .right-view .right-rocker .rocker-box .channel{
@@ -397,10 +338,23 @@ export default defineComponent({
 .right-view .right-rocker .rocker-box .channel:hover .icon{
     color: #5e4eff;
 }
+.right-view .right-rocker .rocker-box .channel:active{
+    color: #ffffff;
+    cursor: pointer;
+    box-shadow: inset 0 0 2px 3px rgba(0, 0, 0, .2);
+    background-color: rgba(30, 31, 34, .8);
+    border: 1px solid rgba(0, 0, 0, .5);
+}
+.right-view .right-rocker .rocker-box .channel:active .icon{
+    color: #5e4eff;
+}
 .right-view .right-rocker .rocker-box :deep(.el-col):nth-child(1) .channel{
     display: none;
 }
 .right-view .right-rocker .rocker-box :deep(.el-col):nth-child(3) .channel{
+    display: none;
+}
+.right-view .right-rocker .rocker-box .channel.hide{
     display: none;
 }
 .right-view .right-configure{
@@ -408,6 +362,19 @@ export default defineComponent({
     background-color: rgba(30, 31, 34, .2);
     margin-bottom: 10px;
     padding: 10px;
+}
+.right-view .right-configure .configure-tools{
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    margin: 10px 0;
+}
+.right-view .right-configure .configure-tools .configure-tools-item{
+    width: 33.33%;
+    height: 30px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 10px;
 }
 .right-view .right-configure .configure-group{
     width: 100%;

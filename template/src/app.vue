@@ -83,23 +83,28 @@ export default defineComponent({
                     axis: [
                         {
                             name: "X",
-                            value: 0.000
+                            value: 0.000,
+                            home: 0
                         },
                         {
                             name: "Y",
-                            value: 0.000
+                            value: 0.000,
+                            home: 0
                         },
                         {
                             name: "Z",
-                            value: 0.000
+                            value: 0.000,
+                            home: 0
                         },
                         {
                             name: "B",
-                            value: 0.000
+                            value: 0.000,
+                            home: 0
                         },
                         {
                             name: "C",
-                            value: 0.000
+                            value: 0.000,
+                            home: 0
                         }
                     ],
                     coordinate: {
@@ -180,9 +185,85 @@ export default defineComponent({
                             }
                         ]
                     },
+                    rocker: [
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "up",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "up",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "left",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "down",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "right",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "down",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "left",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "right",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "left",
+                            hide: true,
+                        },
+                        {
+                            name: "",
+                            value: "",
+                            arrow: "right",
+                            hide: true,
+                        }
+                    ],
                     home: "",
                     zero: "",
                     spindle: {
+                        enabled: 0,
+                        direction: 0,
                         min_speed: 0,
                         max_speed: 0,
                         speed_tmp: 0,

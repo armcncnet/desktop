@@ -88,9 +88,88 @@ export default defineComponent({
                         if(message_json.command === "launch:machine:info"){
                             props.cnc.device.status = true;
                             props.cnc.device.machine.info = message_json.data;
+                            props.cnc.console.right.coordinate.value = props.cnc.device.machine.info.g5x_index;
+                            props.cnc.console.right.axis = [];
+                            props.cnc.device.machine.info.user_data.coordinates.forEach((item: any, index: any, array: any)=>{
+                                props.cnc.console.right.axis.push({name: item, index: index, value: 0.000, home: props.cnc.device.machine.info.user_data.homed[index]});
+                            });
+                            props.cnc.console.right.rocker.forEach((item: any, index: any, array: any)=>{
+                                if(index == 1){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.includes("Y")){
+                                        props.cnc.console.right.rocker[index].name = "Y";
+                                        props.cnc.console.right.rocker[index].value = "y+";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 3){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.includes("Z")){
+                                        props.cnc.console.right.rocker[index].name = "Z";
+                                        props.cnc.console.right.rocker[index].value = "z+";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 4){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.includes("X")){
+                                        props.cnc.console.right.rocker[index].name = "X";
+                                        props.cnc.console.right.rocker[index].value = "x-";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 5){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.includes("Y")){
+                                        props.cnc.console.right.rocker[index].name = "Y";
+                                        props.cnc.console.right.rocker[index].value = "y-";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 6){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.includes("X")){
+                                        props.cnc.console.right.rocker[index].name = "X";
+                                        props.cnc.console.right.rocker[index].value = "x+";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 7){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.includes("X")){
+                                        props.cnc.console.right.rocker[index].name = "Z";
+                                        props.cnc.console.right.rocker[index].value = "z-";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 8){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.length > 3){
+                                        props.cnc.console.right.rocker[index].name = props.cnc.device.machine.info.user_data.coordinates[3];
+                                        props.cnc.console.right.rocker[index].value = props.cnc.device.machine.info.user_data.coordinates[3].toLowerCase() + "-";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 9){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.length > 3){
+                                        props.cnc.console.right.rocker[index].name = props.cnc.device.machine.info.user_data.coordinates[3];
+                                        props.cnc.console.right.rocker[index].value = props.cnc.device.machine.info.user_data.coordinates[3].toLowerCase() + "+";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 10){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.length > 4){
+                                        props.cnc.console.right.rocker[index].name = props.cnc.device.machine.info.user_data.coordinates[4];
+                                        props.cnc.console.right.rocker[index].value = props.cnc.device.machine.info.user_data.coordinates[4].toLowerCase() + "-";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                                if(index == 11){
+                                    if(props.cnc.device.machine.info.user_data.coordinates.length > 4){
+                                        props.cnc.console.right.rocker[index].name = props.cnc.device.machine.info.user_data.coordinates[4];
+                                        props.cnc.console.right.rocker[index].value = props.cnc.device.machine.info.user_data.coordinates[4].toLowerCase() + "+";
+                                        props.cnc.console.right.rocker[index].hide = false
+                                    }
+                                }
+                            });
+                            props.cnc.console.right.spindle.enabled = message_json.data.user_data.spindle.enabled;
+                            props.cnc.console.right.spindle.direction = message_json.data.user_data.spindle.direction;
+                            props.cnc.console.right.spindle.speed_tmp = message_json.data.user_data.spindle.speed;
                             if(props.cnc.console.right.is_first){
                                 props.cnc.console.right.spindle.max_speed = message_json.data.user_data.spindle.max_speed;
-                                props.cnc.console.right.spindle.speed_tmp = message_json.data.user_data.spindle.speed;
                                 props.cnc.console.right.spindle.speed = message_json.data.user_data.spindle.speed / 100 * 100;
                                 props.cnc.console.right.spindle.min_override = message_json.data.user_data.spindle.min_override * 100;
                                 props.cnc.console.right.spindle.max_override = message_json.data.user_data.spindle.max_override * 100;
@@ -113,11 +192,6 @@ export default defineComponent({
                                 });
                                 props.cnc.console.right.step.items.push({label: "连续", value: -1});
                             }
-                            props.cnc.console.right.coordinate.value = props.cnc.device.machine.info.g5x_index;
-                            props.cnc.console.right.axis = [];
-                            props.cnc.device.machine.info.user_data.coordinates.forEach((item: any, index: any, array: any)=>{
-                                props.cnc.console.right.axis.push({name: item, index: index, value: 0.000});
-                            });
                             props.cnc.header.right.limit = "allow";
                             if(props.cnc.device.machine.info.user_data.task_state == 1){
                                 props.cnc.header.right.estop = "";
