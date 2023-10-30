@@ -88,6 +88,24 @@ export default defineComponent({
                         if(message_json.command === "launch:machine:info"){
                             props.cnc.device.status = true;
                             props.cnc.device.machine.info = message_json.data;
+                            if(props.cnc.console.right.is_first){
+                                props.cnc.console.right.spindle.max_speed = message_json.data.user_data.spindle.max_speed;
+                                props.cnc.console.right.spindle.speed_tmp = message_json.data.user_data.spindle.speed;
+                                props.cnc.console.right.spindle.speed = message_json.data.user_data.spindle.speed / 100 * 100;
+                                props.cnc.console.right.spindle.min_override = message_json.data.user_data.spindle.min_override * 100;
+                                props.cnc.console.right.spindle.max_override = message_json.data.user_data.spindle.max_override * 100;
+                                props.cnc.console.right.spindle.override = message_json.data.user_data.spindle.override * 100;
+                                props.cnc.console.right.feed.max_override = message_json.data.user_data.feed.max_override * 100;
+                                props.cnc.console.right.feed.override = 100;
+                                props.cnc.console.right.ext_info.default_override = message_json.data.user_data.ext_info.EXTINFO_DEFAULT_VELOCITY;
+                                props.cnc.console.right.ext_info.max_override = message_json.data.user_data.ext_info.EXTINFO_MAX_VELOCITY;
+                                props.cnc.console.right.ext_info.default_override = message_json.data.user_data.ext_info.EXTINFO_DEFAULT_VELOCITY;
+                                props.cnc.console.right.ext_info.max_linear_velocity = message_json.data.user_data.ext_info.max_linear_velocity;
+                                props.cnc.console.right.ext_info.default_linear_velocity = message_json.data.user_data.ext_info.default_linear_velocity;
+                                props.cnc.console.right.ext_info.max_angular_velocity = message_json.data.user_data.ext_info.max_angular_velocity;
+                                props.cnc.console.right.ext_info.default_angular_velocity = message_json.data.user_data.ext_info.default_angular_velocity;
+                                props.cnc.console.right.is_first = false;
+                            }
                             if(props.cnc.device.machine.info.user_data.increments){
                                 props.cnc.console.right.step.items = [];
                                 props.cnc.device.machine.info.user_data.increments.forEach((item: any) => {
@@ -131,7 +149,6 @@ export default defineComponent({
                                 props.cnc.console.right.home = "allow";
                                 props.cnc.console.right.zero = "allow";
                             }
-                            // console.log(props.cnc.device.machine.info);
                         }
                         if(message_json.command === "launch:machine:error"){
                             console.log(message_json.message);
@@ -192,6 +209,12 @@ export default defineComponent({
                 }
                 (window as any).go.StartWindows.Api.GetPlatform().then((platform: string)=>{
                     props.cnc.platform = platform;
+                });
+                (window as any).runtime.ScreenGetAll().then((screen: any)=>{
+                    if(screen.length > 0){
+                        props.cnc.screen.width = screen[0].width;
+                        props.cnc.screen.height = screen[0].height;
+                    }
                 });
                 props.cnc.loading.close();
             });

@@ -10,7 +10,10 @@
                 </el-text>
             </div>
             <div class="item">
-                {{props.cnc.platform}}
+                <el-text class="cnc">
+                    <el-icon><Monitor /></el-icon>
+                    {{props.cnc.platform}} {{props.cnc.screen.width + " " + props.cnc.screen.height}}
+                </el-text>
             </div>
             <div class="item">
                 <el-text class="cnc">

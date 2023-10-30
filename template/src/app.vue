@@ -22,6 +22,10 @@ export default defineComponent({
             sleep: false, // 控制休眠状态
             fullscreen: false, // 全屏状态切换
             platform: "-",
+            screen: {
+                width: "-",
+                height: "-"
+            },
             device: {
                 ip: "",
                 ips: [],
@@ -75,6 +79,7 @@ export default defineComponent({
             },
             console: {
                 right: {
+                    is_first: true,
                     axis: [
                         {
                             name: "X",
@@ -176,7 +181,28 @@ export default defineComponent({
                         ]
                     },
                     home: "",
-                    zero: ""
+                    zero: "",
+                    spindle: {
+                        min_speed: 0,
+                        max_speed: 0,
+                        speed_tmp: 0,
+                        speed: 0,
+                        min_override: 0,
+                        max_override: 0,
+                        override: 100
+                    },
+                    feed: {
+                        override: 100,
+                        max_override: 0
+                    },
+                    ext_info: {
+                        max_override: 0,
+                        default_override: 0,
+                        max_linear_velocity: 0,
+                        default_linear_velocity: 0,
+                        max_angular_velocity: 0,
+                        default_angular_velocity: 0
+                    }
                 }
             },
             machine: {
