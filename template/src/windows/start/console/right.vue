@@ -64,13 +64,13 @@
         <div class="right-configure">
             <div class="configure-tools">
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowLeft">反转</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.TurnOff">启动主轴</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.TurnOff" @click="setSpindleEnabled">启动主轴</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowRight">正转</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
                 </div>
             </div>
             <div class="configure-group">
@@ -88,7 +88,7 @@
                 <div class="group-title">主轴转速倍率(%)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.override" :step="1" :min="props.cnc.console.right.spindle.min_override" :max="props.cnc.console.right.spindle.max_override" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.override" :step="1" :min="props.cnc.console.right.spindle.min_override" :max="props.cnc.console.right.spindle.max_override" :show-input-controls="false" @change="setSpindleOverride"/>
                     </div>
                     <div class="slider-item">
                         <div class="el-cnc-input">{{props.cnc.console.right.spindle.override}}</div>
@@ -98,13 +98,24 @@
         </div>
         <div class="right-configure">
             <div class="configure-group">
+                <div class="group-title">最大速度(mm/min)</div>
+                <div class="group-slider">
+                    <div class="slider-item">
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.max_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_linear_velocity" :show-input-controls="false" @change="setMaxVelocity" />
+                    </div>
+                    <div class="slider-item">
+                        <div class="el-cnc-input">{{props.cnc.console.right.max_velocity}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="configure-group">
                 <div class="group-title">进给倍率(%)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.feed.override" :step="1" :min="0" :max="props.cnc.console.right.feed.max_override" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.feed.rate" :step="1" :min="0" :max="props.cnc.console.right.feed.max_override" :show-input-controls="false" @change="setFeedRate"/>
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.feed.override}}</div>
+                        <div class="el-cnc-input">{{props.cnc.console.right.feed.rate}}</div>
                     </div>
                 </div>
             </div>
@@ -122,24 +133,13 @@
                 </div>
             </div>
             <div class="configure-group">
-                <div class="group-title">最大速度(mm/min)</div>
-                <div class="group-slider">
-                    <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.ext_info.default_linear_velocity" :step="1" :min="0" :max="props.cnc.console.right.ext_info.max_linear_velocity" :show-input-controls="false" />
-                    </div>
-                    <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.ext_info.default_linear_velocity}}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="configure-group">
                 <div class="group-title">点动转速(degree/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.ext_info.default_angular_velocity" :step="1" :min="0" :max="props.cnc.console.right.ext_info.max_angular_velocity" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.default_angular_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_angular_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.ext_info.default_angular_velocity}}</div>
+                        <div class="el-cnc-input">{{props.cnc.console.right.default_angular_velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -176,6 +176,9 @@ export default defineComponent({
         }
 
         function onHome(axis: string){
+            if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2) {
+                return;
+            }
             let message = {command: "desktop:control:device:home", data: axis}
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
@@ -193,24 +196,72 @@ export default defineComponent({
                 let speed = 0;
                 let increment = props.cnc.console.right.step.value;
                 if(["a", "b", "c"].includes(axis)){
-                    speed = 240;
+                    speed = props.cnc.console.right.default_angular_velocity;
                 }else{
-                    speed = 1200;
+                    speed = props.cnc.console.right.ext_info.default_override;
                 }
                 if(direction === "-"){
                     speed = 0 - speed;
                 }
-
                 let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}}
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
 
         function handleRockerUp(event: any, value: string) {
-            let axis = value.substr(0, 1);
-            let increment = props.cnc.console.right.step.value;
-            if (increment === -1) {
-                let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
+            if(props.cnc.header.right.enabled === "active"){
+                let axis = value.substr(0, 1);
+                let increment = props.cnc.console.right.step.value;
+                if (increment === -1) {
+                    let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }
+            }
+        }
+
+        function setSpindleRight(){
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:spindle", data: {value: 2}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
+        }
+
+        function setSpindleEnabled(){
+            if(props.cnc.header.right.enabled === "active") {
+                if(props.cnc.console.right.spindle.enabled === 0){
+                    let message = {command: "desktop:control:spindle", data: {value: 1}}
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }else{
+                    let message = {command: "desktop:control:spindle", data: {value: 5}}
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }
+            }
+        }
+
+        function setSpindleLeft(){
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:spindle", data: {value: 1}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
+        }
+
+        function setSpindleOverride(value: any){
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:spindle:override", data: {value: value}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
+        }
+
+        function setMaxVelocity(value: any){
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:max:velocity", data: {value: value}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
+        }
+
+        function setFeedRate(value: any){
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:feed:rate", data: {value: value}}
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
@@ -230,7 +281,13 @@ export default defineComponent({
             onHome,
             setStep,
             handleRockerDown,
-            handleRockerUp
+            handleRockerUp,
+            setSpindleRight,
+            setSpindleEnabled,
+            setSpindleLeft,
+            setSpindleOverride,
+            setMaxVelocity,
+            setFeedRate
         }
     }
 });

@@ -175,14 +175,14 @@ export default defineComponent({
                                 props.cnc.console.right.spindle.max_override = message_json.data.user_data.spindle.max_override * 100;
                                 props.cnc.console.right.spindle.override = message_json.data.user_data.spindle.override * 100;
                                 props.cnc.console.right.feed.max_override = message_json.data.user_data.feed.max_override * 100;
-                                props.cnc.console.right.feed.override = 100;
+                                props.cnc.console.right.feed.rate = message_json.data.user_data.feed.rate * 100;
                                 props.cnc.console.right.ext_info.default_override = message_json.data.user_data.ext_info.EXTINFO_DEFAULT_VELOCITY;
                                 props.cnc.console.right.ext_info.max_override = message_json.data.user_data.ext_info.EXTINFO_MAX_VELOCITY;
-                                props.cnc.console.right.ext_info.default_override = message_json.data.user_data.ext_info.EXTINFO_DEFAULT_VELOCITY;
-                                props.cnc.console.right.ext_info.max_linear_velocity = message_json.data.user_data.ext_info.max_linear_velocity;
-                                props.cnc.console.right.ext_info.default_linear_velocity = message_json.data.user_data.ext_info.default_linear_velocity;
-                                props.cnc.console.right.ext_info.max_angular_velocity = message_json.data.user_data.ext_info.max_angular_velocity;
-                                props.cnc.console.right.ext_info.default_angular_velocity = message_json.data.user_data.ext_info.default_angular_velocity;
+                                props.cnc.console.right.max_linear_velocity = Math.round(message_json.data.user_data.max_linear_velocity * 60);
+                                props.cnc.console.right.max_velocity = message_json.data.user_data.max_velocity * 60;
+                                props.cnc.console.right.default_linear_velocity = Math.round(message_json.data.user_data.default_linear_velocity * 60);
+                                props.cnc.console.right.max_angular_velocity = Math.round(message_json.data.user_data.max_angular_velocity * 60);
+                                props.cnc.console.right.default_angular_velocity = Math.round(message_json.data.user_data.default_angular_velocity * 60);
                                 props.cnc.console.right.is_first = false;
                             }
                             if(props.cnc.device.machine.info.user_data.increments){

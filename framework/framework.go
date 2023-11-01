@@ -38,7 +38,7 @@ func Init(template embed.FS) {
 		Bind: []interface{}{
 			start,
 		},
-		WindowStartState: options.Maximised,
+		WindowStartState: options.Minimised,
 		Windows: &windows.Options{
 			WebviewDisableRendererCodeIntegrity: true,
 			DisableWindowIcon:                   true,

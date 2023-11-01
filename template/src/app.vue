@@ -273,17 +273,18 @@ export default defineComponent({
                         override: 100
                     },
                     feed: {
-                        override: 100,
+                        rate: 100,
                         max_override: 0
                     },
                     ext_info: {
                         max_override: 0,
                         default_override: 0,
-                        max_linear_velocity: 0,
-                        default_linear_velocity: 0,
-                        max_angular_velocity: 0,
-                        default_angular_velocity: 0
-                    }
+                    },
+                    max_linear_velocity: 0,
+                    max_velocity: 0,
+                    default_linear_velocity: 0,
+                    max_angular_velocity: 0,
+                    default_angular_velocity: 0
                 }
             },
             machine: {
