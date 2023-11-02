@@ -22,7 +22,7 @@
         </div>
         <div class="right-tools" v-if="props.cnc.device.machine.info">
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="warning" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === 'disabled'" type="warning" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
             </div>
             <div class="right-tools-item">
                 <div class="el-cnc-select" ref="cncSelect" @click="setOffset">
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === '' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">重置零点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === 'disabled' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">重置零点</el-button>
             </div>
         </div>
         <div class="right-step">
@@ -64,13 +64,13 @@
         <div class="right-configure">
             <div class="configure-tools">
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled'" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.TurnOff" @click="setSpindleEnabled">启动主轴</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled'" :icon="icons.TurnOff" @click="setSpindleEnabled">启动主轴</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled !== 'active'" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled'" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
                 </div>
             </div>
             <div class="configure-group">
@@ -169,6 +169,9 @@ export default defineComponent({
                     value: props.cnc.console.right.offset.index,
                     options: props.cnc.console.right.offset.options,
                     callback: (value: any)=>{
+                        let message: any = {command: "desktop:control:set:offset", data: {name: ""}};
+                        message.data.name = props.cnc.console.right.offset.options[value - 1].name;
+                        props.cnc.device.message.socket.send(JSON.stringify(message));
                         props.cnc.console.right.offset.index = value;
                     }
                 }
@@ -188,7 +191,7 @@ export default defineComponent({
                 return;
             }
             let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
-            message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].name;
+            message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
             message.data.x = parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
             message.data.y = parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
             message.data.z = parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);

@@ -79,27 +79,24 @@
         </div>
         <div class="header-item">
             <el-tooltip popper-class="cnc" effect="dark" content="运行" placement="bottom" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.centre.start" :disabled="props.cnc.header.centre.start === ''" :icon="icons.VideoPlay" @click="onControlStart"></el-button>
-            </el-tooltip>
-            <el-tooltip popper-class="cnc" effect="dark" content="执行下一行" placement="bottom" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.centre.next" :disabled="props.cnc.header.centre.next === ''" :icon="icons.Expand" @click="onControlSuspend"></el-button>
+                <el-button class="cnc" :class="props.cnc.header.centre.start" :disabled="props.cnc.header.centre.start === 'disabled' || props.cnc.header.centre.start_disabled" :icon="icons.VideoPlay" @click="onControlStart(0)"></el-button>
             </el-tooltip>
             <el-tooltip popper-class="cnc" effect="dark" content="暂停" placement="bottom" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.centre.pause" :disabled="props.cnc.header.centre.pause === ''" :icon="icons.VideoPause" @click="onControlSuspend"></el-button>
+                <el-button class="cnc" :class="props.cnc.header.centre.pause" :disabled="props.cnc.header.centre.pause === 'disabled' || props.cnc.header.centre.pause_disabled" :icon="icons.VideoPause" @click="onControlPause"></el-button>
             </el-tooltip>
             <el-tooltip popper-class="cnc" effect="dark" content="停止" placement="bottom" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.centre.stop" :disabled="props.cnc.header.centre.stop === ''" :icon="icons.Remove" @click="onControlStop"></el-button>
+                <el-button class="cnc" :class="props.cnc.header.centre.stop" :disabled="props.cnc.header.centre.stop === 'disabled' || props.cnc.header.centre.stop_disabled" :icon="icons.Remove" @click="onControlStop"></el-button>
             </el-tooltip>
         </div>
         <div class="header-item">
             <div class="item global" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.right.estop" :disabled="props.cnc.header.right.estop === ''" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
+                <el-button class="cnc" :class="props.cnc.header.right.estop" :disabled="props.cnc.header.right.estop === 'disabled'" type="danger" :icon="icons.SwitchButton" @click="onEmergencyStop">急停</el-button>
             </div>
             <div class="item global" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.right.enabled" :disabled="props.cnc.header.right.enabled === ''" type="primary" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
+                <el-button class="cnc" :class="props.cnc.header.right.enabled" :disabled="props.cnc.header.right.enabled === 'disabled'" type="primary" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
             </div>
             <div class="item global" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.right.limit" :disabled="props.cnc.header.right.limit === ''" type="warning" :icon="icons.DeleteLocation" @click="onDeviceOverrideLimits">忽略限位</el-button>
+                <el-button class="cnc" :class="props.cnc.header.right.limit" :disabled="props.cnc.header.right.limit === 'disabled'" type="warning" :icon="icons.DeleteLocation" @click="onDeviceOverrideLimits">忽略限位</el-button>
             </div>
         </div>
     </div>
@@ -163,16 +160,36 @@ export default defineComponent({
             }
         }
 
-        function onControlStart(){
-
+        function onControlStart(line: any){
+            if(props.cnc.device.machine.info){
+                if ((props.cnc.device.machine.info.state == 2 && props.cnc.device.machine.info.paused != true) || props.cnc.device.machine.info.enabled != true) {
+                    return;
+                }
+                if(!props.cnc.device.machine.info.user_data.is_homed){
+                    return;
+                }
+                let message = {command: "desktop:control:start", data: {line: line}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
         }
 
-        function onControlSuspend(){
-
+        function onControlPause(){
+            if(props.cnc.device.machine.info){
+                if ((props.cnc.device.machine.info.state == 2 && props.cnc.device.machine.info.paused == true) || props.cnc.device.machine.info.state != 2) {
+                    return;
+                }
+                let message = {command: "desktop:control:pause", data: {}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
         }
 
         function onControlStop(){
-
+            if(props.cnc.device.machine.info){
+                if (props.cnc.device.machine.info.state == 2) {
+                    let message = {command: "desktop:control:stop", data: {}}
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }
+            }
         }
 
         function onEmergencyStop(){
@@ -235,7 +252,7 @@ export default defineComponent({
             onQuit,
             onNewDevice,
             onControlStart,
-            onControlSuspend,
+            onControlPause,
             onControlStop,
             onEmergencyStop,
             onDeviceStart,

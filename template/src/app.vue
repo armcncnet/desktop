@@ -63,10 +63,12 @@ export default defineComponent({
                     }
                 },
                 centre: {
-                    start: "",
-                    next: "",
-                    pause: "",
-                    stop: "",
+                    start: "disabled",
+                    start_disabled: true,
+                    pause: "disabled",
+                    pause_disabled: true,
+                    stop: "disabled",
+                    stop_disabled: true,
                 },
                 right: {
                     estop: "",

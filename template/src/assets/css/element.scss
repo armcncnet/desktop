@@ -244,6 +244,18 @@
     border: 1px solid rgba(0, 0, 0, .2);
     color: #666666;
 }
+.el-button.cnc.active.is-disabled{
+    box-shadow: inset 0 0 2px 3px rgba(0, 0, 0, .2);
+    background-color: rgba(30, 31, 34, .8);
+    border: 1px solid rgba(0, 0, 0, .5);
+    color: #666666;
+}
+.el-button.cnc.active.is-disabled:hover{
+    box-shadow: inset 0 0 2px 3px rgba(0, 0, 0, .2);
+    background-color: rgba(30, 31, 34, .8);
+    border: 1px solid rgba(0, 0, 0, .5);
+    color: #666666;
+}
 
 .el-message.cnc{
     background-color: rgba(57, 59, 64, 1);
