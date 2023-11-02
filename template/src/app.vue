@@ -101,7 +101,9 @@ export default defineComponent({
                         options: [
                             {
                                 label: "坐标系",
-                                value: 0
+                                value: 0,
+                                name: "",
+                                p_name: ""
                             }
                         ]
                     },
@@ -213,7 +215,8 @@ export default defineComponent({
                         }
                     ],
                     home: "",
-                    zero: "",
+                    homed: false,
+                    relative_offset: "",
                     spindle: {
                         enabled: 0,
                         direction: 0,

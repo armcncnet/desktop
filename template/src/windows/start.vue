@@ -201,6 +201,7 @@ export default defineComponent({
                                 props.cnc.console.right.step.items.push({label: "连续", value: -1});
                             }
                             props.cnc.header.right.limit = "allow";
+                            props.cnc.console.right.homed = props.cnc.device.machine.info.user_data.is_homed;
                             if(props.cnc.device.machine.info.user_data.task_state == 1){
                                 props.cnc.header.right.estop = "";
                                 props.cnc.header.right.enabled = "";
@@ -209,7 +210,7 @@ export default defineComponent({
                                 props.cnc.header.centre.pause = "";
                                 props.cnc.header.centre.stop = "";
                                 props.cnc.console.right.home = "";
-                                props.cnc.console.right.zero = "";
+                                props.cnc.console.right.relative_offset = "";
                             }
                             if(props.cnc.device.machine.info.user_data.task_state == 2){
                                 props.cnc.header.right.estop = "active";
@@ -219,7 +220,7 @@ export default defineComponent({
                                 props.cnc.header.centre.pause = "";
                                 props.cnc.header.centre.stop = "";
                                 props.cnc.console.right.home = "";
-                                props.cnc.console.right.zero = "";
+                                props.cnc.console.right.relative_offset = "";
                             }
                             if(props.cnc.device.machine.info.user_data.task_state == 4){
                                 props.cnc.header.right.estop = "active";
@@ -229,7 +230,7 @@ export default defineComponent({
                                 props.cnc.header.centre.pause = "allow";
                                 props.cnc.header.centre.stop = "allow";
                                 props.cnc.console.right.home = "allow";
-                                props.cnc.console.right.zero = "allow";
+                                props.cnc.console.right.relative_offset = "allow";
                             }
                             if((window as any).simulation){
                                 (window as any).simulation.updateToolPosition(props.cnc.console.right.axes[0].position, props.cnc.console.right.axes[1].position, props.cnc.console.right.axes[2].position);

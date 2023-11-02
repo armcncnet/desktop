@@ -18,10 +18,10 @@
                 <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{item.name}} 速度: <span>{{(props.cnc.console.left.simulation.velocity[index] * 60).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index].name}} {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g5x_offset[index]).toFixed(3)}}</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].name}} {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g5x_offset[index]).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index].name}} {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g_offset[index]).toFixed(3)}}</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].name}} {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g_offset[index]).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
                 <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">G92 {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g92_offset[index]).toFixed(3)}}</span></div>

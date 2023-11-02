@@ -15,23 +15,23 @@
                 </el-table-column>
                 <el-table-column label="零点偏移" width="80">
                     <template #default="scope">
-                        <el-icon><MapLocation /></el-icon>
+                        <el-icon @click="setRelativeOffset(props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].name)"><MapLocation /></el-icon>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-        <div class="right-tools">
+        <div class="right-tools" v-if="props.cnc.device.machine.info">
             <div class="right-tools-item">
                 <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="warning" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
             </div>
             <div class="right-tools-item">
                 <div class="el-cnc-select" ref="cncSelect" @click="setOffset">
-                    <div class="value">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index].label}}</div>
+                    <div class="value">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].label}}</div>
                     <div class="icon"><el-icon><ArrowDown /></el-icon></div>
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.zero" :disabled="props.cnc.console.right.zero === ''" type="warning" :icon="icons.MapLocation" @click="relativeOffset">重置零点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === '' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">重置零点</el-button>
             </div>
         </div>
         <div class="right-step">
@@ -183,8 +183,21 @@ export default defineComponent({
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
-        function relativeOffset(){
-
+        function setRelativeOffset(current: string){
+            if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2 || !props.cnc.device.machine.info.user_data.is_homed) {
+                return;
+            }
+            let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
+            message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].name;
+            message.data.x = parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
+            message.data.y = parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
+            message.data.z = parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
+            if(current === "all"){
+                message.data.x = parseFloat("0.000").toFixed(3)
+                message.data.y = parseFloat("0.000").toFixed(3)
+                message.data.z = parseFloat("0.000").toFixed(3)
+            }
+            props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
         function setStep(item: any){
@@ -257,17 +270,13 @@ export default defineComponent({
         }
 
         function setMaxVelocity(value: any){
-            if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:max:velocity", data: {value: value}}
-                props.cnc.device.message.socket.send(JSON.stringify(message));
-            }
+            let message = {command: "desktop:control:max:velocity", data: {value: value}}
+            props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
         function setFeedRate(value: any){
-            if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:feed:rate", data: {value: value}}
-                props.cnc.device.message.socket.send(JSON.stringify(message));
-            }
+            let message = {command: "desktop:control:feed:rate", data: {value: value}}
+            props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
         onBeforeMount(() => {});
@@ -283,7 +292,7 @@ export default defineComponent({
             icons,
             setOffset,
             onHome,
-            relativeOffset,
+            setRelativeOffset,
             setStep,
             handleRockerDown,
             handleRockerUp,
