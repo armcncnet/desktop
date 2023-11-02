@@ -175,6 +175,9 @@ export default defineComponent({
 
         function onControlPause(){
             if(props.cnc.device.machine.info){
+                if (props.cnc.header.centre.pause === "active"){
+                    onControlStart(0);
+                }
                 if ((props.cnc.device.machine.info.state == 2 && props.cnc.device.machine.info.paused == true) || props.cnc.device.machine.info.state != 2) {
                     return;
                 }
