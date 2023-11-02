@@ -1,48 +1,33 @@
 <template>
     <div class="simulation-view">
         <div id="world" class="simulation-box"></div>
-        <div class="dro-view">
+        <div class="dro-view" v-if="props.cnc.device.machine.info">
             <div class="dro-group">
                 <div class="dro-line">X 长度: <span>121.050</span></div>
                 <div class="dro-line">Y 长度: <span>1.05</span></div>
                 <div class="dro-line">Z 最大值: <span>-312.000</span></div>
                 <div class="dro-line">Z 最小值: <span>5.00</span></div>
+                <div class="dro-line">刀具号: <span>{{props.cnc.console.left.simulation.tool.id}}</span></div>
+                <div class="dro-line">刀具直径: <span>{{props.cnc.console.left.simulation.tool.diameter}}</span></div>
+                <div class="dro-line">偏移量: <span>{{props.cnc.console.left.simulation.tool.offset.toFixed(3)}}</span></div>
                 <div class="dro-line">预计时长: <span>10分钟</span></div>
                 <div class="dro-line">剩余时长: <span>10分钟</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line">速度: <span>0</span></div>
-                <div class="dro-line">X 速度: <span>0</span></div>
-                <div class="dro-line">Y 速度: <span>0</span></div>
-                <div class="dro-line">Z 速度: <span>0</span></div>
-                <div class="dro-line">B 速度: <span>0</span></div>
-                <div class="dro-line">C 速度: <span>0</span></div>
+                <div class="dro-line">速度: <span>{{props.cnc.console.left.simulation.current_velocity.toFixed(3)}}</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{item.name}} 速度: <span>{{(props.cnc.console.left.simulation.velocity[index] * 60).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line">G92 X: <span>0</span></div>
-                <div class="dro-line">G92 Y: <span>0</span></div>
-                <div class="dro-line">G92 Z: <span>0</span></div>
-                <div class="dro-line">G92 B: <span>0</span></div>
-                <div class="dro-line">G92 C: <span>0</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index].name}} {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g5x_offset[index]).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line">G53 X: <span>-100.000</span></div>
-                <div class="dro-line">G53 Y: <span>0</span></div>
-                <div class="dro-line">G53 Z: <span>0</span></div>
-                <div class="dro-line">G53 B: <span>0</span></div>
-                <div class="dro-line">G53 C: <span>0</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index].name}} {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g_offset[index]).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line">G53 X: <span>0</span></div>
-                <div class="dro-line">G53 Y: <span>0</span></div>
-                <div class="dro-line">G53 Z: <span>0</span></div>
-                <div class="dro-line">G53 B: <span>0</span></div>
-                <div class="dro-line">G53 C: <span>0</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">G92 {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.g92_offset[index]).toFixed(3)}}</span></div>
             </div>
             <div class="dro-group">
-                <div class="dro-line">刀具号: <span>0</span></div>
-                <div class="dro-line">刀具直径: <span>0</span></div>
-                <div class="dro-line">偏移量: <span>0</span></div>
+                <div class="dro-line" v-for="(item, index) in props.cnc.console.right.axes" :key="index">DTG {{item.name}}: <span>{{parseFloat(props.cnc.console.left.simulation.dtg_offset[index]).toFixed(3)}}</span></div>
             </div>
         </div>
     </div>
@@ -124,9 +109,10 @@ export default defineComponent({
     position: absolute;
     z-index: 2;
     font-size: 11px;
+    pointer-events: none;
 }
 .simulation-view .dro-view .dro-group{
-    width: 90px;
+    width: 95px;
     display: inline-block;
     vertical-align: bottom;
     margin-right: 10px;

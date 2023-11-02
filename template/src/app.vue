@@ -78,77 +78,30 @@ export default defineComponent({
                 select: "console"
             },
             console: {
+                left: {
+                    simulation: {
+                        current_velocity: 0,
+                        velocity: [],
+                        g92_offset: [],
+                        g5x_offset: [],
+                        g_offset: [],
+                        dtg_offset: [],
+                        tool: {
+                            id: 0,
+                            offset: 0.000,
+                            diameter: 0
+                        }
+                    }
+                },
                 right: {
                     is_first: true,
-                    axis: [
-                        {
-                            name: "X",
-                            value: 0.000,
-                            home: 0
-                        },
-                        {
-                            name: "Y",
-                            value: 0.000,
-                            home: 0
-                        },
-                        {
-                            name: "Z",
-                            value: 0.000,
-                            home: 0
-                        },
-                        {
-                            name: "B",
-                            value: 0.000,
-                            home: 0
-                        },
-                        {
-                            name: "C",
-                            value: 0.000,
-                            home: 0
-                        }
-                    ],
-                    coordinate: {
-                        value: 0,
+                    axes: [],
+                    offset: {
+                        index: 0,
                         options: [
                             {
-                                label: "P0 G53",
+                                label: "坐标系",
                                 value: 0
-                            },
-                            {
-                                label: "P1 G54",
-                                value: 1
-                            },
-                            {
-                                label: "P2 G55",
-                                value: 2
-                            },
-                            {
-                                label: "P3 G56",
-                                value: 3
-                            },
-                            {
-                                label: "P4 G57",
-                                value: 4
-                            },
-                            {
-                                label: "P5 G58",
-                                value: 5
-                            },
-                            {
-                                label: "P6 G59",
-                                value: 6
-                            },
-                            {
-                                label: "P7 G59.1",
-                                value: 7
-                            },
-                            {
-                                label: "P8 G59.2",
-                                value: 8
-                            },
-                            {
-                                label: "P9 G59.3",
-                                value: 9
                             }
                         ]
                     },

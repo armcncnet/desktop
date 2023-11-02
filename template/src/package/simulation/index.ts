@@ -33,7 +33,7 @@ export default class Simulation {
             control_camera: false,
             view_helper: false,
             tool: false,
-            tool_bit: false,
+            tool_line: false,
             renderer: false,
         }
         _this.loader = new GCodeLoader(_this.loading);
@@ -60,7 +60,7 @@ export default class Simulation {
 
         _this.engine.axes_helper = new THREE.AxesHelper(1, 1, 1);
         _this.engine.axes_helper.name = "default_axes_helper";
-        _this.engine.axes_helper.position.y =0;
+        _this.engine.axes_helper.position.y = 0;
         _this.engine.scene.add(_this.engine.axes_helper);
 
         _this.engine.control_camera = new THREE.PerspectiveCamera(45, _this.container.clientWidth / _this.container.clientHeight, 0.1, 20000);
@@ -89,7 +89,10 @@ export default class Simulation {
         _this.engine.tool.add(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0, 0.5, 32, 2, false)));
         _this.engine.tool.position.z = 0.25;
         _this.engine.tool.matrixAutoUpdate = true;
-        _this.engine.scene.add(_this.engine.tool);
+        const tool_line_geometry = new THREE.BufferGeometry();
+        tool_line_geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
+        _this.engine.tool_line = new THREE.Line(tool_line_geometry, new THREE.LineBasicMaterial({color: 0xFFFF00}));
+        _this.engine.scene.add(_this.engine.tool, _this.engine.tool_line);
 
         _this.engine.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
         _this.engine.renderer.setClearColor(0xf9f9f9, 1);
@@ -109,6 +112,24 @@ export default class Simulation {
         _this.loader.load(file_path, (object: any)=>{
             _this.engine.scene.add(object);
         });
+    }
+
+    updateToolPosition(x: any, y: any, z: any){
+        const _this: any = this;
+        _this.engine.tool.position.x = x * 0.1;
+        _this.engine.tool.position.y = y * 0.1;
+        _this.engine.tool.position.z = (z + 0.25) * 0.1;
+        const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z);
+        const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
+        const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
+        _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
+        _this.engine.tool_line.geometry.needsUpdate = true;
+    }
+
+    clearToolLine(){
+        const _this: any = this;
+        _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
+        _this.engine.tool_line.geometry.needsUpdate = true;
     }
 
     onEngineResize(){

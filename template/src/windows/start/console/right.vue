@@ -1,37 +1,37 @@
 <template>
     <div class="right-view">
         <div class="right-axis">
-            <el-table class="cnc" :data="props.cnc.console.right.axis" stripe style="width: 100%">
+            <el-table class="cnc" :data="props.cnc.console.right.axes" stripe style="width: 100%">
                 <el-table-column label="轴" width="50">
                     <template #default="scope">{{scope.row.name}}</template>
                 </el-table-column>
                 <el-table-column label="坐标(mm)">
-                    <template #default="scope">{{scope.row.value.toFixed(2)}}</template>
+                    <template #default="scope">{{scope.row.position.toFixed(3)}}</template>
                 </el-table-column>
                 <el-table-column label="回零" width="80">
                     <template #default="scope">
-                        <el-icon :class="scope.row.home === 1 ? 'homed' : ''" @click="onHome(scope.row.index + '')" v-if="props.cnc.header.right.enabled === 'active'"><LocationFilled /></el-icon>
+                        <el-icon :class="scope.row.home === 1 ? 'homed' : ''" @click="onHome(scope.row.index + '')"><LocationFilled /></el-icon>
                     </template>
                 </el-table-column>
                 <el-table-column label="零点偏移" width="80">
                     <template #default="scope">
-                        <el-icon v-if="props.cnc.header.right.enabled === 'active'"><MapLocation /></el-icon>
+                        <el-icon><MapLocation /></el-icon>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <div class="right-tools">
             <div class="right-tools-item">
-                <div class="el-cnc-select" ref="cncSelect" @click="setCoordinate">
-                    <div class="value">{{props.cnc.console.right.coordinate.options[props.cnc.console.right.coordinate.value].label}}</div>
+                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="warning" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
+            </div>
+            <div class="right-tools-item">
+                <div class="el-cnc-select" ref="cncSelect" @click="setOffset">
+                    <div class="value">{{props.cnc.console.right.offset.options[props.cnc.console.right.offset.index].label}}</div>
                     <div class="icon"><el-icon><ArrowDown /></el-icon></div>
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.home" :disabled="props.cnc.console.right.home === ''" type="warning" :icon="icons.LocationFilled" @click="onHome('all')">全部回零</el-button>
-            </div>
-            <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.zero" :disabled="props.cnc.console.right.zero === ''" type="warning" :icon="icons.MapLocation" >重置零点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.zero" :disabled="props.cnc.console.right.zero === ''" type="warning" :icon="icons.MapLocation" @click="relativeOffset">重置零点</el-button>
             </div>
         </div>
         <div class="right-step">
@@ -161,15 +161,15 @@ export default defineComponent({
     },
     setup(props, context) {
 
-        function setCoordinate(){
+        function setOffset(){
             if(props.cnc.layer.select){
                 props.cnc.layer.select = false;
             }else{
                 props.cnc.layer.select = {
-                    value: props.cnc.console.right.coordinate.value,
-                    options: props.cnc.console.right.coordinate.options,
+                    value: props.cnc.console.right.offset.index,
+                    options: props.cnc.console.right.offset.options,
                     callback: (value: any)=>{
-                        props.cnc.console.right.coordinate.value = value;
+                        props.cnc.console.right.offset.index = value;
                     }
                 }
             }
@@ -181,6 +181,10 @@ export default defineComponent({
             }
             let message = {command: "desktop:control:device:home", data: axis}
             props.cnc.device.message.socket.send(JSON.stringify(message));
+        }
+
+        function relativeOffset(){
+
         }
 
         function setStep(item: any){
@@ -277,8 +281,9 @@ export default defineComponent({
         return {
             props,
             icons,
-            setCoordinate,
+            setOffset,
             onHome,
+            relativeOffset,
             setStep,
             handleRockerDown,
             handleRockerUp,
