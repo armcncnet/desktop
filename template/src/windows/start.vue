@@ -85,7 +85,18 @@ export default defineComponent({
                 props.cnc.device.message.socket.onmessage = function (message: any) {
                     let message_json = JSON.parse(message.data);
                     if(message_json.command){
-                        if(message_json.command === "launch:machine:info"){
+                        if(message_json.command === "launch:restart"){
+                            if(message_json.data){
+                                setTimeout(()=>{
+                                    props.cnc.device.restart = false;
+                                    props.cnc.loading.close();
+                                }, 5000);
+                            }
+                            if(!message_json.data){
+                                props.cnc.device.restart = true;
+                            }
+                        }
+                        if(message_json.command === "launch:machine:info" && !props.cnc.device.restart){
                             props.cnc.device.status = true;
                             props.cnc.device.machine.info = message_json.data;
                             props.cnc.console.left.simulation.current_velocity = parseFloat(props.cnc.device.machine.info.user_data.current_velocity) * 60;
@@ -302,7 +313,7 @@ export default defineComponent({
         onBeforeMount(() => {
             props.cnc.loading = ElLoading.service({
                 lock: true,
-                background: "rgba(0, 0, 0, .01)",
+                background: "rgba(0, 0, 0, .5)",
                 fullscreen: true
             });
         });

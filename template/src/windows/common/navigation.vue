@@ -45,6 +45,7 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
+import {ElLoading, ElMessageBox} from "element-plus";
 export default defineComponent({
     name: "NavigationCommon",
     emits: [],
@@ -60,7 +61,21 @@ export default defineComponent({
         }
 
         function onDeviceRestart(){
-
+            ElMessageBox.confirm("是否确认重启机床？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                let message = {command: "desktop:device:restart", data: {}}
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+                props.cnc.loading = ElLoading.service({
+                    lock: true,
+                    background: "rgba(0, 0, 0, .5)",
+                    fullscreen: true
+                });
+            }).catch(() => {});
         }
 
         function onDeviceShutdown(){

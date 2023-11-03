@@ -14,6 +14,30 @@ export default defineComponent({
     components: {},
     setup(props, context) {
 
+        // 消息事件
+        (window as any).runtime.EventsOn("event_page", (message: any) => {
+            if(message.type && message.type === "page_program"){
+                onData();
+            }
+        });
+
+        function onData(){
+            props.cnc.program.items = [];
+            props.cnc.program.loading = true;
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/code/select", "GET", {}).then((response: any)=>{
+                if(response.code === 0){
+                    if(response.data){
+                        props.cnc.program.items = response.data.code;
+                        props.cnc.program.loading = false;
+                    }else{
+                        props.cnc.program.loading = false;
+                    }
+                }else{
+                    props.cnc.program.loading = false;
+                }
+            });
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});

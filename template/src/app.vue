@@ -17,7 +17,7 @@ export default defineComponent({
         const cncData: any = ref({
             loading: ElLoading.service({
                 lock: true,
-                background: "rgba(0, 0, 0, .01)",
+                background: "rgba(0, 0, 0, .5)",
             }),
             sleep: false, // 控制休眠状态
             fullscreen: false, // 全屏状态切换
@@ -31,6 +31,7 @@ export default defineComponent({
                 ips: [],
                 loading: false,
                 status: false,
+                restart: false,
                 message: {
                     port: 10081,
                     socket: false,
@@ -246,6 +247,13 @@ export default defineComponent({
                 }
             },
             machine: {
+                loading: false,
+                search_keyword: "",
+                items: [],
+                item: false,
+                item_loading: false,
+            },
+            program: {
                 loading: false,
                 search_keyword: "",
                 items: [],
