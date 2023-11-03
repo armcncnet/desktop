@@ -18,6 +18,7 @@ export default defineComponent({
             loading: ElLoading.service({
                 lock: true,
                 background: "rgba(0, 0, 0, .5)",
+                customClass: "cnc",
             }),
             sleep: false, // 控制休眠状态
             fullscreen: false, // 全屏状态切换

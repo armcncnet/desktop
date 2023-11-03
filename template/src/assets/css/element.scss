@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+.el-loading-mask.cnc .el-loading-spinner .path{
+    stroke: #5e4eff !important;
+}
+
 .el-overlay, .el-overlay-dialog{
     background-color: rgba(0, 0, 0, 0) !important;
 }
@@ -347,6 +351,43 @@
 }
 .el-message-box.cnc .el-message-box__headerbtn:hover .el-message-box__close{
     color: #5e4eff !important;
+}
+
+.el-notification.cnc{
+    width: auto !important;
+    max-width: 400px !important;
+    min-width: 280px !important;
+    background-color: rgba(57, 59, 64, 1) !important;
+    border: 0 !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+    padding: 20px 10px !important;
+}
+.el-notification.cnc.right{
+    bottom: 30px !important;
+    right: 15px !important;
+}
+.el-notification.cnc .el-notification__icon{
+    font-size: 14px !important;
+    display: none;
+}
+.el-notification.cnc .el-notification__group{
+    margin-left: 5px !important;
+}
+.el-notification.cnc .el-notification__group .el-notification__title{
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    display: none;
+}
+.el-notification.cnc .el-notification__group .el-notification__content{
+    font-size: 12px !important;
+    color: #999999 !important;
+    margin: 0 !important;
+}
+.el-notification.cnc .el-notification__group .el-notification__closeBtn{
+    top: 5px;
+    right: 5px;
 }
 
 .el-slider.cnc .el-slider__runway{

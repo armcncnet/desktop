@@ -73,6 +73,7 @@ export default defineComponent({
                 props.cnc.loading = ElLoading.service({
                     lock: true,
                     background: "rgba(0, 0, 0, .5)",
+                    customClass: "cnc",
                     fullscreen: true
                 });
             }).catch(() => {});

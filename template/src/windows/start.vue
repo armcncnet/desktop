@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import {defineComponent, nextTick, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted} from "vue";
-import {ElLoading} from "element-plus";
+import {ElLoading, ElNotification} from "element-plus";
 import * as icons from "@element-plus/icons";
 import NoSleep from "nosleep.js";
 import HeaderCommon from "./common/header.vue";
@@ -94,6 +94,12 @@ export default defineComponent({
                             }
                             if(!message_json.data){
                                 props.cnc.device.restart = true;
+                                props.cnc.loading = ElLoading.service({
+                                    lock: true,
+                                    background: "rgba(0, 0, 0, .5)",
+                                    customClass: "cnc",
+                                    fullscreen: true
+                                });
                             }
                         }
                         if(message_json.command === "launch:machine:info" && !props.cnc.device.restart){
@@ -273,7 +279,17 @@ export default defineComponent({
                             }
                         }
                         if(message_json.command === "launch:machine:error"){
-                            console.log(message_json.data, message_json.message);
+                            let kind = [11];
+                            if(!kind.includes(message_json.data)){
+                                ElNotification({
+                                    title: "消息提醒",
+                                    message: message_json.message,
+                                    type: "info",
+                                    position: "bottom-right",
+                                    duration: 0,
+                                    customClass: "cnc"
+                                });
+                            }
                         }
                         if(message_json.command === "launch:restart"){
                             props.cnc.device.status = message_json.data;
@@ -314,6 +330,7 @@ export default defineComponent({
             props.cnc.loading = ElLoading.service({
                 lock: true,
                 background: "rgba(0, 0, 0, .5)",
+                customClass: "cnc",
                 fullscreen: true
             });
         });
