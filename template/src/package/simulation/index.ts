@@ -114,16 +114,18 @@ export default class Simulation {
         });
     }
 
-    updateToolPosition(x: any, y: any, z: any){
+    updateToolPosition(state: any, x: any, y: any, z: any){
         const _this: any = this;
         _this.engine.tool.position.x = x * 0.1;
         _this.engine.tool.position.y = y * 0.1;
         _this.engine.tool.position.z = (z * 0.1) + 0.25
-        const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.25);
-        const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
-        const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
-        _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
-        _this.engine.tool_line.geometry.needsUpdate = true;
+        if(state === 2){
+            const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.25);
+            const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
+            const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
+            _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
+            _this.engine.tool_line.geometry.needsUpdate = true;
+        }
     }
 
     clearToolLine(){

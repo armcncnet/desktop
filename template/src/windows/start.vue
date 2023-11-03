@@ -258,7 +258,7 @@ export default defineComponent({
                                 props.cnc.console.right.relative_offset = "allow";
                             }
                             if((window as any).simulation){
-                                (window as any).simulation.updateToolPosition(props.cnc.console.right.axes[0].position, props.cnc.console.right.axes[1].position, props.cnc.console.right.axes[2].position);
+                                (window as any).simulation.updateToolPosition(props.cnc.device.machine.info.state, props.cnc.console.right.axes[0].position, props.cnc.console.right.axes[1].position, props.cnc.console.right.axes[2].position);
                             }
                         }
                         if(message_json.command === "launch:machine:error"){
