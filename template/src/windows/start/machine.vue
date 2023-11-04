@@ -56,7 +56,6 @@ export default defineComponent({
     },
     setup(props, context) {
 
-        // 消息事件
         (window as any).runtime.EventsOn("event_page", (message: any) => {
             if(message.type && message.type === "page_machine"){
                 onData();

@@ -52,7 +52,6 @@ export default defineComponent({
                     console.log(message);
                 });
                 (window as any).simulation.InitEngine();
-                (window as any).simulation.onloadCode("/static/gcode/test.gcode");
             }
         }
 

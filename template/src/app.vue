@@ -245,6 +245,14 @@ export default defineComponent({
                     default_linear_velocity: 0,
                     max_angular_velocity: 0,
                     default_angular_velocity: 0
+                },
+                bottom: {
+                    line: {
+                        loading: false,
+                        content: "",
+                        items: [],
+                        motion_line: 0
+                    }
                 }
             },
             machine: {

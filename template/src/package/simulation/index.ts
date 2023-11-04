@@ -72,7 +72,7 @@ export default class Simulation {
         _this.engine.control.enabled = true;
         _this.engine.control.mouseButtons.RIGHT = 0; // 禁用右键拖拽
         _this.engine.control.minDistance = 5; // 相机距离观察目标最小距离
-        _this.engine.control.maxDistance = 20; // 相机距离观察目标最大距离
+        _this.engine.control.maxDistance = 30; // 相机距离观察目标最大距离
         _this.engine.control.maxPolarAngle = Math.PI / 2;
         _this.engine.control.enableDamping = true;
         _this.engine.control.dampingFactor = 0.2; // 视角惯性量

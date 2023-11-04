@@ -168,6 +168,11 @@ export default defineComponent({
                 if(!props.cnc.device.machine.info.user_data.is_homed){
                     return;
                 }
+                if(props.cnc.console.bottom.line.motion_line > 0 && props.cnc.header.centre.pause !== "active"){
+                    if((window as any).simulation){
+                        (window as any).simulation.clearToolLine();
+                    }
+                }
                 let message = {command: "desktop:control:start", data: {line: line}}
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }

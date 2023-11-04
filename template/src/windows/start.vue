@@ -209,8 +209,7 @@ export default defineComponent({
                                 props.cnc.console.right.max_angular_velocity = Math.round(message_json.data.user_data.max_angular_velocity * 60);
                                 props.cnc.console.right.default_angular_velocity = Math.round(message_json.data.user_data.default_angular_velocity * 60);
                                 props.cnc.console.right.is_first = false;
-
-
+                                (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.info.file.replace(/^\.\.\/\.\.\/files\//, "")});
                             }
                             if(props.cnc.device.machine.info.user_data.increments){
                                 props.cnc.console.right.step.items = [];
@@ -276,6 +275,7 @@ export default defineComponent({
                                 props.cnc.console.right.home = "allow";
                                 props.cnc.console.right.relative_offset = "allow";
                             }
+                            (window as any).runtime.EventsEmit("set_highlight_line", {line: props.cnc.device.machine.info.motion_line});
                             if((window as any).simulation){
                                 (window as any).simulation.updateToolPosition(props.cnc.device.machine.info.state, props.cnc.console.right.axes[0].position, props.cnc.console.right.axes[1].position, props.cnc.console.right.axes[2].position);
                             }
