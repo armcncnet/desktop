@@ -209,6 +209,8 @@ export default defineComponent({
                                 props.cnc.console.right.max_angular_velocity = Math.round(message_json.data.user_data.max_angular_velocity * 60);
                                 props.cnc.console.right.default_angular_velocity = Math.round(message_json.data.user_data.default_angular_velocity * 60);
                                 props.cnc.console.right.is_first = false;
+
+
                             }
                             if(props.cnc.device.machine.info.user_data.increments){
                                 props.cnc.console.right.step.items = [];

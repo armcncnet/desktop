@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
+import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, nextTick} from "vue";
 import * as icons from "@element-plus/icons";
 export default defineComponent({
     name: "BottomConsole",
@@ -38,7 +38,9 @@ export default defineComponent({
 
         onBeforeMount(() => {});
 
-        onMounted(() => {});
+        onMounted(() => {
+
+        });
 
         onBeforeUnmount(() => {});
 
