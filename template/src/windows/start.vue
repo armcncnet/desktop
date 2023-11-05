@@ -89,6 +89,10 @@ export default defineComponent({
                             if(message_json.data){
                                 setTimeout(()=>{
                                     props.cnc.device.restart = false;
+                                    props.cnc.console.right.is_first = true;
+                                    if((window as any).simulation){
+                                        (window as any).simulation.clearToolLine();
+                                    }
                                     props.cnc.loading.close();
                                 }, 5000);
                             }
@@ -320,6 +324,7 @@ export default defineComponent({
             }
             props.cnc.navigation.select = "console";
             props.cnc.device.machine.info = false;
+            props.cnc.loading.close();
         }
 
         document.onkeydown = function(event: any) {

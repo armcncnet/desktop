@@ -8,6 +8,7 @@ import {ViewHelper} from "three/examples/jsm/helpers/ViewHelper";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls.js";
 // @ts-ignore
 import {GCodeLoader} from "three/examples/jsm/loaders/GCodeLoader.js";
+import {GCODE} from "../gcode";
 
 export default class Simulation {
 
@@ -36,7 +37,7 @@ export default class Simulation {
             tool_line: false,
             renderer: false,
         }
-        _this.loader = new GCodeLoader(_this.loading);
+        _this.gocode = new GCODE(_this.loading);
     }
 
     InitEngine(){
@@ -49,7 +50,7 @@ export default class Simulation {
         _this.engine.clock = new THREE.Clock();
         _this.engine.clock_delta = 0.00;
 
-        _this.engine.ground = new THREE.GridHelper(50, 100, 0xf9f9f9, 0xf9f9f9);
+        _this.engine.ground = new THREE.GridHelper(50, 50, 0xf9f9f9, 0xf9f9f9);
         _this.engine.ground.name = "default_ground";
         _this.engine.ground.material.transparent = true;
         _this.engine.ground.material.opacity = 0.05;
@@ -63,7 +64,7 @@ export default class Simulation {
         _this.engine.axes_helper.position.y = 0;
         _this.engine.scene.add(_this.engine.axes_helper);
 
-        _this.engine.control_camera = new THREE.PerspectiveCamera(45, _this.container.clientWidth / _this.container.clientHeight, 0.1, 20000);
+        _this.engine.control_camera = new THREE.PerspectiveCamera(75, _this.container.clientWidth / _this.container.clientHeight, 0.1, 20000);
         _this.engine.control_camera.name = "default_camera";
         _this.engine.control_camera.position.set(0, -10, 5);
         _this.engine.control_camera.lookAt(0, 0, 0);
@@ -85,6 +86,7 @@ export default class Simulation {
         _this.engine.view_helper.position.set(0.8, -0.8, -1);
 
         _this.engine.tool = new THREE.Object3D();
+        _this.engine.tool.name = "default_tool";
         _this.engine.tool.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI / 2));
         _this.engine.tool.add(new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0, 0.5, 32, 2, false)));
         _this.engine.tool.position.z = 0.25;
@@ -92,6 +94,7 @@ export default class Simulation {
         const tool_line_geometry = new THREE.BufferGeometry();
         tool_line_geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
         _this.engine.tool_line = new THREE.Line(tool_line_geometry, new THREE.LineBasicMaterial({color: 0xFFFF00}));
+        _this.engine.tool_line.name = "default_tool_line";
         _this.engine.scene.add(_this.engine.tool, _this.engine.tool_line);
 
         _this.engine.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
@@ -107,10 +110,30 @@ export default class Simulation {
         _this.onEngineAnimate()
     }
 
-    onloadCode(file_path: string){
+    onLoadCode(file_path: string){
         const _this: any = this;
-        _this.loader.load(file_path, (object: any)=>{
+        const gcode = _this.engine.scene.getObjectByName("gcode");
+        if(gcode){
+            gcode.traverse((child: any)=>{
+                if (child.isLineSegments) {
+                    child.geometry.dispose();
+                    if (child.material && child.material.dispose) {
+                        child.material.dispose();
+                    }
+                }
+            });
+            _this.engine.scene.remove(gcode);
+        }
+        _this.gocode.load(file_path, (object: any)=>{
             _this.engine.scene.add(object);
+            if(object.userData.dimensions){
+                const boundingBox = new THREE.Box3().setFromObject(object);
+                const center = boundingBox.getCenter(new THREE.Vector3());
+                _this.engine.control.target.set(center.x, center.y, center.z);
+                _this.engine.control.update();
+                _this.engine.control_camera.lookAt(center);
+                _this.engine.control_camera.updateProjectionMatrix();
+            }
         });
     }
 
@@ -118,13 +141,23 @@ export default class Simulation {
         const _this: any = this;
         _this.engine.tool.position.x = x * 0.1;
         _this.engine.tool.position.y = y * 0.1;
-        _this.engine.tool.position.z = (z * 0.1) + 0.25
+        _this.engine.tool.position.z = (z * 0.1) + 0.25;
         if(state === 2){
             const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.25);
             const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
             const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
             _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
             _this.engine.tool_line.geometry.needsUpdate = true;
+            const gcode = _this.engine.scene.getObjectByName("gcode");
+            if(gcode){
+                gcode.children.forEach((lineSegment: any) => {
+                    if (lineSegment.material && lineSegment.material.isMaterial) {
+                        lineSegment.material.transparent = true;
+                        lineSegment.material.opacity = 0.4;
+                        lineSegment.material.needsUpdate = true;
+                    }
+                });
+            }
         }
     }
 
@@ -148,6 +181,10 @@ export default class Simulation {
     onEngineAnimate(){
         const _this: any = this;
         _this.engine.clock_delta = _this.engine.clock.getDelta();
+        const gcode = _this.engine.scene.getObjectByName("gcode");
+        if(gcode){
+
+        }
         _this.engine.control.update();
         _this.engine.renderer.clear();
         _this.engine.renderer.render(_this.engine.scene, _this.engine.control_camera);

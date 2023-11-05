@@ -2,7 +2,7 @@
     <div class="bottom-view">
         <div class="bottom-header">
             <div class="bottom-header-item">
-                <div class="">12</div>
+                <div class="item">123</div>
             </div>
             <div class="bottom-header-item"></div>
             <div class="bottom-header-item"></div>
@@ -49,7 +49,7 @@ export default defineComponent({
                         let file_blob = new Blob([response.data.content], {type:"application/text;charset=utf-8"});
                         if((window as any).simulation){
                             (window as any).simulation.clearToolLine();
-                            (window as any).simulation.onloadCode((window as any).URL.createObjectURL(file_blob));
+                            (window as any).simulation.onLoadCode((window as any).URL.createObjectURL(file_blob));
                         }
                         props.cnc.console.bottom.line.content = response.data.content;
                         props.cnc.console.bottom.line.items = response.data.lines;
@@ -114,6 +114,13 @@ export default defineComponent({
     display: inline-block;
     vertical-align: top;
     padding: 5px;
+}
+.bottom-view .bottom-header .bottom-header-item .item{
+    width: auto;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: top;
 }
 .bottom-view .bottom-footer{
     width: 100%;
