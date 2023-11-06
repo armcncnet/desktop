@@ -117,18 +117,7 @@ export default class Simulation {
 
     onLoadCode(file_path: string){
         const _this: any = this;
-        const gcode = _this.engine.scene.getObjectByName("gcode");
-        if(gcode){
-            gcode.traverse((child: any)=>{
-                if (child.isLineSegments) {
-                    child.geometry.dispose();
-                    if (child.material && child.material.dispose) {
-                        child.material.dispose();
-                    }
-                }
-            });
-            _this.engine.scene.remove(gcode);
-        }
+        _this.clearGcode();
         _this.gocode.load(file_path, (object: any)=>{
             _this.engine.scene.add(object);
             if(object.userData.dimensions){
@@ -137,6 +126,7 @@ export default class Simulation {
                 _this.engine.control.target.set(center.x, center.y, center.z);
                 _this.engine.control.update();
                 _this.engine.control_camera.lookAt(center);
+                _this.view = "p";
                 _this.loading_callback({
                     type: "resource:update:data",
                     box: object.userData.dimensions,
@@ -185,7 +175,23 @@ export default class Simulation {
         _this.engine.tool_line.geometry.needsUpdate = true;
     }
 
-    onSwitchView(view: string){
+    clearGcode(){
+        const _this: any = this;
+        const gcode = _this.engine.scene.getObjectByName("gcode");
+        if(gcode){
+            gcode.traverse((child: any)=>{
+                if (child.isLineSegments) {
+                    child.geometry.dispose();
+                    if (child.material && child.material.dispose) {
+                        child.material.dispose();
+                    }
+                }
+            });
+            _this.engine.scene.remove(gcode);
+        }
+    }
+
+    setView(view: string){
         const _this: any = this;
         const center = _this.object.box.getCenter(new THREE.Vector3());
         const distance = 10;
@@ -193,7 +199,7 @@ export default class Simulation {
             x: new THREE.Vector3(-1, 0, 0),
             y: new THREE.Vector3(0, -1, 0),
             z: new THREE.Vector3(0, 0, 1),
-            p: new THREE.Vector3(0, -10, 5),
+            p: new THREE.Vector3(0, -30, 15),
         };
         const new_view = views[view];
         if (!new_view){

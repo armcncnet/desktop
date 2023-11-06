@@ -1,12 +1,12 @@
 <template>
-    <el-dialog class="cnc" v-model="props.cnc.header.dialog.status" :title="props.cnc.header.dialog.config.title" :width="props.cnc.header.dialog.config.width" draggable :modal="true" title="" :show-close="props.cnc.header.dialog.config.close" :before-close="dialogClose" :lock-scroll="true" :closeOnClickModal="false" :closeOnPressEscape="false" :destroy-on-close="true">
+    <el-dialog class="cnc" v-model="props.cnc.dialog.status" :title="props.cnc.dialog.config.title" :width="props.cnc.dialog.config.width" draggable :modal="true" title="" :show-close="props.cnc.dialog.config.close" :before-close="dialogClose" :lock-scroll="true" :closeOnClickModal="false" :closeOnPressEscape="false" :destroy-on-close="true">
         <div class="new-device-dialog">
-            <el-form class="cnc" :model="props.cnc.header.dialog.form" label-width="80px">
+            <el-form class="cnc" :model="props.cnc.dialog.form" label-width="80px">
                 <el-form-item label="设备IP地址">
-                    <el-input class="cnc" v-model="props.cnc.header.dialog.form.ip" placeholder="请输入设备的IP地址" maxlength="140" autocomplete="off" spellcheck="false" style="width: 200px" />
+                    <el-input class="cnc" v-model="props.cnc.dialog.form.ip" placeholder="请输入设备的IP地址" maxlength="140" autocomplete="off" spellcheck="false" style="width: 200px" />
                 </el-form-item>
                 <el-form-item label="">
-                    <el-button color="#5e4eff" :loading="props.cnc.header.dialog.form.loading" type="primary" @click="onDevice">连接设备</el-button>
+                    <el-button color="#5e4eff" :loading="props.cnc.dialog.form_loading" type="primary" @click="onDevice">连接设备</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -24,7 +24,7 @@ export default defineComponent({
     setup(props, context) {
 
         function onDevice(){
-            if(props.cnc.header.dialog.form.ip === "" && (props.cnc.header.dialog.form.ip.replace(/\n|\r/g, "")).trim().length === 0){
+            if(props.cnc.dialog.form.ip === "" && (props.cnc.dialog.form.ip.replace(/\n|\r/g, "")).trim().length === 0){
                 ElMessage.closeAll();
                 ElMessage({
                     message: "设备IP地址错误",
@@ -33,11 +33,11 @@ export default defineComponent({
                 });
                 return;
             }
-            props.cnc.header.dialog.form.loading = true;
-            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.header.dialog.form.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
+            props.cnc.dialog.form_loading = true;
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.dialog.form.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
-                        props.cnc.device.ip = props.cnc.header.dialog.form.ip;
+                        props.cnc.device.ip = props.cnc.dialog.form.ip;
                         props.cnc.device.machine.path = response.data.machine;
                         if(props.cnc.device.ips.length > 0){
                             let check = false;
@@ -47,17 +47,17 @@ export default defineComponent({
                                 }
                             });
                             if(!check){
-                                props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.header.dialog.form.ip, version: response.data.version});
+                                props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.dialog.form.ip, version: response.data.version});
                                 localStorage.setItem("cnc:device:ips", JSON.stringify(props.cnc.device.ips));
                             }
                         }else{
-                            props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.header.dialog.form.ip, version: response.data.version});
+                            props.cnc.device.ips.push({name: response.data.name, ip: props.cnc.dialog.form.ip, version: response.data.version});
                             localStorage.setItem("cnc:device:ips", JSON.stringify(props.cnc.device.ips));
                         }
                         (window as any).runtime.EventsEmit("event_message", {type: "connected_device"});
                         dialogClose(false);
                     }else{
-                        props.cnc.header.dialog.form.loading = false;
+                        props.cnc.dialog.form_loading = false;
                         ElMessage.closeAll();
                         ElMessage({
                             message: "设备连接失败，请检查后重新尝试",
@@ -66,7 +66,7 @@ export default defineComponent({
                         });
                     }
                 }else{
-                    props.cnc.header.dialog.form.loading = false;
+                    props.cnc.dialog.form_loading = false;
                     ElMessage.closeAll();
                     ElMessage({
                         message: "设备连接失败，请检查后重新尝试",
@@ -81,11 +81,11 @@ export default defineComponent({
             if(close){
                 close();
             }
-            props.cnc.header.dialog.status = false;
-            props.cnc.header.dialog.form.loading = false;
+            props.cnc.dialog.status = false;
+            props.cnc.dialog.form.loading = false;
             setTimeout(()=>{
-                props.cnc.header.dialog.config.type = "";
-                props.cnc.header.dialog.form = {
+                props.cnc.dialog.config.type = "";
+                props.cnc.dialog.form = {
                     loading: false
                 };
             }, 20);

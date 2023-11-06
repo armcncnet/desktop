@@ -100,7 +100,7 @@
             </div>
         </div>
     </div>
-    <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.header.dialog.config.type === 'device'" />
+    <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'device'" />
 </template>
 
 <script lang="ts">
@@ -139,14 +139,15 @@ export default defineComponent({
 
         function onNewDevice(){
             if(!props.cnc.device.message.status){
-                props.cnc.header.dialog.config.type = "device";
-                props.cnc.header.dialog.config.title = "连接新设备";
-                props.cnc.header.dialog.config.width = "400px";
-                props.cnc.header.dialog.config.close = true;
-                props.cnc.header.dialog.form = {
+                props.cnc.dialog.config.type = "device";
+                props.cnc.dialog.config.title = "连接新设备";
+                props.cnc.dialog.config.width = "400px";
+                props.cnc.dialog.config.close = true;
+                props.cnc.dialog.form = {
                     ip: "127.0.0.1"
                 }
-                props.cnc.header.dialog.status = true;
+                props.cnc.dialog.form_loading = false;
+                props.cnc.dialog.status = true;
             }else{
                 ElMessageBox.confirm("是否确认断开设备连接？", "操作确认", {
                     draggable: true,

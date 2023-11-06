@@ -4,7 +4,10 @@
             <div class="bottom-header-item">
                 <div class="item">
                     <el-tooltip popper-class="cnc" effect="dark" content="打开G程序" placement="top">
-                        <el-button class="cnc" :icon="icons.FolderOpened" @click="openProgram"></el-button>
+                        <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'disabled' || props.cnc.header.centre.start_disabled" :icon="icons.FolderOpened" @click="openProgram"></el-button>
+                    </el-tooltip>
+                    <el-tooltip popper-class="cnc" effect="dark" content="刷新G程序" placement="top">
+                        <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'disabled' || props.cnc.header.centre.start_disabled" :icon="icons.Refresh" @click="refreshProgram"></el-button>
                     </el-tooltip>
                 </div>
             </div>
@@ -97,10 +100,17 @@ export default defineComponent({
 
         }
 
-        function onSwitchView(value: string){
-            console.log(value);
+        function refreshProgram(){
             if((window as any).simulation){
-                (window as any).simulation.onSwitchView(value);
+                (window as any).simulation.clearToolLine();
+                (window as any).simulation.clearGcode();
+            }
+            (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.info.file.replace(/^\.\.\/\.\.\/files\//, "")});
+        }
+
+        function onSwitchView(value: string){
+            if((window as any).simulation){
+                (window as any).simulation.setView(value);
             }
         }
 
@@ -117,6 +127,7 @@ export default defineComponent({
             icons,
             bottomFooter,
             openProgram,
+            refreshProgram,
             onSwitchView
         }
     }

@@ -52,18 +52,6 @@ export default defineComponent({
                 }
             },
             header: {
-                dialog: {
-                    type: "",
-                    status: false,
-                    config: {
-                        title: "",
-                        width: "",
-                        close: true
-                    },
-                    form: {
-                        loading: false
-                    }
-                },
                 centre: {
                     start: "disabled",
                     start_disabled: true,
@@ -278,7 +266,18 @@ export default defineComponent({
             },
             layer: {
                 select: false
-            }
+            },
+            dialog: {
+                type: "",
+                status: false,
+                config: {
+                    title: "",
+                    width: "",
+                    close: true
+                },
+                form: false,
+                form_loading: false,
+            },
         });
 
         return {
