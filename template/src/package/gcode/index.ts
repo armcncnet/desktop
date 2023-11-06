@@ -35,7 +35,7 @@ class GCODE extends Loader {
     parse(lines: any){
         const scope: any = this;
         const layers: any = [];
-        let state: any = {x: 0, y: 0, z: 0, e: 0, f: 0,i:0,j:0, extruding: false, relative: false};
+        let state: any = {x: 0, y: 0, z: 0, e: 0, f: 0, i:0, j:0, extruding: false, relative: false};
         let currentLayer: any = undefined;
         let cmd;
         const args: any = {};
