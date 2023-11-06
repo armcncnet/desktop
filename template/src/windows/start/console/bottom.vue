@@ -2,9 +2,23 @@
     <div class="bottom-view">
         <div class="bottom-header">
             <div class="bottom-header-item">
-                <div class="item">123</div>
+                <div class="item">
+                    <el-tooltip popper-class="cnc" effect="dark" content="打开G程序" placement="top">
+                        <el-button class="cnc" :icon="icons.FolderOpened" @click="openProgram"></el-button>
+                    </el-tooltip>
+                </div>
             </div>
-            <div class="bottom-header-item"></div>
+            <div class="bottom-header-item">
+                <div class="item">
+                    <el-button class="cnc" @click="openProgram">X</el-button>
+                </div>
+                <div class="item">
+                    <el-button class="cnc" @click="openProgram">Y</el-button>
+                </div>
+                <div class="item">
+                    <el-button class="cnc" @click="openProgram">Z</el-button>
+                </div>
+            </div>
             <div class="bottom-header-item"></div>
         </div>
         <div class="bottom-footer" ref="bottomFooter" style="overflow-y: auto">
@@ -80,6 +94,10 @@ export default defineComponent({
             }
         }
 
+        function openProgram(){
+
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -91,7 +109,8 @@ export default defineComponent({
         return {
             props,
             icons,
-            bottomFooter
+            bottomFooter,
+            openProgram
         }
     }
 });
@@ -113,7 +132,14 @@ export default defineComponent({
     height: 40px;
     display: inline-block;
     vertical-align: top;
-    padding: 5px;
+    padding: 2px 5px;
+    text-align: center;
+}
+.bottom-view .bottom-header .bottom-header-item:first-child{
+    text-align: left;
+}
+.bottom-view .bottom-header .bottom-header-item:last-child{
+    text-align: right;
 }
 .bottom-view .bottom-header .bottom-header-item .item{
     width: auto;

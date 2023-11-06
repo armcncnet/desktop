@@ -10,11 +10,14 @@ class GCODE extends Loader {
         super(manager);
         const _this: any = this;
         _this.splitLayer = false;
+        _this.state = {cmd: "", x: 0, y: 0, z: 0, e: 0, f: 0, i:0, j:0};
+        _this.material = new LineBasicMaterial({color: 0x5E4EFF});
+        _this.last_position = false;
+        _this.object = new Group();
     }
 
     load(url: string, onLoad: any, onProgress: any, onError: any ) {
         const scope: any = this;
-
         const loader = new FileLoader(scope.manager);
         loader.setPath(scope.path);
         loader.setRequestHeader(scope.requestHeader);
@@ -35,13 +38,9 @@ class GCODE extends Loader {
     parse(lines: any){
         const scope: any = this;
         const layers: any = [];
-        let state: any = {x: 0, y: 0, z: 0, e: 0, f: 0, i:0, j:0, extruding: false, relative: false};
-        let currentLayer: any = undefined;
-        let cmd;
-        const args: any = {};
-        const object = new Group();
-        object.name = "gcode";
-        object.userData.dimensions = {
+        scope.object = new Group();
+        scope.object.name = "gcode";
+        scope.object.userData.dimensions = {
             minX: Infinity,
             maxX: -Infinity,
             minY: Infinity,
@@ -49,177 +48,125 @@ class GCODE extends Loader {
             minZ: Infinity,
             maxZ: -Infinity
         };
+        scope.object.userData.segments = [];
 
-        const pathMaterial = new LineBasicMaterial({color: 0x5E4EFF});
-        pathMaterial.name = "path";
+        scope.material.name = "path";
 
-        const extrudingMaterial = new LineBasicMaterial({color: 0x00FF00});
-        extrudingMaterial.name = "extruded";
-
-        function newLayer(line: any) {
-            currentLayer = {vertex: [], pathVertex: [], z: line.z};
-            layers.push(currentLayer);
-        }
-
-        function addSegment(p1: any, p2: any) {
-            if (currentLayer === undefined) {
-                newLayer(p1);
-            }
-            if (state.extruding) {
-                currentLayer.vertex.push(p1.x, p1.y, p1.z);
-                currentLayer.vertex.push(p2.x, p2.y, p2.z);
-            }else{
-                currentLayer.pathVertex.push(p1.x, p1.y, p1.z);
-                currentLayer.pathVertex.push(p2.x, p2.y, p2.z);
-            }
-
-            object.userData.dimensions.minX = Math.min(object.userData.dimensions.minX, p2.x);
-            object.userData.dimensions.maxX = Math.max(object.userData.dimensions.maxX, p2.x);
-            object.userData.dimensions.minY = Math.min(object.userData.dimensions.minY, p2.y);
-            object.userData.dimensions.maxY = Math.max(object.userData.dimensions.maxY, p2.y);
-            object.userData.dimensions.minZ = Math.min(object.userData.dimensions.minZ, p2.z);
-            object.userData.dimensions.maxZ = Math.max(object.userData.dimensions.maxZ, p2.z);
-        }
-
-        function delta(v1: any, v2: any) {
-            return state.relative ? v2 : v2 - v1;
-        }
-
-        function absolute(v1: any, v2: any) {
-            return state.relative ? v1 + v2 : v2;
-        }
-
-        for ( let i = 0; i < lines.length; i ++ ) {
-            const tokens = lines[i].split(' ');
-            cmd = tokens[0].toUpperCase();
-            tokens.splice(0).forEach((token: any)=>{
-                if (token[0] !== undefined) {
-                    const key = token[0].toLowerCase();
-                    args[key] = parseFloat(token.substring(1));
+        for (let line of lines) {
+            const token = line.split(" ");
+            const args: any = {};
+            let cmd: any = "";
+            if(token.length > 0){
+                cmd = token[0].toUpperCase();
+                token.splice(0).forEach((item: any)=>{
+                    if(item[0] !== undefined){
+                        const key = item[0].toLowerCase();
+                        const value = parseFloat(item.substring(1));
+                        args[key] = value;
+                    }
+                });
+                if(cmd === "G0" || cmd === "G1"){
+                    const line = {
+                        cmd: cmd,
+                        x: args.x ? args.x : scope.state.x,
+                        y: args.y ? args.y : scope.state.y,
+                        z: args.z ? args.z : scope.state.z,
+                        e: args.e ? args.e : scope.state.e,
+                        f: args.f ? args.f : scope.state.f,
+                        i: args.i ? args.i : scope.state.i,
+                        j: args.j ? args.j : scope.state.j
+                    }
+                    layers.push(line);
+                    scope.state = line;
                 }
+                if(cmd === "G2" || cmd === "G3"){
+                    const line = {
+                        cmd: cmd,
+                        x: args.x ? args.x : scope.state.x,
+                        y: args.y ? args.y : scope.state.y,
+                        z: args.z ? args.z : scope.state.z,
+                        e: args.e ? args.e : scope.state.e,
+                        f: args.f ? args.f : scope.state.f,
+                        i: args.i ? args.i : scope.state.i,
+                        j: args.j ? args.j : scope.state.j
+                    }
+                    layers.push(line);
+                    scope.state = line;
+                }
+                if(cmd === "G92"){
+                    const line = {
+                        cmd: cmd,
+                        x: args.x ? args.x : scope.state.x,
+                        y: args.y ? args.y : scope.state.y,
+                        z: args.z ? args.z : scope.state.z,
+                        e: args.e ? args.e : scope.state.e,
+                        f: args.f ? args.f : scope.state.f,
+                        i: args.i ? args.i : scope.state.i,
+                        j: args.j ? args.j : scope.state.j
+                    }
+                    layers.push(line);
+                    scope.state = line;
+                }
+            }
+        }
+
+        for (let layer of layers) {
+            scope.addObject(layer);
+            scope.object.userData.dimensions.minX = Math.min(scope.object.userData.dimensions.minX, layer.x);
+            scope.object.userData.dimensions.maxX = Math.max(scope.object.userData.dimensions.maxX, layer.x);
+            scope.object.userData.dimensions.minY = Math.min(scope.object.userData.dimensions.minY, layer.y);
+            scope.object.userData.dimensions.maxY = Math.max(scope.object.userData.dimensions.maxY, layer.y);
+            scope.object.userData.dimensions.minZ = Math.min(scope.object.userData.dimensions.minZ, layer.z);
+            scope.object.userData.dimensions.maxZ = Math.max(scope.object.userData.dimensions.maxZ, layer.z);
+        }
+
+        scope.object.scale.set(0.1, 0.1, 0.1);
+        return scope.object;
+    }
+
+    addObject(layer: any){
+        const scope: any = this;
+        const geometry = new BufferGeometry();
+        if(!scope.last_position){
+            scope.last_position = new THREE.Vector3(layer.x, layer.y, layer.z);
+        }
+        if(layer.cmd === "G2" || layer.cmd === "G3"){
+            const start = new THREE.Vector3(scope.last_position.x, scope.last_position.y, scope.last_position.z);
+            const end = new THREE.Vector3(layer.x, layer.y, layer.z);
+            const offset = new THREE.Vector3(layer.i, layer.j, 0);
+            const center = start.clone().add(offset);
+            const startAngle = Math.atan2(start.y - center.y, start.x - center.x);
+            let endAngle = Math.atan2(end.y - center.y, end.x - center.x);
+            const clockwise = layer.cmd === "G2";
+            if (clockwise && startAngle < endAngle) {
+                endAngle -= 2 * Math.PI;
+            }else if (!clockwise && startAngle > endAngle) {
+                endAngle += 2 * Math.PI;
+            }
+            const radius = offset.length();
+            const curve = new THREE.EllipseCurve(
+                center.x, center.y,
+                radius, radius,
+                startAngle, endAngle,
+                clockwise
+            );
+            const points = curve.getPoints(50);
+            const vertices: any = [];
+            points.forEach((point: any) => {
+                vertices.push(point.x, point.y, layer.z);
             });
-            if (cmd === "G00" || cmd === "G0" || cmd === "G01" || cmd === "G1" || /(([XxYyZzIiJj]) *(-?\d+.?\d*)) *(([XxYyZzIiJj]) *(-?\d+.?\d*))? *(([XxYyZzIiJj]) *(-?\d+.?\d*))?/g.test(cmd)) {
-                const line = {
-                    x: args.x !== undefined ? absolute(state.x, args.x) : state.x,
-                    y: args.y !== undefined ? absolute(state.y, args.y) : state.y,
-                    z: args.z !== undefined ? absolute(state.z, args.z) : state.z,
-                    e: args.e !== undefined ? absolute(state.e, args.e) : state.e,
-                    f: args.f !== undefined ? absolute(state.f, args.f) : state.f,
-                }
-                if (delta(state.e, line.e) > 0) {
-                    state.extruding = delta(state.e, line.e) > 0;
-                    if ( currentLayer == undefined || line.z != currentLayer.z ) {
-                        newLayer(line);
-                    }
-                }
-                addSegment(state,line);
-                state = line;
-            } else if (cmd === "G02" || cmd === "G2" || cmd === "G03" || cmd === "G3") {
-                const line = {
-                    x: args.x !== undefined ? absolute(state.x, args.x) : state.x,
-                    y: args.y !== undefined ? absolute(state.y, args.y) : state.y,
-                    z: args.z !== undefined ? absolute(state.z, args.z) : state.z,
-                    i: args.i !== undefined ? absolute(state.i, args.i) : state.i,
-                    j: args.j !== undefined ? absolute(state.j, args.j) : state.j,
-                    e: args.e !== undefined ? absolute(state.e, args.e) : state.e,
-                    f: args.f !== undefined ? absolute(state.f, args.f) : state.f,
-                };
-                if (delta(state.e, line.e) > 0) {
-                    state.extruding = delta(state.e, line.e) > 0;
-                    if (currentLayer == undefined || line.z != currentLayer.z) {
-                        newLayer(line);
-                    }
-                }
-                addSegment(state,line);
-                state = line;
-            } else if (cmd === "G90") {
-                state.relative = false;
-            } else if (cmd === "G91") {
-                state.relative = true;
-            } else if (cmd === "G92") {
-                const line = state;
-                line.x = args.x !== undefined ? args.x : line.x;
-                line.y = args.y !== undefined ? args.y : line.y;
-                line.z = args.z !== undefined ? args.z : line.z;
-                line.e = args.e !== undefined ? args.e : line.e;
-                state = line;
-            } else {}
-        }
-
-        function addObject(vertex: any, extruding: any, i: any ,cmd: any) {
-            if(cmd != "G02" || cmd != "G03" || cmd != "G2" || cmd != "G3"){
-                const geometry = new BufferGeometry();
-                geometry.setAttribute("position", new Float32BufferAttribute(vertex, 3));
-                const segments = new LineSegments(geometry, extruding ? extrudingMaterial : pathMaterial);
-                segments.name = "layer" + i;
-                object.add(segments);
-            } else {
-                if(args.i !== undefined && args.j !== undefined) {
-                    const centerX = state.x + args.i;
-                    const centerY = state.y + args.j;
-                    const radius = Math.sqrt(args.i ** 2 + args.j ** 2);
-                    const startAngle = Math.atan2(state.y - centerY, state.x - centerX);
-                    let endAngle = Math.atan2(args.y - centerY, args.x - centerX);
-                    if (cmd === "G02" || cmd === "G2") {
-                        if (endAngle >= startAngle) {
-                            endAngle -= 2 * Math.PI;
-                        }
-                    }else{
-                        if (endAngle <= startAngle) {
-                            endAngle += 2 * Math.PI;
-                        }
-                    }
-                    const curve = new THREE.ArcCurve(
-                        centerX, centerY,
-                        radius,
-                        startAngle,
-                        endAngle,
-                        (cmd === "G03" || cmd === "G3")
-                    );
-                    const points = curve.getPoints(50);
-                    const geometry = new THREE.BufferGeometry().setFromPoints(points.map((p: any) => new THREE.Vector3(p.x, p.y, state.z)));
-                    const material = extruding ? extrudingMaterial : pathMaterial;
-                    const arcLine = new THREE.Line(geometry, material);
-                    arcLine.name = "layer" + i;
-                    object.add(arcLine);
-                }else{
-                    const curve = new THREE.SplineCurve( [
-                        new THREE.Vector2(state.x, state.y),
-                        new THREE.Vector2(args.x, args.y)
-                    ]);
-                    const points = curve.getPoints(50);
-                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                    const ellipse = new THREE.Line(geometry, extruding ? extrudingMaterial : pathMaterial);
-                    ellipse.name = "layer" + i;
-                    object.add(ellipse);
-                }
-            }
-        }
-
-        if (scope.splitLayer) {
-            for ( let i = 0; i < layers.length; i ++ ) {
-                const layer = layers[i];
-                // addObject(layer.vertex, true, i ,cmd);
-                addObject(layer.pathVertex, false, i ,cmd);
-            }
+            const verticesArray = new Float32Array(vertices);
+            geometry.setAttribute("position", new THREE.BufferAttribute(verticesArray, 3));
+            scope.last_position = end;
         }else{
-            const vertex = [], pathVertex = [];
-            for ( let i = 0; i < layers.length; i ++ ) {
-                const layer = layers[i];
-                const layerVertex = layer.vertex;
-                const layerPathVertex = layer.pathVertex;
-                for ( let j = 0; j < layerVertex.length; j ++ ) {
-                    vertex.push(layerVertex[j]);
-                }
-                for ( let j = 0; j < layerPathVertex.length; j ++ ) {
-                    pathVertex.push(layerPathVertex[j]);
-                }
-            }
-            // addObject(vertex, true, layers.length ,cmd);
-            addObject(pathVertex, false, layers.length ,cmd);
+            const vertices = [scope.last_position.x, scope.last_position.y, scope.last_position.z, layer.x, layer.y, layer.z];
+            geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+            scope.last_position.set(layer.x, layer.y, layer.z);
         }
-        object.scale.set(0.1, 0.1, 0.1);
-        return object;
+        const segments = new THREE.Line(geometry, scope.material);
+        segments.name = "layer";
+        scope.object.userData.segments.push({segment: segments, passed: false});
+        scope.object.add(segments);
     }
 
     formatCode(gcode: any) {
@@ -229,8 +176,15 @@ class GCODE extends Loader {
         const variablePattern = /#<(\w+)>=(.*)|(#\d+)=(.*)|(#\w+)=(.*)/;
         for (let line of lines) {
             if (line !== "") {
+                let check_line = line.split('({');
+                if(check_line.length === 2){
+                    continue
+                }
+                check_line = line.split(';');
+                if(check_line.length > 0 && check_line[0] === ""){
+                    continue
+                }
                 line = line.split(';')[0].trim();
-                line = line.split('(')[0].trim();
                 if (line !== "") {
                     const match = variablePattern.exec(line);
                     if (match) {
@@ -264,7 +218,7 @@ class GCODE extends Loader {
                 try {
                     return mathjs.evaluate(replacedExpression).toFixed(5);
                 } catch (e) {
-                    return match
+                    return match;
                 }
             });
         });

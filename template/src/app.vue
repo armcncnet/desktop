@@ -90,6 +90,12 @@ export default defineComponent({
                         g5x_offset: [],
                         g_offset: [],
                         dtg_offset: [],
+                        box: {
+                            x: 0,
+                            y: 0,
+                            z_min: 0,
+                            z_max: 0
+                        },
                         tool: {
                             id: 0,
                             offset: 0.000,

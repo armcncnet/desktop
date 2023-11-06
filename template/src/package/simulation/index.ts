@@ -64,7 +64,7 @@ export default class Simulation {
         _this.engine.axes_helper.position.y = 0;
         _this.engine.scene.add(_this.engine.axes_helper);
 
-        _this.engine.control_camera = new THREE.PerspectiveCamera(75, _this.container.clientWidth / _this.container.clientHeight, 0.1, 20000);
+        _this.engine.control_camera = new THREE.PerspectiveCamera(75, _this.container.clientWidth / _this.container.clientHeight, 0.0001, 20000);
         _this.engine.control_camera.name = "default_camera";
         _this.engine.control_camera.position.set(0, -10, 5);
         _this.engine.control_camera.lookAt(0, 0, 0);
@@ -77,7 +77,7 @@ export default class Simulation {
         _this.engine.control.maxPolarAngle = Math.PI / 2;
         _this.engine.control.enableDamping = true;
         _this.engine.control.dampingFactor = 0.2; // 视角惯性量
-        _this.engine.control.target.set(0, 0.1, 0);
+        _this.engine.control.target.set(0, 5, 0);
         _this.engine.control.update();
         _this.engine.scene.add(_this.engine.control_camera);
 
@@ -93,7 +93,7 @@ export default class Simulation {
         _this.engine.tool.matrixAutoUpdate = true;
         const tool_line_geometry = new THREE.BufferGeometry();
         tool_line_geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
-        _this.engine.tool_line = new THREE.Line(tool_line_geometry, new THREE.LineBasicMaterial({color: 0xFFFF00}));
+        _this.engine.tool_line = new THREE.Line(tool_line_geometry, new THREE.LineBasicMaterial({color: 0x00FF00}));
         _this.engine.tool_line.name = "default_tool_line";
         _this.engine.scene.add(_this.engine.tool, _this.engine.tool_line);
 
@@ -147,16 +147,27 @@ export default class Simulation {
             const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
             const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
             _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
-            _this.engine.tool_line.geometry.needsUpdate = true;
             const gcode = _this.engine.scene.getObjectByName("gcode");
             if(gcode){
                 gcode.children.forEach((lineSegment: any) => {
                     if (lineSegment.material && lineSegment.material.isMaterial) {
                         lineSegment.material.transparent = true;
-                        lineSegment.material.opacity = 0.4;
+                        lineSegment.material.opacity = 0.5;
                         lineSegment.material.needsUpdate = true;
                     }
                 });
+                const dimensions = gcode.userData.dimensions;
+                if (_this.engine.tool.position.x >= dimensions.minX && _this.engine.tool.position.x <= dimensions.maxX && _this.engine.tool.position.y >= dimensions.minY && _this.engine.tool.position.y <= dimensions.maxY && _this.engine.tool.position.z >= dimensions.minZ && _this.engine.tool.position.z <= dimensions.maxZ) {
+                    if (_this.engine.tool_line.material) {
+                        _this.engine.tool_line.material.color.set(0x00FF00);
+                        _this.engine.tool_line.material.needsUpdate = true;
+                    }
+                }else{
+                    if (_this.engine.tool_line.material) {
+                        _this.engine.tool_line.material.color.set(0xFFFF00);
+                        _this.engine.tool_line.material.needsUpdate = true;
+                    }
+                }
             }
         }
     }
@@ -181,10 +192,6 @@ export default class Simulation {
     onEngineAnimate(){
         const _this: any = this;
         _this.engine.clock_delta = _this.engine.clock.getDelta();
-        const gcode = _this.engine.scene.getObjectByName("gcode");
-        if(gcode){
-
-        }
         _this.engine.control.update();
         _this.engine.renderer.clear();
         _this.engine.renderer.render(_this.engine.scene, _this.engine.control_camera);
