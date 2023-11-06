@@ -253,6 +253,7 @@ export default defineComponent({
                     default_angular_velocity: 0
                 },
                 bottom: {
+                    view: "p",
                     line: {
                         loading: false,
                         content: "",

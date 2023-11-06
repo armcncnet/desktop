@@ -14,6 +14,7 @@ export default class Simulation {
 
     constructor(loading_callback: any) {
         const _this: any = this;
+        _this.loading_callback = loading_callback;
         _this.loading = new THREE.LoadingManager(()=>{
             loading_callback({type: "resource:loading:end"});
         }, (url: any, loaded: any, total: any)=>{
@@ -38,6 +39,10 @@ export default class Simulation {
             renderer: false,
         }
         _this.gocode = new GCODE(_this.loading);
+        _this.view = "p";
+        _this.object = {
+            box: false
+        }
     }
 
     InitEngine(){
@@ -72,12 +77,12 @@ export default class Simulation {
         _this.engine.control = new OrbitControls(_this.engine.control_camera, _this.container);
         _this.engine.control.enabled = true;
         _this.engine.control.mouseButtons.RIGHT = 0; // 禁用右键拖拽
-        _this.engine.control.minDistance = 5; // 相机距离观察目标最小距离
-        _this.engine.control.maxDistance = 30; // 相机距离观察目标最大距离
+        _this.engine.control.minDistance = 1; // 相机距离观察目标最小距离
+        _this.engine.control.maxDistance = 40; // 相机距离观察目标最大距离
         _this.engine.control.maxPolarAngle = Math.PI / 2;
         _this.engine.control.enableDamping = true;
         _this.engine.control.dampingFactor = 0.2; // 视角惯性量
-        _this.engine.control.target.set(0, 5, 0);
+        _this.engine.control.target.set(0, 0, 0);
         _this.engine.control.update();
         _this.engine.scene.add(_this.engine.control_camera);
 
@@ -127,12 +132,16 @@ export default class Simulation {
         _this.gocode.load(file_path, (object: any)=>{
             _this.engine.scene.add(object);
             if(object.userData.dimensions){
-                const boundingBox = new THREE.Box3().setFromObject(object);
-                const center = boundingBox.getCenter(new THREE.Vector3());
+                _this.object.box = new THREE.Box3().setFromObject(object);
+                const center = _this.object.box.getCenter(new THREE.Vector3());
                 _this.engine.control.target.set(center.x, center.y, center.z);
                 _this.engine.control.update();
                 _this.engine.control_camera.lookAt(center);
-                _this.engine.control_camera.updateProjectionMatrix();
+                _this.loading_callback({
+                    type: "resource:update:data",
+                    box: object.userData.dimensions,
+                    view: _this.view
+                });
             }
         });
     }
@@ -156,18 +165,16 @@ export default class Simulation {
                         lineSegment.material.needsUpdate = true;
                     }
                 });
-                const dimensions = gcode.userData.dimensions;
-                if (_this.engine.tool.position.x >= dimensions.minX && _this.engine.tool.position.x <= dimensions.maxX && _this.engine.tool.position.y >= dimensions.minY && _this.engine.tool.position.y <= dimensions.maxY && _this.engine.tool.position.z >= dimensions.minZ && _this.engine.tool.position.z <= dimensions.maxZ) {
-                    if (_this.engine.tool_line.material) {
-                        _this.engine.tool_line.material.color.set(0x00FF00);
-                        _this.engine.tool_line.material.needsUpdate = true;
+            }
+        }else{
+            const gcode = _this.engine.scene.getObjectByName("gcode");
+            if(gcode){
+                gcode.children.forEach((lineSegment: any) => {
+                    if (lineSegment.material && lineSegment.material.isMaterial) {
+                        lineSegment.material.transparent = false;
+                        lineSegment.material.needsUpdate = true;
                     }
-                }else{
-                    if (_this.engine.tool_line.material) {
-                        _this.engine.tool_line.material.color.set(0xFFFF00);
-                        _this.engine.tool_line.material.needsUpdate = true;
-                    }
-                }
+                });
             }
         }
     }
@@ -176,6 +183,32 @@ export default class Simulation {
         const _this: any = this;
         _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
         _this.engine.tool_line.geometry.needsUpdate = true;
+    }
+
+    onSwitchView(view: string){
+        const _this: any = this;
+        const center = _this.object.box.getCenter(new THREE.Vector3());
+        const distance = 10;
+        const views: any = {
+            x: new THREE.Vector3(-1, 0, 0),
+            y: new THREE.Vector3(0, -1, 0),
+            z: new THREE.Vector3(0, 0, 1),
+            p: new THREE.Vector3(0, -10, 5),
+        };
+        const new_view = views[view];
+        if (!new_view){
+            return;
+        }
+        const newPosition = new_view.clone().multiplyScalar(distance).add(center);
+        _this.engine.control_camera.position.copy(newPosition);
+        _this.engine.control_camera.lookAt(center);
+        _this.engine.control.target.copy(center);
+        _this.engine.control.update();
+        _this.view = view;
+        _this.loading_callback({
+            type: "resource:update:data",
+            view: _this.view
+        });
     }
 
     onEngineResize(){
@@ -203,6 +236,18 @@ export default class Simulation {
     onEngineDestroy(){
         const _this: any = this;
         cancelAnimationFrame(_this.onEngineAnimate.bind(_this));
+        const gcode = _this.engine.scene.getObjectByName("gcode");
+        if(gcode){
+            gcode.traverse((child: any)=>{
+                if (child.isLineSegments) {
+                    child.geometry.dispose();
+                    if (child.material && child.material.dispose) {
+                        child.material.dispose();
+                    }
+                }
+            });
+            _this.engine.scene.remove(gcode);
+        }
         _this.engine.scene.children.forEach((object: any)=>{
             if (object.isMesh) {
                 object.geometry.dispose();

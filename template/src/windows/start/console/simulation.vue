@@ -3,10 +3,10 @@
         <div id="world" class="simulation-box"></div>
         <div class="dro-view" v-if="props.cnc.device.machine.info">
             <div class="dro-group">
-                <div class="dro-line">X 长度: <span>121.050</span></div>
-                <div class="dro-line">Y 长度: <span>1.05</span></div>
-                <div class="dro-line">Z 最大值: <span>-312.000</span></div>
-                <div class="dro-line">Z 最小值: <span>5.00</span></div>
+                <div class="dro-line">X 长度: <span>{{props.cnc.console.left.simulation.box.x}}</span></div>
+                <div class="dro-line">Y 长度: <span>{{props.cnc.console.left.simulation.box.y}}</span></div>
+                <div class="dro-line">Z 最大值: <span>{{props.cnc.console.left.simulation.box.z_max}}</span></div>
+                <div class="dro-line">Z 最小值: <span>{{props.cnc.console.left.simulation.box.z_min}}</span></div>
                 <div class="dro-line">刀具号: <span>{{props.cnc.console.left.simulation.tool.id}}</span></div>
                 <div class="dro-line">刀具直径: <span>{{props.cnc.console.left.simulation.tool.diameter}}</span></div>
                 <div class="dro-line">偏移量: <span>{{props.cnc.console.left.simulation.tool.offset.toFixed(3)}}</span></div>
@@ -49,7 +49,17 @@ export default defineComponent({
                 let world: any = document.getElementById("world");
                 world.innerHTML = "";
                 (window as any).simulation = new Simulation((message: any)=>{
-                    console.log(message);
+                    if(message.type === "resource:update:data"){
+                        if(message.box){
+                            props.cnc.console.left.simulation.box.x = parseFloat(message.box.maxX).toFixed(2);
+                            props.cnc.console.left.simulation.box.y = parseFloat(message.box.maxY).toFixed(2);
+                            props.cnc.console.left.simulation.box.z_max = parseFloat(message.box.maxZ).toFixed(2);
+                            props.cnc.console.left.simulation.box.z_min = parseFloat(message.box.minZ).toFixed(2);
+                        }
+                        if(message.view){
+                            props.cnc.console.bottom.view = message.view;
+                        }
+                    }
                 });
                 (window as any).simulation.InitEngine();
             }

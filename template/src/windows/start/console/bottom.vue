@@ -10,13 +10,12 @@
             </div>
             <div class="bottom-header-item">
                 <div class="item">
-                    <el-button class="cnc" @click="openProgram">X</el-button>
-                </div>
-                <div class="item">
-                    <el-button class="cnc" @click="openProgram">Y</el-button>
-                </div>
-                <div class="item">
-                    <el-button class="cnc" @click="openProgram">Z</el-button>
+                    <el-radio-group class="cnc" v-model="props.cnc.console.bottom.view" @change="onSwitchView">
+                        <el-radio-button label="x">X</el-radio-button>
+                        <el-radio-button label="y">Y</el-radio-button>
+                        <el-radio-button label="z">Z</el-radio-button>
+                        <el-radio-button label="p">P</el-radio-button>
+                    </el-radio-group>
                 </div>
             </div>
             <div class="bottom-header-item"></div>
@@ -98,6 +97,13 @@ export default defineComponent({
 
         }
 
+        function onSwitchView(value: string){
+            console.log(value);
+            if((window as any).simulation){
+                (window as any).simulation.onSwitchView(value);
+            }
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -110,7 +116,8 @@ export default defineComponent({
             props,
             icons,
             bottomFooter,
-            openProgram
+            openProgram,
+            onSwitchView
         }
     }
 });

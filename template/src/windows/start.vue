@@ -324,6 +324,7 @@ export default defineComponent({
             }
             props.cnc.navigation.select = "console";
             props.cnc.device.machine.info = false;
+            props.cnc.console.right.is_first = true;
             props.cnc.loading.close();
         }
 
