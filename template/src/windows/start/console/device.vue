@@ -40,7 +40,6 @@ export default defineComponent({
         function onSelectDevice(device: any){
             props.cnc.device.loading = true;
             (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
-                console.log(response.data);
                 if(response.code === 0){
                     if(response.data){
                         props.cnc.device.ip = device.ip;

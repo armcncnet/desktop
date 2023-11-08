@@ -1,24 +1,24 @@
 // @ts-ignore
 import * as THREE from "three";
-// @ts-ignore
-import {BufferGeometry, FileLoader, Float32BufferAttribute, Group, LineBasicMaterial, LineSegments, Loader, SplineCurve} from "three";
 import * as mathjs from "mathjs";
+// @ts-ignore
+import {mergeGeometries} from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
-class GCODE extends Loader {
+class GCODE extends THREE.Loader {
 
     constructor(manager: any) {
         super(manager);
         const _this: any = this;
         _this.splitLayer = false;
         _this.state = {cmd: "", x: 0, y: 0, z: 0, e: 0, f: 0, i:0, j:0};
-        _this.material = new LineBasicMaterial({color: 0x5E4EFF});
+        _this.material = new THREE.LineBasicMaterial({color: 0x5E4EFF});
         _this.last_position = false;
-        _this.object = new Group();
+        _this.object = new THREE.Group();
     }
 
     load(url: string, onLoad: any, onProgress: any, onError: any ) {
         const scope: any = this;
-        const loader = new FileLoader(scope.manager);
+        const loader = new THREE.FileLoader(scope.manager);
         loader.setPath(scope.path);
         loader.setRequestHeader(scope.requestHeader);
         loader.setWithCredentials(scope.withCredentials);
@@ -35,10 +35,14 @@ class GCODE extends Loader {
         }, onProgress, onError);
     }
 
-    parse(lines: any){
+    parse(lines: any, onProgress: any){
         const scope: any = this;
         const layers: any = [];
-        scope.object = new Group();
+        scope.splitLayer = false;
+        scope.state = {cmd: "", x: 0, y: 0, z: 0, e: 0, f: 0, i:0, j:0};
+        scope.material = new THREE.LineBasicMaterial({color: 0x5E4EFF});
+        scope.last_position = false;
+        scope.object = new THREE.Group();
         scope.object.name = "gcode";
         scope.object.userData.dimensions = {
             minX: Infinity,
@@ -51,6 +55,8 @@ class GCODE extends Loader {
         scope.object.userData.segments = [];
 
         scope.material.name = "path";
+
+        const geometries = [];
 
         for (let line of lines) {
             const token = line.split(" ");
@@ -78,8 +84,9 @@ class GCODE extends Loader {
                     }
                     layers.push(line);
                     scope.state = line;
-                }
-                if(cmd === "G2" || cmd === "G3"){
+                    let geometry = scope.addLine(line);
+                    geometries.push(geometry);
+                }else if(cmd === "G2" || cmd === "G3"){
                     const line = {
                         cmd: cmd,
                         x: args.x ? args.x : scope.state.x,
@@ -92,8 +99,9 @@ class GCODE extends Loader {
                     }
                     layers.push(line);
                     scope.state = line;
-                }
-                if(cmd === "G92"){
+                    let geometry = scope.addLine(line);
+                    geometries.push(geometry);
+                }else if(cmd === "G92"){
                     const line = {
                         cmd: cmd,
                         x: args.x ? args.x : scope.state.x,
@@ -106,27 +114,53 @@ class GCODE extends Loader {
                     }
                     layers.push(line);
                     scope.state = line;
+                    let geometry = scope.addLine(line);
+                    geometries.push(geometry);
+                }else{
+                    if(cmd.indexOf("N") !== -1){
+                        const line = {
+                            cmd: cmd,
+                            x: args.x ? args.x : scope.state.x,
+                            y: args.y ? args.y : scope.state.y,
+                            z: args.z ? args.z : scope.state.z,
+                            e: args.e ? args.e : scope.state.e,
+                            f: args.f ? args.f : scope.state.f,
+                            i: args.i ? args.i : scope.state.i,
+                            j: args.j ? args.j : scope.state.j
+                        }
+                        layers.push(line);
+                        scope.state = line;
+                        let geometry = scope.addLine(line);
+                        geometries.push(geometry);
+                    }
                 }
             }
         }
 
-        for (let layer of layers) {
-            scope.addObject(layer);
-            scope.object.userData.dimensions.minX = Math.min(scope.object.userData.dimensions.minX, layer.x);
-            scope.object.userData.dimensions.maxX = Math.max(scope.object.userData.dimensions.maxX, layer.x);
-            scope.object.userData.dimensions.minY = Math.min(scope.object.userData.dimensions.minY, layer.y);
-            scope.object.userData.dimensions.maxY = Math.max(scope.object.userData.dimensions.maxY, layer.y);
-            scope.object.userData.dimensions.minZ = Math.min(scope.object.userData.dimensions.minZ, layer.z);
-            scope.object.userData.dimensions.maxZ = Math.max(scope.object.userData.dimensions.maxZ, layer.z);
-        }
-
+        const mergedGeometry = mergeGeometries(geometries, false);
+        let line = new THREE.Line(mergedGeometry, scope.material);
+        line.name = "layer";
+        scope.object.userData.segments.push({segment: line, passed: false});
+        scope.object.add(line);
         scope.object.scale.set(0.1, 0.1, 0.1);
         return scope.object;
     }
 
+    addLine(line: any){
+        const scope: any = this;
+        let geometry = scope.addObject(line);
+        scope.object.userData.dimensions.minX = Math.min(scope.object.userData.dimensions.minX, line.x);
+        scope.object.userData.dimensions.maxX = Math.max(scope.object.userData.dimensions.maxX, line.x);
+        scope.object.userData.dimensions.minY = Math.min(scope.object.userData.dimensions.minY, line.y);
+        scope.object.userData.dimensions.maxY = Math.max(scope.object.userData.dimensions.maxY, line.y);
+        scope.object.userData.dimensions.minZ = Math.min(scope.object.userData.dimensions.minZ, line.z);
+        scope.object.userData.dimensions.maxZ = Math.max(scope.object.userData.dimensions.maxZ, line.z);
+        return geometry;
+    }
+
     addObject(layer: any){
         const scope: any = this;
-        const geometry = new BufferGeometry();
+        const geometry = new THREE.BufferGeometry();
         if(!scope.last_position){
             scope.last_position = new THREE.Vector3(layer.x, layer.y, layer.z);
         }
@@ -163,10 +197,7 @@ class GCODE extends Loader {
             geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
             scope.last_position.set(layer.x, layer.y, layer.z);
         }
-        const segments = new THREE.Line(geometry, scope.material);
-        segments.name = "layer";
-        scope.object.userData.segments.push({segment: segments, passed: false});
-        scope.object.add(segments);
+        return geometry;
     }
 
     formatCode(gcode: any) {

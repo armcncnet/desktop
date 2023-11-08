@@ -4,10 +4,10 @@
             <div class="bottom-header-item">
                 <div class="item">
                     <el-tooltip popper-class="cnc" effect="dark" content="打开G程序" placement="top">
-                        <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'disabled' || props.cnc.header.centre.start_disabled" :icon="icons.FolderOpened" @click="openProgram"></el-button>
+                        <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'active'" :icon="icons.FolderOpened" @click="openProgram"></el-button>
                     </el-tooltip>
                     <el-tooltip popper-class="cnc" effect="dark" content="刷新G程序" placement="top">
-                        <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'disabled' || props.cnc.header.centre.start_disabled" :icon="icons.Refresh" @click="refreshProgram"></el-button>
+                        <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'active'" :icon="icons.Refresh" @click="refreshProgram"></el-button>
                     </el-tooltip>
                 </div>
             </div>
@@ -24,7 +24,7 @@
             <div class="bottom-header-item"></div>
         </div>
         <div class="bottom-footer" ref="bottomFooter" style="overflow-y: auto">
-            <div class="code-box">
+            <div class="code-box" v-infinite-scroll="onScroll">
                 <div :name="'line' + (index + 1)" class="code-line" :class="props.cnc.console.bottom.line.motion_line > 0 && (props.cnc.console.bottom.line.motion_line - 1) === index ? 'current' : ''" v-for="(item, index) in props.cnc.console.bottom.line.items" :key="index">
                     <div class="item">{{index + 1}}</div>
                     <div class="item">{{item}}</div>
@@ -32,16 +32,20 @@
             </div>
         </div>
     </div>
+    <ProgramDialog ref="programDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'program'" />
 </template>
 
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, ref} from "vue";
 import * as icons from "@element-plus/icons";
+import ProgramDialog from "../../common/dialog/program.vue";
 export default defineComponent({
     name: "BottomConsole",
     emits: [],
     props: ["cnc"],
-    components: {},
+    components: {
+        ProgramDialog
+    },
     setup(props, context) {
 
         (window as any).runtime.EventsOn("event_load_code", (message: any) => {
@@ -58,6 +62,8 @@ export default defineComponent({
 
         function onCode(file: string){
             props.cnc.console.bottom.line.loading = true;
+            props.cnc.console.bottom.line.tmp_index = 0;
+            props.cnc.console.bottom.line.tmp = [];
             props.cnc.console.bottom.line.items = [];
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/code/read/line", "GET", {file_name: file}).then((response: any)=>{
                 if(response.code === 0){
@@ -68,7 +74,13 @@ export default defineComponent({
                             (window as any).simulation.onLoadCode((window as any).URL.createObjectURL(file_blob));
                         }
                         props.cnc.console.bottom.line.content = response.data.content;
-                        props.cnc.console.bottom.line.items = response.data.lines;
+                        props.cnc.console.bottom.line.tmp = response.data.lines;
+                        if(props.cnc.console.bottom.line.tmp.length <= 1000){
+                            props.cnc.console.bottom.line.items = response.data.lines;
+                        }else{
+                            props.cnc.console.bottom.line.items = response.data.lines.slice(0, 1000);
+                            props.cnc.console.bottom.line.tmp_index = 1;
+                        }
                         props.cnc.console.bottom.line.loading = false;
                     }else{
                         props.cnc.console.bottom.line.loading = false;
@@ -77,6 +89,22 @@ export default defineComponent({
                     props.cnc.console.bottom.line.loading = false;
                 }
             });
+        }
+
+        function onScroll(){
+            if(props.cnc.console.bottom.line.tmp_index > 0){
+                let data = props.cnc.console.bottom.line.tmp.slice(props.cnc.console.bottom.line.tmp_index * 1000, -1);
+                if(data.length >= 1000){
+                    let new_data = data.slice(0, 1000);
+                    props.cnc.console.bottom.line.items.push(...new_data);
+                    props.cnc.console.bottom.line.tmp_index++;
+                }else{
+                    let new_data = data.slice(0, 1000);
+                    props.cnc.console.bottom.line.items.push(...new_data);
+                    props.cnc.console.bottom.line.items.push(props.cnc.console.bottom.line.tmp[props.cnc.console.bottom.line.tmp.length - 1]);
+                    props.cnc.console.bottom.line.tmp_index = 0;
+                }
+            }
         }
 
         const bottomFooter = ref(null);
@@ -97,7 +125,16 @@ export default defineComponent({
         }
 
         function openProgram(){
-
+            props.cnc.dialog.config.type = "program";
+            props.cnc.dialog.config.title = "打开G程序";
+            props.cnc.dialog.config.width = "260px";
+            props.cnc.dialog.config.close = true;
+            props.cnc.dialog.form = {
+                items: [],
+                item: false,
+                loading: true,
+            }
+            props.cnc.dialog.status = true;
         }
 
         function refreshProgram(){
@@ -105,7 +142,7 @@ export default defineComponent({
                 (window as any).simulation.clearToolLine();
                 (window as any).simulation.clearGcode();
             }
-            (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.info.file.replace(/^\.\.\/\.\.\/files\//, "")});
+            (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.file});
         }
 
         function onSwitchView(value: string){
@@ -126,6 +163,7 @@ export default defineComponent({
             props,
             icons,
             bottomFooter,
+            onScroll,
             openProgram,
             refreshProgram,
             onSwitchView

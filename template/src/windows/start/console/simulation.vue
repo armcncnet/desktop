@@ -49,6 +49,7 @@ export default defineComponent({
                 let world: any = document.getElementById("world");
                 world.innerHTML = "";
                 (window as any).simulation = new Simulation((message: any)=>{
+                    console.log(message);
                     if(message.type === "resource:update:data"){
                         if(message.box){
                             props.cnc.console.left.simulation.box.x = parseFloat(message.box.maxX).toFixed(2);

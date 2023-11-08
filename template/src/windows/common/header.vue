@@ -144,9 +144,9 @@ export default defineComponent({
                 props.cnc.dialog.config.width = "400px";
                 props.cnc.dialog.config.close = true;
                 props.cnc.dialog.form = {
-                    ip: "127.0.0.1"
+                    ip: "127.0.0.1",
+                    loading: false
                 }
-                props.cnc.dialog.form_loading = false;
                 props.cnc.dialog.status = true;
             }else{
                 ElMessageBox.confirm("是否确认断开设备连接？", "操作确认", {

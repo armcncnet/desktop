@@ -48,6 +48,7 @@ export default defineComponent({
                 },
                 machine: {
                     path: "",
+                    file: "",
                     info: false
                 }
             },
@@ -72,6 +73,7 @@ export default defineComponent({
             console: {
                 left: {
                     simulation: {
+                        mask: false,
                         current_velocity: 0,
                         velocity: [],
                         g92_offset: [],
@@ -245,6 +247,8 @@ export default defineComponent({
                     line: {
                         loading: false,
                         content: "",
+                        tmp_index: 0,
+                        tmp: [],
                         items: [],
                         motion_line: 0
                     }

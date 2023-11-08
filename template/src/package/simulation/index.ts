@@ -61,7 +61,7 @@ export default class Simulation {
         _this.engine.ground.material.opacity = 0.05;
         //_this.engine.ground.rotation.x = 90 * Math.PI / 180;
         _this.engine.ground.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI / 2));
-        _this.engine.ground.matrixAutoUpdate = true;
+
         _this.engine.scene.add(_this.engine.ground);
 
         _this.engine.axes_helper = new THREE.AxesHelper(1, 1, 1);
@@ -103,8 +103,8 @@ export default class Simulation {
         _this.engine.scene.add(_this.engine.tool, _this.engine.tool_line);
 
         _this.engine.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-        _this.engine.renderer.setClearColor(0xf9f9f9, 1);
-        _this.engine.renderer.setPixelRatio(1);
+        _this.engine.renderer.setClearColor(0x00FF00, 1);
+        _this.engine.renderer.setPixelRatio(window.devicePixelRatio);
         _this.engine.renderer.sortObjects = false;
         _this.engine.renderer.autoClear = false;
         _this.engine.renderer.updateSize = _this.engine.renderer.setSize;
@@ -141,12 +141,12 @@ export default class Simulation {
         _this.engine.tool.position.x = x * 0.1;
         _this.engine.tool.position.y = y * 0.1;
         _this.engine.tool.position.z = (z * 0.1) + 0.25;
+        const gcode = _this.engine.scene.getObjectByName("gcode");
         if(state === 2){
             const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.25);
             const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
             const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
             _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
-            const gcode = _this.engine.scene.getObjectByName("gcode");
             if(gcode){
                 gcode.children.forEach((lineSegment: any) => {
                     if (lineSegment.material && lineSegment.material.isMaterial) {
@@ -157,7 +157,6 @@ export default class Simulation {
                 });
             }
         }else{
-            const gcode = _this.engine.scene.getObjectByName("gcode");
             if(gcode){
                 gcode.children.forEach((lineSegment: any) => {
                     if (lineSegment.material && lineSegment.material.isMaterial) {
@@ -179,15 +178,24 @@ export default class Simulation {
         const _this: any = this;
         const gcode = _this.engine.scene.getObjectByName("gcode");
         if(gcode){
-            gcode.traverse((child: any)=>{
-                if (child.isLineSegments) {
+            gcode.children.forEach((child: any)=>{
+                if (child.isObject3D) {
                     child.geometry.dispose();
-                    if (child.material && child.material.dispose) {
+                    if (child.material) {
                         child.material.dispose();
+                        if (child.material.map) child.material.map.dispose();
+                        if (child.material.lightMap) child.material.lightMap.dispose();
+                        if (child.material.bumpMap) child.material.bumpMap.dispose();
+                        if (child.material.normalMap) child.material.normalMap.dispose();
+                        if (child.material.specularMap) child.material.specularMap.dispose();
+                        if (child.material.envMap) child.material.envMap.dispose();
                     }
                 }
             });
             _this.engine.scene.remove(gcode);
+            if (_this.engine.renderer) {
+                _this.engine.renderer.renderLists.dispose();
+            }
         }
     }
 
@@ -242,18 +250,7 @@ export default class Simulation {
     onEngineDestroy(){
         const _this: any = this;
         cancelAnimationFrame(_this.onEngineAnimate.bind(_this));
-        const gcode = _this.engine.scene.getObjectByName("gcode");
-        if(gcode){
-            gcode.traverse((child: any)=>{
-                if (child.isLineSegments) {
-                    child.geometry.dispose();
-                    if (child.material && child.material.dispose) {
-                        child.material.dispose();
-                    }
-                }
-            });
-            _this.engine.scene.remove(gcode);
-        }
+        _this.clearGcode();
         _this.engine.scene.children.forEach((object: any)=>{
             if (object.isMesh) {
                 object.geometry.dispose();

@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import {defineComponent, nextTick, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted} from "vue";
-import {ElLoading, ElNotification} from "element-plus";
+import {ElLoading, ElMessage, ElNotification} from "element-plus";
 import * as icons from "@element-plus/icons";
 import NoSleep from "nosleep.js";
 import HeaderCommon from "./common/header.vue";
@@ -37,7 +37,7 @@ import ProgramStart from "./start/program.vue";
 import PluginStart from "./start/plugin.vue";
 import MachineStart from "./start/machine.vue";
 import SettingsStart from "./start/settings.vue";
-import SelectLayer from "./layer/select.vue";
+import SelectLayer from "./common/layer/select.vue";
 export default defineComponent({
     name: "Start",
     emits: [],
@@ -107,6 +107,20 @@ export default defineComponent({
                                     background: "rgba(0, 0, 0, .5)",
                                     customClass: "cnc",
                                     fullscreen: true
+                                });
+                            }
+                        }
+                        if(message_json.command === "launch:program:open"){
+                            if(message_json.data.status){
+                                (window as any).runtime.EventsEmit("dialog_close", {});
+                                props.cnc.device.machine.file = message_json.data.file;
+                                (window as any).runtime.EventsEmit("event_load_code", {file: message_json.data.file});
+                            }else{
+                                ElMessage.closeAll();
+                                ElMessage({
+                                    message: "程序加载失败，请重新尝试",
+                                    type: "warning",
+                                    customClass: "cnc"
                                 });
                             }
                         }
@@ -216,8 +230,10 @@ export default defineComponent({
                                 props.cnc.console.right.default_linear_velocity = Math.round(message_json.data.user_data.default_linear_velocity * 60);
                                 props.cnc.console.right.max_angular_velocity = Math.round(message_json.data.user_data.max_angular_velocity * 60);
                                 props.cnc.console.right.default_angular_velocity = Math.round(message_json.data.user_data.default_angular_velocity * 60);
+                                let file_part = props.cnc.device.machine.info.file.split("/");
+                                props.cnc.device.machine.file = file_part.pop();
+                                (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.file});
                                 props.cnc.console.right.is_first = false;
-                                (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.info.file.replace(/^\.\.\/\.\.\/files\//, "")});
                             }
                             if(props.cnc.device.machine.info.user_data.increments){
                                 props.cnc.console.right.step.items = [];
@@ -290,7 +306,7 @@ export default defineComponent({
                         }
                         if(message_json.command === "launch:machine:error"){
                             let kind = [11];
-                            if(!kind.includes(message_json.data)){
+                            if(kind.includes(message_json.data)){
                                 ElNotification({
                                     title: "消息提醒",
                                     message: message_json.message,

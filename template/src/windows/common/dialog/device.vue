@@ -6,7 +6,7 @@
                     <el-input class="cnc" v-model="props.cnc.dialog.form.ip" placeholder="请输入设备的IP地址" maxlength="140" autocomplete="off" spellcheck="false" style="width: 200px" />
                 </el-form-item>
                 <el-form-item label="">
-                    <el-button color="#5e4eff" :loading="props.cnc.dialog.form_loading" type="primary" @click="onDevice">连接设备</el-button>
+                    <el-button color="#5e4eff" :loading="props.cnc.dialog.form.loading" type="primary" @click="onDevice">连接设备</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -33,7 +33,7 @@ export default defineComponent({
                 });
                 return;
             }
-            props.cnc.dialog.form_loading = true;
+            props.cnc.dialog.form.loading = true;
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.dialog.form.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
@@ -57,7 +57,7 @@ export default defineComponent({
                         (window as any).runtime.EventsEmit("event_message", {type: "connected_device"});
                         dialogClose(false);
                     }else{
-                        props.cnc.dialog.form_loading = false;
+                        props.cnc.dialog.form.loading = false;
                         ElMessage.closeAll();
                         ElMessage({
                             message: "设备连接失败，请检查后重新尝试",
@@ -66,7 +66,7 @@ export default defineComponent({
                         });
                     }
                 }else{
-                    props.cnc.dialog.form_loading = false;
+                    props.cnc.dialog.form.loading = false;
                     ElMessage.closeAll();
                     ElMessage({
                         message: "设备连接失败，请检查后重新尝试",
@@ -82,12 +82,9 @@ export default defineComponent({
                 close();
             }
             props.cnc.dialog.status = false;
-            props.cnc.dialog.form.loading = false;
             setTimeout(()=>{
                 props.cnc.dialog.config.type = "";
-                props.cnc.dialog.form = {
-                    loading: false
-                };
+                props.cnc.dialog.form = false;
             }, 20);
         }
 

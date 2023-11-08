@@ -182,7 +182,7 @@ export default defineComponent({
             if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2) {
                 return;
             }
-            let message = {command: "desktop:control:device:home", data: axis}
+            let message = {command: "desktop:control:device:home", data: axis};
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
@@ -196,9 +196,9 @@ export default defineComponent({
             message.data.y = parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
             message.data.z = parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
             if(current === "all"){
-                message.data.x = parseFloat("0.000").toFixed(3)
-                message.data.y = parseFloat("0.000").toFixed(3)
-                message.data.z = parseFloat("0.000").toFixed(3)
+                message.data.x = parseFloat("0.000").toFixed(3);
+                message.data.y = parseFloat("0.000").toFixed(3);
+                message.data.z = parseFloat("0.000").toFixed(3);
             }
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
@@ -223,7 +223,7 @@ export default defineComponent({
                 if(direction === "-"){
                     speed = 0 - speed;
                 }
-                let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}}
+                let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
@@ -233,7 +233,7 @@ export default defineComponent({
                 let axis = value.substr(0, 1);
                 let increment = props.cnc.console.right.step.value;
                 if (increment === -1) {
-                    let message = {command: "desktop:control:jog:stop", data: {axis: axis}}
+                    let message = {command: "desktop:control:jog:stop", data: {axis: axis}};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }
             }
@@ -241,7 +241,7 @@ export default defineComponent({
 
         function setSpindleRight(){
             if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:spindle", data: {value: 2}}
+                let message = {command: "desktop:control:spindle", data: {value: 2}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
@@ -249,10 +249,10 @@ export default defineComponent({
         function setSpindleEnabled(){
             if(props.cnc.header.right.enabled === "active") {
                 if(props.cnc.console.right.spindle.enabled === 0){
-                    let message = {command: "desktop:control:spindle", data: {value: 1}}
+                    let message = {command: "desktop:control:spindle", data: {value: 1}};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }else{
-                    let message = {command: "desktop:control:spindle", data: {value: 5}}
+                    let message = {command: "desktop:control:spindle", data: {value: 5}};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }
             }
@@ -260,25 +260,25 @@ export default defineComponent({
 
         function setSpindleLeft(){
             if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:spindle", data: {value: 1}}
+                let message = {command: "desktop:control:spindle", data: {value: 1}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
 
         function setSpindleOverride(value: any){
             if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:spindle:override", data: {value: value}}
+                let message = {command: "desktop:control:spindle:override", data: {value: value}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
 
         function setMaxVelocity(value: any){
-            let message = {command: "desktop:control:max:velocity", data: {value: value}}
+            let message = {command: "desktop:control:max:velocity", data: {value: value}};
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
         function setFeedRate(value: any){
-            let message = {command: "desktop:control:feed:rate", data: {value: value}}
+            let message = {command: "desktop:control:feed:rate", data: {value: value}};
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
