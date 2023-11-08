@@ -61,6 +61,7 @@ export default defineComponent({
         });
 
         function onCode(file: string){
+            props.cnc.console.left.simulation.mask = true;
             props.cnc.console.bottom.line.loading = true;
             props.cnc.console.bottom.line.tmp_index = 0;
             props.cnc.console.bottom.line.tmp = [];

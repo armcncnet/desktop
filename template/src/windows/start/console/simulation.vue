@@ -1,6 +1,11 @@
 <template>
     <div class="simulation-view">
         <div id="world" class="simulation-box"></div>
+        <div class="mask" v-if="props.cnc.console.left.simulation.mask">
+            <div class="mask-icon">
+                <el-icon class="is-loading"><Loading /></el-icon>
+            </div>
+        </div>
         <div class="dro-view" v-if="props.cnc.device.machine.info">
             <div class="dro-group">
                 <div class="dro-line">X 长度: <span>{{props.cnc.console.left.simulation.box.x}}</span></div>
@@ -49,7 +54,14 @@ export default defineComponent({
                 let world: any = document.getElementById("world");
                 world.innerHTML = "";
                 (window as any).simulation = new Simulation((message: any)=>{
-                    console.log(message);
+                    if(message.type === "resource:loading:progress"){
+                        props.cnc.console.left.simulation.mask = true;
+                    }
+                    if(message.type === "resource:loading:end"){
+                        setTimeout(()=>{
+                            props.cnc.console.left.simulation.mask = false;
+                        }, 1000);
+                    }
                     if(message.type === "resource:update:data"){
                         if(message.box){
                             props.cnc.console.left.simulation.box.x = parseFloat(message.box.maxX).toFixed(2);
@@ -111,6 +123,29 @@ export default defineComponent({
     width: 100% !important;
     height: 100% !important;
     background-color: rgba(30, 31, 34, 1);
+}
+.simulation-view .mask{
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    z-index: 3;
+    background-color: rgba(30, 31, 34, .8);
+}
+.simulation-view .mask .mask-icon{
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin: 0 auto;
+    top: calc(50% - 12px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
 }
 .simulation-view .dro-view{
     width: auto;
