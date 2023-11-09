@@ -35,7 +35,7 @@ class GCODE extends THREE.Loader {
         }, onProgress, onError);
     }
 
-    parse(lines: any, onProgress: any){
+    parse(lines: any){
         const scope: any = this;
         const layers: any = [];
         scope.splitLayer = false;

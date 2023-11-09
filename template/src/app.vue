@@ -260,6 +260,10 @@ export default defineComponent({
                 items: [],
                 item: false,
                 item_loading: false,
+                tab: {
+                    value: "",
+                    items: []
+                }
             },
             program: {
                 loading: false,

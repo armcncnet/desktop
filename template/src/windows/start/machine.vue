@@ -37,8 +37,14 @@
             </div>
         </div>
         <div class="item">
-            <el-empty class="cnc none" :image-size="30" v-if="!props.cnc.machine.item && !props.cnc.machine.item_loading"/>
-            <EditorMachine ref="editorMachine" :cnc="props.cnc" v-else/>
+            <el-empty class="cnc none" :image-size="30" v-if="!props.cnc.machine.item"/>
+            <div class="machine-box" v-else>
+                <el-tabs v-model="props.cnc.machine.tab.value" type="card" class="cnc" @tab-remove="onTabRemove">
+                    <el-tab-pane class="cnc" :closable="item.close" v-for="(item, index) in props.cnc.machine.tab.items" :key="index" :label="item.name" :name="item.id">
+                        <ConfigurationMachine ref="configurationMachine" :cnc="props.cnc" v-if="item.id === 'configuration'"/>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
         </div>
     </div>
 </template>
@@ -46,18 +52,21 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import EditorMachine from "./machine/editor.vue";
+import ConfigurationMachine from "./machine/configuration.vue";
 export default defineComponent({
     name: "MachineStart",
     emits: [],
     props: ["cnc"],
     components: {
-        EditorMachine
+        ConfigurationMachine
     },
     setup(props, context) {
 
         (window as any).runtime.EventsOn("event_page", (message: any) => {
             if(message.type && message.type === "page_machine"){
+                props.cnc.machine.item = false;
+                props.cnc.machine.tab.items = [];
+                props.cnc.machine.tab.value = "";
                 onData();
             }
         });
@@ -83,10 +92,14 @@ export default defineComponent({
             if(props.cnc.machine.item && props.cnc.machine.item.path === item.path){
                 return;
             }
-            props.cnc.machine.item = false;
-            setTimeout(()=>{
-                props.cnc.machine.item = item;
-            }, 50);
+            props.cnc.machine.item = JSON.parse(JSON.stringify(item));
+            props.cnc.machine.tab.items = [];
+            props.cnc.machine.tab.items.push({name: item.name, id: "configuration"});
+            props.cnc.machine.tab.value = "configuration";
+        }
+
+        function onTabRemove(){
+
         }
 
         onBeforeMount(() => {});
@@ -100,7 +113,8 @@ export default defineComponent({
         return {
             props,
             icons,
-            onSelect
+            onSelect,
+            onTabRemove
         }
     }
 });
@@ -197,5 +211,9 @@ export default defineComponent({
 .machine-view .item .item-footer .item-footer-box .machine-item .tag{
     width: 100%;
     padding: 2px 0;
+}
+.machine-view .machine-box{
+    width: 100%;
+    height: 100%;
 }
 </style>

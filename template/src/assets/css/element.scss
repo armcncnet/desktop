@@ -88,18 +88,19 @@
 }
 
 .el-form.cnc .el-form-item__label{
+    height: 38px;
     font-size: 12px;
     line-height: 38px;
     color: #666666;
 }
 .el-form.cnc .el-form-item:last-child{
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 .el-form.cnc .el-form-item__content .el-form-tips{
     width: 100%;
     font-size: 12px;
-    line-height: 22px;
-    color: #999999;
+    line-height: 24px;
+    color: #666666;
 }
 .el-form.cnc .el-form-item__content{
     min-height: 38px;
@@ -127,10 +128,10 @@
 }
 
 .el-input.cnc{
-    height: 38px;
+    height: 36px;
 }
 .el-input.cnc .el-input__wrapper{
-    height: 38px;
+    height: 36px;
     background-color: rgba(30, 31, 34, 1);
     box-shadow: none;
     padding: 0 10px;
@@ -270,8 +271,14 @@
     height: 30px;
     vertical-align: middle;
 }
+.el-radio-group.cnc.max{
+    height: 36px;
+}
 .el-radio-group.cnc .el-radio-button{
     height: 30px;
+}
+.el-radio-group.cnc.max .el-radio-button{
+    height: 36px;
 }
 .el-radio-group.cnc .el-radio-button .el-radio-button__inner{
     height: 30px;
@@ -279,11 +286,21 @@
     background-color: rgba(30, 31, 34, .5);
     border-color: rgba(30, 31, 34, .8);
 }
+.el-radio-group.cnc.max .el-radio-button .el-radio-button__inner{
+    height: 36px;
+    line-height: 18px;
+}
 .el-radio-group.cnc .el-radio-button .el-radio-button__inner:hover{
     color: #999999;
     background-color: rgba(30, 31, 34, .8);
 }
 .el-radio-group.cnc .el-radio-button.is-active .el-radio-button__inner{
+    color: #5e4eff;
+    border-color: rgba(30, 31, 34, 1);
+    background-color: rgba(30, 31, 34, 1);
+    box-shadow: none;
+}
+.el-radio-group.cnc .el-radio-button__original-radio:checked+.el-radio-button__inner{
     color: #5e4eff;
     border-color: rgba(30, 31, 34, .8);
     background-color: rgba(30, 31, 34, .8);
@@ -547,6 +564,92 @@
     display: inline-block;
     vertical-align: top;
     color: #999999;
+}
+
+.el-tabs.cnc{
+    height: 100%;
+    border-radius: 0 !important;
+}
+.el-tabs.cnc .el-tabs__nav-prev{
+    height: 40px !important;
+}
+.el-tabs.cnc.min .el-tabs__nav-prev{
+    height: 35px !important;
+}
+.el-tabs.cnc .el-tabs__nav-next{
+    height: 40px !important;
+}
+.el-tabs.cnc.min .el-tabs__nav-next{
+    height: 35px !important;
+}
+.el-tabs.cnc .el-tabs__header{
+    height: 40px !important;
+    background-color: rgba(43, 45, 48, .5);
+    border-bottom: solid 1px rgba(30, 31, 34, 1) !important;
+    margin: 0 !important;
+}
+.el-tabs.cnc.min .el-tabs__header{
+    height: 35px !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap{
+    height: 40px !important;
+}
+.el-tabs.cnc.min .el-tabs__header .el-tabs__nav-wrap{
+    height: 35px !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll{
+    height: 40px !important;
+}
+.el-tabs.cnc.min .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll{
+    height: 35px !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav{
+    height: 40px !important;
+    border: 0 !important;
+}
+.el-tabs.cnc.min .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav{
+    height: 35px !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item{
+    height: 39px !important;
+    border: 0 !important;
+    font-size: 12px !important;
+    color: #999999;
+    padding: 0 10px !important;
+}
+.el-tabs.cnc.min .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item{
+    height: 34px !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item.is-active{
+    color: #ffffff;
+    border-bottom: 2px solid #5e4eff !important;
+    font-weight: 400 !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item .is-icon-close{
+    width: 14px !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item .is-icon-close svg{
+    display: none;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item:hover .is-icon-close{
+    background-color: rgba(57, 59, 64, 1) !important;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item:hover .is-icon-close svg{
+    display: inline-block;
+}
+.el-tabs.cnc .el-tabs__header .el-tabs__nav-wrap .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item.is-active .is-icon-close svg{
+    display: inline-block;
+}
+.el-tabs.cnc .el-tabs__content{
+    height: calc(100% - 40px) !important;
+    background-color: rgba(43, 45, 48, .2);
+}
+.el-tabs.cnc.min .el-tabs__content{
+    height: calc(100% - 35px) !important;
+}
+.el-tabs.cnc .el-tabs__content .el-tab-pane{
+    height: 100% !important;
+    position: relative;
 }
 
 .el-cnc-input{
