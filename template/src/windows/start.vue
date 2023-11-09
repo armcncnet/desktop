@@ -94,7 +94,7 @@ export default defineComponent({
                                         (window as any).simulation.clearToolLine();
                                     }
                                     props.cnc.loading.close();
-                                }, 5000);
+                                }, 500);
                             }
                             if(!message_json.data){
                                 props.cnc.device.restart = true;

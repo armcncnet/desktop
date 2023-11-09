@@ -24,7 +24,7 @@ export default defineComponent({
     setup(props, context) {
 
         function onDevice(){
-            if(props.cnc.dialog.form.ip === "" && (props.cnc.dialog.form.ip.replace(/\n|\r/g, "")).trim().length === 0){
+            if(props.cnc.dialog.form.ip === "" || (props.cnc.dialog.form.ip.replace(/\n|\r/g, "")).trim().length === 0){
                 ElMessage.closeAll();
                 ElMessage({
                     message: "设备IP地址错误",

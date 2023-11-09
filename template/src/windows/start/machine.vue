@@ -93,6 +93,7 @@ export default defineComponent({
                 return;
             }
             props.cnc.machine.item = JSON.parse(JSON.stringify(item));
+            props.cnc.machine.item.button_loading = false;
             props.cnc.machine.tab.items = [];
             props.cnc.machine.tab.items.push({name: item.name, id: "configuration"});
             props.cnc.machine.tab.value = "configuration";

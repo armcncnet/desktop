@@ -69,7 +69,6 @@ export default defineComponent({
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/code/read/line", "GET", {file_name: file}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
-                        console.log(1);
                         let file_blob = new Blob([response.data.content], {type:"application/text;charset=utf-8"});
                         if((window as any).simulation){
                             (window as any).simulation.clearToolLine();
