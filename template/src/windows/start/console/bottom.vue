@@ -3,6 +3,11 @@
         <div class="bottom-header">
             <div class="bottom-header-item">
                 <div class="item">
+                    <el-tooltip popper-class="cnc" effect="dark" content="选择机床配置" placement="top">
+                        <el-button class="cnc" :disabled="props.cnc.header.right.enabled === 'active'" :icon="icons.Files" @click="openMachine">
+                            <div class="bottom-name">{{props.cnc.device.machine.path === "" ? "未配置" : props.cnc.device.machine.path}}</div>
+                        </el-button>
+                    </el-tooltip>
                     <el-tooltip popper-class="cnc" effect="dark" content="打开G程序" placement="top">
                         <el-button class="cnc" :disabled="props.cnc.header.centre.start === 'active'" :icon="icons.FolderOpened" @click="openProgram"></el-button>
                     </el-tooltip>
@@ -33,18 +38,21 @@
         </div>
     </div>
     <ProgramDialog ref="programDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'program'" />
+    <MachineDialog ref="machineDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'machine'" />
 </template>
 
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, ref} from "vue";
 import * as icons from "@element-plus/icons";
 import ProgramDialog from "../../common/dialog/program.vue";
+import MachineDialog from "../../common/dialog/machine.vue";
 export default defineComponent({
     name: "BottomConsole",
     emits: [],
     props: ["cnc"],
     components: {
-        ProgramDialog
+        ProgramDialog,
+        MachineDialog
     },
     setup(props, context) {
 
@@ -125,6 +133,19 @@ export default defineComponent({
             }
         }
 
+        function openMachine(){
+            props.cnc.dialog.config.type = "machine";
+            props.cnc.dialog.config.title = "选择机床配置";
+            props.cnc.dialog.config.width = "260px";
+            props.cnc.dialog.config.close = true;
+            props.cnc.dialog.form = {
+                items: [],
+                item: false,
+                loading: true,
+            }
+            props.cnc.dialog.status = true;
+        }
+
         function openProgram(){
             props.cnc.dialog.config.type = "program";
             props.cnc.dialog.config.title = "打开G程序";
@@ -165,6 +186,7 @@ export default defineComponent({
             icons,
             bottomFooter,
             onScroll,
+            openMachine,
             openProgram,
             refreshProgram,
             onSwitchView
@@ -204,6 +226,13 @@ export default defineComponent({
     line-height: 30px;
     display: inline-block;
     vertical-align: top;
+}
+.bottom-view .bottom-header .bottom-header-item .item .bottom-name{
+    max-width: 60px;
+    overflow:hidden;
+    width-space:nowrap;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .bottom-view .bottom-footer{
     width: 100%;

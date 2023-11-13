@@ -5,15 +5,6 @@
             <div class="item menu">
                 <el-icon><Grid /></el-icon>
                 <div class="dropdown">
-                    <div class="dropdown-item" @click="onSettings">
-                        <div class="dropdown-item-item">
-                            <el-icon><Setting /></el-icon>
-                        </div>
-                        <div class="dropdown-item-item">
-                            <span>设置</span>
-                        </div>
-                        <div class="dropdown-item-item"></div>
-                    </div>
                     <div class="dropdown-item" @click="onReload">
                         <div class="dropdown-item-item">
                             <el-icon><Refresh /></el-icon>
@@ -116,10 +107,6 @@ export default defineComponent({
         NewDeviceDialog
     },
     setup(props, context) {
-
-        function onSettings(){
-
-        }
 
         function onReload(){
             (window as any).runtime.WindowReloadApp();
@@ -254,7 +241,6 @@ export default defineComponent({
         return {
             props,
             icons,
-            onSettings,
             onReload,
             onSite,
             onAbout,
