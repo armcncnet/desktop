@@ -229,9 +229,17 @@ export default defineComponent({
                                 props.cnc.console.right.default_linear_velocity = Math.round(message_json.data.user_data.default_linear_velocity * 60);
                                 props.cnc.console.right.max_angular_velocity = Math.round(message_json.data.user_data.max_angular_velocity * 60);
                                 props.cnc.console.right.default_angular_velocity = Math.round(message_json.data.user_data.default_angular_velocity * 60);
-                                let file_part = props.cnc.device.machine.info.file.split("/");
-                                props.cnc.device.machine.file = file_part.pop();
-                                (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.file});
+                                if(props.cnc.device.machine.info.file === ""){
+                                    props.cnc.device.machine.info.file = "armcnc.ngc";
+                                    let file_part = props.cnc.device.machine.info.file.split("/");
+                                    props.cnc.device.machine.file = file_part.pop();
+                                    let message = {command: "desktop:program:open", data: props.cnc.device.machine.file};
+                                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                                }else{
+                                    let file_part = props.cnc.device.machine.info.file.split("/");
+                                    props.cnc.device.machine.file = file_part.pop();
+                                    (window as any).runtime.EventsEmit("event_load_code", {file: props.cnc.device.machine.file});
+                                }
                                 props.cnc.console.right.is_first = false;
                             }
                             if(props.cnc.device.machine.info.user_data.increments){

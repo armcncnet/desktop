@@ -27,6 +27,7 @@ export default defineComponent({
                 width: "-",
                 height: "-"
             },
+            language: "zh",
             device: {
                 ip: "",
                 ips: [],
@@ -267,6 +268,21 @@ export default defineComponent({
                 items: [],
                 item: false,
                 item_loading: false,
+            },
+            plugin: {
+
+            },
+            store: {
+
+            },
+            settings: {
+                select: "language",
+                update: {
+                    loading: false,
+                    armcnc: "",
+                    linuxcnc: "",
+                    sdk: ""
+                }
             },
             layer: {
                 select: false

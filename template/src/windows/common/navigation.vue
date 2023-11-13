@@ -23,14 +23,14 @@
             </div>
         </div>
         <div class="navigation-item">
-            <div class="item" :class="props.cnc.navigation.select === 'settings' ? 'select' : ''" @click="onNavigation('settings')" v-if="props.cnc.device.message.status">
-                <el-tooltip popper-class="cnc" effect="dark" content="设置" placement="right">
-                    <el-icon><Tools /></el-icon>
-                </el-tooltip>
-            </div>
             <div class="item" @click="onDeviceRestart" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="重启设备" placement="right">
                     <el-icon><RefreshRight /></el-icon>
+                </el-tooltip>
+            </div>
+            <div class="item" :class="props.cnc.navigation.select === 'settings' ? 'select' : ''" @click="onNavigation('settings')" v-if="props.cnc.device.message.status">
+                <el-tooltip popper-class="cnc" effect="dark" content="设置" placement="right">
+                    <el-icon><Tools /></el-icon>
                 </el-tooltip>
             </div>
         </div>
@@ -56,6 +56,9 @@ export default defineComponent({
         }
 
         function onDeviceRestart(){
+            if(!props.cnc.device.message.status){
+                return;
+            }
             ElMessageBox.confirm("是否确认重启机床？", "操作确认", {
                 draggable: true,
                 confirmButtonText: "确认",
