@@ -94,7 +94,7 @@ export default defineComponent({
                                         (window as any).simulation.clearToolLine();
                                     }
                                     props.cnc.loading.close();
-                                }, 500);
+                                }, 5000);
                             }
                             if(!message_json.data){
                                 props.cnc.device.restart = true;
@@ -142,7 +142,7 @@ export default defineComponent({
                             props.cnc.console.right.offset.options = props.cnc.device.machine.info.user_data.data.options;
                             props.cnc.console.right.spindle.enabled = message_json.data.user_data.spindle.enabled;
                             props.cnc.console.right.spindle.direction = message_json.data.user_data.spindle.direction;
-                            props.cnc.console.right.spindle.speed_tmp = message_json.data.user_data.spindle.speed;
+                            props.cnc.console.right.spindle.velocity_tmp = message_json.data.user_data.spindle.velocity;
                             if(props.cnc.console.right.is_first){
                                 props.cnc.console.right.rocker.forEach((item: any, index: any, array: any)=>{
                                     if(index == 1){
@@ -216,17 +216,16 @@ export default defineComponent({
                                         }
                                     }
                                 });
-                                props.cnc.console.right.spindle.max_speed = message_json.data.user_data.spindle.max_speed;
-                                props.cnc.console.right.spindle.speed = message_json.data.user_data.spindle.speed / 100 * 100;
+                                props.cnc.console.right.spindle.min_velocity = message_json.data.user_data.spindle.min_velocity;
+                                props.cnc.console.right.spindle.max_velocity = message_json.data.user_data.spindle.max_velocity;
+                                props.cnc.console.right.spindle.velocity = message_json.data.user_data.spindle.velocity / 100 * 100;
                                 props.cnc.console.right.spindle.min_override = message_json.data.user_data.spindle.min_override * 100;
                                 props.cnc.console.right.spindle.max_override = message_json.data.user_data.spindle.max_override * 100;
                                 props.cnc.console.right.spindle.override = message_json.data.user_data.spindle.override * 100;
                                 props.cnc.console.right.feed.max_override = message_json.data.user_data.feed.max_override * 100;
-                                props.cnc.console.right.feed.rate = message_json.data.user_data.feed.rate * 100;
-                                props.cnc.console.right.ext_info.default_override = message_json.data.user_data.ext_info.EXTINFO_DEFAULT_VELOCITY;
-                                props.cnc.console.right.ext_info.max_override = message_json.data.user_data.ext_info.EXTINFO_MAX_VELOCITY;
-                                props.cnc.console.right.max_linear_velocity = Math.round(message_json.data.user_data.max_linear_velocity * 60);
+                                props.cnc.console.right.feed.override = message_json.data.user_data.feed.override * 100;
                                 props.cnc.console.right.max_velocity = message_json.data.user_data.max_velocity * 60;
+                                props.cnc.console.right.max_linear_velocity = Math.round(message_json.data.user_data.max_linear_velocity * 60);
                                 props.cnc.console.right.default_linear_velocity = Math.round(message_json.data.user_data.default_linear_velocity * 60);
                                 props.cnc.console.right.max_angular_velocity = Math.round(message_json.data.user_data.max_angular_velocity * 60);
                                 props.cnc.console.right.default_angular_velocity = Math.round(message_json.data.user_data.default_angular_velocity * 60);
@@ -307,9 +306,10 @@ export default defineComponent({
                         if(message_json.command === "launch:machine:error"){
                             let kind = [11];
                             if(kind.includes(message_json.data)){
+                                let new_message = message_json.message.split(":");
                                 ElNotification({
                                     title: "消息提醒",
-                                    message: message_json.message,
+                                    message: new_message.length > 1 ? new_message[1] : message_json.message,
                                     type: "info",
                                     position: "bottom-right",
                                     duration: 0,

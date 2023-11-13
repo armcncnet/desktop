@@ -220,21 +220,17 @@ export default defineComponent({
                     spindle: {
                         enabled: 0,
                         direction: 0,
-                        min_speed: 0,
-                        max_speed: 0,
-                        speed_tmp: 0,
-                        speed: 0,
+                        min_velocity: 0,
+                        max_velocity: 0,
+                        velocity_tmp: 0,
+                        velocity: 0,
                         min_override: 0,
                         max_override: 0,
                         override: 100
                     },
                     feed: {
-                        rate: 100,
+                        override: 100,
                         max_override: 0
-                    },
-                    ext_info: {
-                        max_override: 0,
-                        default_override: 0,
                     },
                     max_linear_velocity: 0,
                     max_velocity: 0,

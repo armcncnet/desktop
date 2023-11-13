@@ -77,10 +77,10 @@
                 <div class="group-title">主轴转速(degree/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.speed" :step="100" :min="props.cnc.console.right.spindle.min_speed" :max="props.cnc.console.right.spindle.max_speed" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.velocity" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.spindle.speed}}</div>
+                        <div class="el-cnc-input">{{props.cnc.console.right.spindle.velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -112,10 +112,10 @@
                 <div class="group-title">进给倍率(%)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.feed.rate" :step="1" :min="0" :max="props.cnc.console.right.feed.max_override" :show-input-controls="false" @change="setFeedRate"/>
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.feed.override" :step="1" :min="0" :max="props.cnc.console.right.feed.max_override" :show-input-controls="false" @change="setFeedRate"/>
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.feed.rate}}</div>
+                        <div class="el-cnc-input">{{props.cnc.console.right.feed.override}}</div>
                     </div>
                 </div>
             </div>
@@ -125,10 +125,10 @@
                 <div class="group-title">点动速度(mm/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.ext_info.default_override" :step="1" :min="0" :max="props.cnc.console.right.ext_info.max_override" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.default_linear_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_linear_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.ext_info.default_override}}</div>
+                        <div class="el-cnc-input">{{props.cnc.console.right.default_linear_velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -218,7 +218,7 @@ export default defineComponent({
                 if(["a", "b", "c"].includes(axis)){
                     speed = props.cnc.console.right.default_angular_velocity;
                 }else{
-                    speed = props.cnc.console.right.ext_info.default_override;
+                    speed = props.cnc.console.right.default_linear_velocity;
                 }
                 if(direction === "-"){
                     speed = 0 - speed;

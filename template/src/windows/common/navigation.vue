@@ -33,11 +33,6 @@
                     <el-icon><RefreshRight /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" @click="onDeviceShutdown" v-if="props.cnc.device.message.status">
-                <el-tooltip popper-class="cnc" effect="dark" content="设备关机" placement="right">
-                    <el-icon><SwitchButton /></el-icon>
-                </el-tooltip>
-            </div>
         </div>
     </div>
 </template>
@@ -79,10 +74,6 @@ export default defineComponent({
             }).catch(() => {});
         }
 
-        function onDeviceShutdown(){
-
-        }
-
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -95,8 +86,7 @@ export default defineComponent({
             props,
             icons,
             onNavigation,
-            onDeviceRestart,
-            onDeviceShutdown
+            onDeviceRestart
         }
     }
 });
@@ -109,10 +99,10 @@ export default defineComponent({
 }
 .navigation-view .navigation-item{
     width: 100%;
-    height: calc(100% - 120px);
+    height: calc(100% - 80px);
 }
 .navigation-view .navigation-item:last-child{
-    height: 120px;
+    height: 80px;
 }
 .navigation-view .navigation-item .item{
     width: 100%;

@@ -1,6 +1,7 @@
 <template>
     <div class="settings-view" :class="props.cnc.navigation.select">
-        <el-empty class="cnc" description="settings" :image-size="30" />
+        <div class="item">1</div>
+        <div class="item">2</div>
     </div>
 </template>
 
@@ -39,5 +40,16 @@ export default defineComponent({
 }
 .settings-view.settings{
     display: block;
+}
+.settings-view .item{
+    width: calc(100% - 240px);
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+}
+.settings-view .item:first-child{
+    width: 240px;
+    background-color: rgba(43, 45, 48, .5);
+    border-right: solid 1px rgba(30, 31, 34, 1);
 }
 </style>
