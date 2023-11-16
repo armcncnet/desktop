@@ -192,6 +192,15 @@
 .el-button{
     font-size: 12px !important;
 }
+.el-button span{
+    color: #ffffff;
+}
+.el-button.is-circle{
+    width: 32px;
+}
+.el-button.is-circle .el-icon{
+    color: #ffffff;
+}
 
 .el-button.cnc{
     font-size: 12px;

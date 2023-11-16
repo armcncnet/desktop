@@ -1,6 +1,6 @@
 <template>
-    <div class="joint-view">
-        <div class="joint-box">
+    <div class="spindle-view">
+        <div class="spindle-box">
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
                     <el-form-item label="最大转速">
@@ -65,25 +65,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.joint-view{
+.spindle-view{
     width: 100%;
     height: 100%;
     overflow-y: auto;
     padding: 30px;
 }
-.joint-view .joint-box{
+.spindle-view .spindle-box{
     width: 100%;
     max-width: 844px;
     margin: 0 auto;
 }
-.joint-view .joint-box .box-item{
+.spindle-view .spindle-box .box-item{
     width: 100%;
     padding: 30px 20px;
     background-color: rgba(43, 45, 48, .3);
     margin-bottom: 20px;
     border-radius: 4px;
 }
-.joint-view .joint-box .box-item .title{
+.spindle-view .spindle-box .box-item .title{
     color: #999999;
     margin-bottom: 20px;
 }

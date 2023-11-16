@@ -20,6 +20,12 @@
                     <el-form-item label="步长可选项">
                         <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.Increments" style="width: 500px"/>
                     </el-form-item>
+                    <el-form-item label="单位">
+                        <el-radio-group class="cnc max" v-model="props.cnc.machine.item.ini.Traj.LinearUnits">
+                            <el-radio-button label="mm">mm</el-radio-button>
+                            <el-radio-button label="inch">inch</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
                 </el-form>
             </div>
         </div>
@@ -118,5 +124,9 @@ export default defineComponent({
     background-color: rgba(43, 45, 48, .3);
     margin-bottom: 20px;
     border-radius: 4px;
+}
+.base-view .base-box .box-item .title{
+    color: #999999;
+    margin-bottom: 20px;
 }
 </style>

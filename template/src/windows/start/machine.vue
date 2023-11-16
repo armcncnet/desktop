@@ -47,11 +47,16 @@
                         <BaseMachine ref="baseMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'base'"/>
                         <SpindleMachine ref="spindleMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'spindle'"/>
                         <JointMachine ref="jointMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'joint'"/>
+                        <ToolMachine ref="toolMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'tool'"/>
                         <WheelMachine ref="wheelMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'wheel'"/>
                         <LaunchMachine ref="launchMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'launch'"/>
                     </el-tab-pane>
                 </el-tabs>
                 <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch'">
+                    <el-tooltip popper-class="cnc" effect="dark" content="下载配置" placement="top">
+                        <el-button color="#E6A23C" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle></el-button>
+                    </el-tooltip>
+                    <el-button color="#F56C6C" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle></el-button>
                     <el-button color="#5e4eff" type="primary" @click="onUpdateMachine">保存配置</el-button>
                 </div>
             </div>
@@ -62,10 +67,11 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import BaseMachine from "./machine/base.vue";
 import SpindleMachine from "./machine/spindle.vue";
 import JointMachine from "./machine/joint.vue";
+import ToolMachine from "./machine/tool.vue";
 import WheelMachine from "./machine/wheel.vue";
 import LaunchMachine from "./machine/launch.vue";
 export default defineComponent({
@@ -76,6 +82,7 @@ export default defineComponent({
         LaunchMachine,
         BaseMachine,
         SpindleMachine,
+        ToolMachine,
         WheelMachine,
         JointMachine
     },
@@ -171,6 +178,24 @@ export default defineComponent({
 
         }
 
+        function onDownloadMachine(){
+
+        }
+
+        function onDeleteMachine(){
+            ElMessageBox.confirm("是否确认删除机床配置？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                props.cnc.machine.tab.loading = false;
+                props.cnc.machine.tab.items = [];
+                props.cnc.machine.item = false;
+            }).catch(() => {});
+        }
+
         function onTabRemove(){}
 
         onBeforeMount(() => {});
@@ -186,7 +211,9 @@ export default defineComponent({
             icons,
             onSelect,
             onTabRemove,
-            onUpdateMachine
+            onUpdateMachine,
+            onDownloadMachine,
+            onDeleteMachine
         }
     }
 });
@@ -295,7 +322,7 @@ export default defineComponent({
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 10px;
+    bottom: 5px;
     padding: 4px 20px;
     text-align: right;
 }

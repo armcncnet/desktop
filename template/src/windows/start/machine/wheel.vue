@@ -102,4 +102,8 @@ export default defineComponent({
     margin-bottom: 20px;
     border-radius: 4px;
 }
+.wheel-view .wheel-box .box-item .title{
+    color: #999999;
+    margin-bottom: 20px;
+}
 </style>
