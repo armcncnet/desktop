@@ -56,9 +56,13 @@ ul li, ol li {
 
 .loading-view{
     width: 100%;
-    height: 60px;
-    line-height: 60px;
+    height: 100%;
     text-align: center;
+}
+.loading-view .el-icon{
+    width: 20px;
+    height: 20px;
+    padding: 200px 0;
 }
 
 @font-face{

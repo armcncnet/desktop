@@ -13,9 +13,9 @@
                         <el-icon :class="scope.row.home === 1 ? 'homed' : ''" @click="onHome(scope.row.index + '')"><LocationFilled /></el-icon>
                     </template>
                 </el-table-column>
-                <el-table-column label="零点偏移" width="80">
+                <el-table-column label="原点偏移" width="100">
                     <template #default="scope">
-                        <el-icon @click="setRelativeOffset(props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].name)"><MapLocation /></el-icon>
+                        <div class="el-cnc-input">{{parseFloat(props.cnc.console.left.simulation.g5x_offset[scope.row.index]).toFixed(3)}}</div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -31,11 +31,11 @@
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === 'disabled' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">重置零点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === 'disabled' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">重置原点</el-button>
             </div>
         </div>
         <div class="right-step">
-            <div class="title">步进长度(mm)</div>
+            <div class="title">步进长度({{props.cnc.device.machine.linear_units}})</div>
             <div class="box">
                 <el-row :gutter="5">
                     <el-col :span="4" v-for="(item, index) in props.cnc.console.right.step.items" :key="index">
@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="configure-group">
-                <div class="group-title">主轴转速(degree/min)</div>
+                <div class="group-title">主轴转速({{props.cnc.device.machine.angular_units}}/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.velocity" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" />
@@ -98,7 +98,7 @@
         </div>
         <div class="right-configure">
             <div class="configure-group">
-                <div class="group-title">最大速度(mm/min)</div>
+                <div class="group-title">最大速度({{props.cnc.device.machine.linear_units}}/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.max_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_linear_velocity" :show-input-controls="false" @change="setMaxVelocity" />
@@ -122,7 +122,7 @@
         </div>
         <div class="right-configure">
             <div class="configure-group">
-                <div class="group-title">点动速度(mm/min)</div>
+                <div class="group-title">点动速度({{props.cnc.device.machine.linear_units}}/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.default_linear_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_linear_velocity" :show-input-controls="false" />
@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div class="configure-group">
-                <div class="group-title">点动转速(degree/min)</div>
+                <div class="group-title">点动转速({{props.cnc.device.machine.angular_units}}/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.default_angular_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_angular_velocity" :show-input-controls="false" />

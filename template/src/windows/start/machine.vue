@@ -17,16 +17,16 @@
                         <div class="title">{{item.name}}</div>
                         <div class="describe">{{item.describe}}</div>
                         <div class="tag">
-                            <el-tag class="cnc" size="small" style="color: #ffffff; background-color: #5e4eff" v-if="props.cnc.device.machine.path === item.path">
+                            <el-tag class="cnc" size="small" :disable-transitions="true" style="color: #ffffff; background-color: #5e4eff" v-if="props.cnc.device.machine.path === item.path">
                                 <el-icon><Check /></el-icon>
                             </el-tag>
-                            <el-tag class="cnc" size="small" v-if="item.control === 0">仿真模拟</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control === 1">GPIO</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control === 2">Arduino</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control === 3">MACH3</el-tag>
-                            <el-tag class="cnc" size="small" v-else-if="item.control === 4">EtherCAT</el-tag>
-                            <el-tag class="cnc" size="small" v-else>-</el-tag>
-                            <el-tag class="cnc" size="small">{{item.coordinate}}</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-if="item.control === 0">仿真模拟</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 1">GPIO</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 2">Arduino</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 3">MACH3</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 4">EtherCAT</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else>-</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true">{{item.coordinate}}</el-tag>
                         </div>
                     </div>
                     <el-empty class="cnc none" :image-size="30" v-else/>
@@ -37,13 +37,23 @@
             </div>
         </div>
         <div class="item">
-            <el-empty class="cnc none" :image-size="30" v-if="!props.cnc.machine.item"/>
-            <div class="machine-box" v-else>
+            <div class="loading-view" v-if="props.cnc.machine.tab.loading">
+                <el-icon class="is-loading"><Loading /></el-icon>
+            </div>
+            <el-empty class="cnc none" :image-size="30" v-if="!props.cnc.machine.item && !props.cnc.machine.tab.loading"/>
+            <div class="machine-box" v-if="!props.cnc.machine.tab.loading && props.cnc.machine.item">
                 <el-tabs v-model="props.cnc.machine.tab.value" type="card" class="cnc" @tab-remove="onTabRemove">
                     <el-tab-pane class="cnc" :closable="item.close" v-for="(item, index) in props.cnc.machine.tab.items" :key="index" :label="item.name" :name="item.id">
-                        <ConfigurationMachine ref="configurationMachine" :cnc="props.cnc" v-if="item.id === 'configuration'"/>
+                        <BaseMachine ref="baseMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'base'"/>
+                        <SpindleMachine ref="spindleMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'spindle'"/>
+                        <JointMachine ref="jointMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'joint'"/>
+                        <WheelMachine ref="wheelMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'wheel'"/>
+                        <LaunchMachine ref="launchMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'launch'"/>
                     </el-tab-pane>
                 </el-tabs>
+                <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch'">
+                    <el-button color="#5e4eff" type="primary" @click="onUpdateMachine">保存配置</el-button>
+                </div>
             </div>
         </div>
     </div>
@@ -52,13 +62,22 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import ConfigurationMachine from "./machine/configuration.vue";
+import {ElMessage} from "element-plus";
+import BaseMachine from "./machine/base.vue";
+import SpindleMachine from "./machine/spindle.vue";
+import JointMachine from "./machine/joint.vue";
+import WheelMachine from "./machine/wheel.vue";
+import LaunchMachine from "./machine/launch.vue";
 export default defineComponent({
     name: "MachineStart",
     emits: [],
     props: ["cnc"],
     components: {
-        ConfigurationMachine
+        LaunchMachine,
+        BaseMachine,
+        SpindleMachine,
+        WheelMachine,
+        JointMachine
     },
     setup(props, context) {
 
@@ -92,16 +111,67 @@ export default defineComponent({
             if(props.cnc.machine.item && props.cnc.machine.item.path === item.path){
                 return;
             }
-            props.cnc.machine.item = JSON.parse(JSON.stringify(item));
-            props.cnc.machine.item.button_loading = false;
-            props.cnc.machine.tab.items = [];
-            props.cnc.machine.tab.items.push({name: item.name, id: "configuration"});
-            props.cnc.machine.tab.value = "configuration";
+            props.cnc.machine.tab.loading = true;
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/get", "GET", {path: item.path}).then((response: any)=>{
+                if(response.code === 0){
+                    if(response.data){
+                        console.log(response.data);
+                        props.cnc.machine.item = JSON.parse(JSON.stringify(response.data));
+                        props.cnc.machine.item.joints = props.cnc.machine.item.ini.Traj.Coordinates.split("");
+                        props.cnc.machine.item.ini.Display.MaxSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxSpindleOverride) * 100 + "";
+                        props.cnc.machine.item.ini.Display.MinSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MinSpindleOverride) * 100 + "";
+                        props.cnc.machine.item.ini.Display.MaxFeedOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxFeedOverride) * 100 + "";
+                        props.cnc.machine.item.ini.Display.DefaultLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultLinearVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MinLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MinLinearVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MaxLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxLinearVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.DefaultAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultAngularVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MinAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MinAngularVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MaxAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxAngularVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.joints.forEach((item: any, index: any, array: any)=>{
+                            props.cnc.machine.item.ini["Joint" + index].MaxVelocity = Math.round(props.cnc.machine.item.ini["Joint" + index].MaxVelocity * 60).toFixed(3) + "";
+                            props.cnc.machine.item.ini["Joint" + index].HomeSearchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeSearchVel * 60).toFixed(3) + "";
+                            props.cnc.machine.item.ini["Joint" + index].HomeLarchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
+                            props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
+                        });
+                        props.cnc.machine.tab.items = [];
+                        let tabs = [
+                            {name: "基础配置", id: "base"},
+                            {name: "主轴配置", id: "spindle"},
+                            {name: "轴关节配置", id: "joint"},
+                            {name: "刀库配置", id: "tool"},
+                            {name: "信号配置", id: "signal"},
+                            {name: "手轮配置", id: "wheel"},
+                            {name: "启动程序", id: "launch"},
+                        ]
+                        props.cnc.machine.tab.items.push(...tabs);
+                        props.cnc.machine.tab.value = "base";
+                        props.cnc.machine.tab.loading = false;
+                    }else{
+                        props.cnc.machine.tab.loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "请求失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                }else{
+                    props.cnc.machine.tab.loading = false;
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "请求失败，请重新尝试",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                }
+            });
         }
 
-        function onTabRemove(){
+        function onUpdateMachine(){
 
         }
+
+        function onTabRemove(){}
 
         onBeforeMount(() => {});
 
@@ -115,7 +185,8 @@ export default defineComponent({
             props,
             icons,
             onSelect,
-            onTabRemove
+            onTabRemove,
+            onUpdateMachine
         }
     }
 });
@@ -216,5 +287,16 @@ export default defineComponent({
 .machine-view .machine-box{
     width: 100%;
     height: 100%;
+    position: relative;
+}
+.machine-view .machine-box .machine-button{
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    padding: 4px 20px;
+    text-align: right;
 }
 </style>

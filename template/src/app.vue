@@ -50,7 +50,9 @@ export default defineComponent({
                 machine: {
                     path: "",
                     file: "",
-                    info: false
+                    info: false,
+                    linear_units: "-",
+                    angular_units: "-"
                 }
             },
             header: {
@@ -256,10 +258,10 @@ export default defineComponent({
                 search_keyword: "",
                 items: [],
                 item: false,
-                item_loading: false,
                 tab: {
                     value: "",
-                    items: []
+                    items: [],
+                    loading: false
                 }
             },
             program: {

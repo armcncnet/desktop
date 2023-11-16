@@ -31,8 +31,8 @@
         <div class="bottom-footer" ref="bottomFooter" style="overflow-y: auto">
             <div class="code-box" v-infinite-scroll="onScroll">
                 <div :name="'line' + (index + 1)" class="code-line" :class="props.cnc.console.bottom.line.motion_line > 0 && (props.cnc.console.bottom.line.motion_line - 1) === index ? 'current' : ''" v-for="(item, index) in props.cnc.console.bottom.line.items" :key="index">
-                    <div class="item">{{index + 1}}</div>
                     <div class="item">{{item}}</div>
+                    <div class="item">{{index + 1}}</div>
                 </div>
             </div>
         </div>
@@ -247,6 +247,7 @@ export default defineComponent({
     height: 24px;
     line-height: 24px;
     color: #666666;
+    position: relative;
 }
 .bottom-view .bottom-footer .code-box .code-line:hover{
     color: #999999;
@@ -254,18 +255,17 @@ export default defineComponent({
 .bottom-view .bottom-footer .code-box .code-line .item{
     width: auto;
     height: 24px;
-    display: inline-block;
-    vertical-align: top;
 }
 .bottom-view .bottom-footer .code-box .code-line .item:first-child{
-    width: 50px;
-    color: #666666;
-    text-align: right;
-    padding-right: 5px;
+    width: 100%;
+    padding-left: 5px;
 }
 .bottom-view .bottom-footer .code-box .code-line .item:last-child{
-    width: calc(100% - 50px);
-}
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 11px;
+    padding-right: 5px;}
 .bottom-view .bottom-footer .code-box .code-line.current{
     color: #5e4eff;
 }

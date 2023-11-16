@@ -144,6 +144,8 @@ export default defineComponent({
                             props.cnc.console.right.spindle.direction = message_json.data.user_data.spindle.direction;
                             props.cnc.console.right.spindle.velocity_tmp = message_json.data.user_data.spindle.velocity;
                             if(props.cnc.console.right.is_first){
+                                props.cnc.device.machine.linear_units = message_json.data.user_data.linear_units;
+                                props.cnc.device.machine.angular_units = message_json.data.user_data.angular_units;
                                 props.cnc.console.right.rocker.forEach((item: any, index: any, array: any)=>{
                                     if(index == 1){
                                         if(props.cnc.device.machine.info.user_data.axes.includes("Y")){
