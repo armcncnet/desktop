@@ -55,9 +55,9 @@
                 </el-tabs>
                 <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch'">
                     <el-tooltip popper-class="cnc" effect="dark" content="下载配置" placement="top">
-                        <el-button color="#E6A23C" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle></el-button>
+                        <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle></el-button>
                     </el-tooltip>
-                    <el-button color="#F56C6C" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle></el-button>
+                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle></el-button>
                     <el-button color="#5e4eff" type="primary" @click="onUpdateMachine">保存配置</el-button>
                 </div>
             </div>
@@ -144,6 +144,17 @@ export default defineComponent({
                             props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
                         });
                         props.cnc.machine.item.user.Tool.Pockets = JSON.parse(props.cnc.machine.item.user.Tool.Pockets);
+                        props.cnc.machine.item.table = props.cnc.machine.item.table.split(";").map((item: any, index: any) => {
+                            let parts = item.trim().split(" ");
+                            if(parts.length > 1){
+                                return {id: index, t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
+                            }else{
+                                return false;
+                            }
+                        });
+                        if(!props.cnc.machine.item.table[props.cnc.machine.item.table.length - 1]){
+                            props.cnc.machine.item.table.pop();
+                        }
                         props.cnc.machine.tab.items = [];
                         let tabs = [
                             {name: "基础配置", id: "base"},
@@ -153,6 +164,8 @@ export default defineComponent({
                             {name: "信号配置", id: "signal"},
                             {name: "手轮配置", id: "wheel"},
                             {name: "启动程序", id: "launch"},
+                            {name: "HAL配置", id: "hal"},
+                            {name: "XML配置", id: "xml"},
                         ]
                         props.cnc.machine.tab.items.push(...tabs);
                         props.cnc.machine.tab.value = "base";
@@ -329,5 +342,6 @@ export default defineComponent({
     bottom: 5px;
     padding: 4px 20px;
     text-align: right;
+    z-index: 100;
 }
 </style>

@@ -278,6 +278,25 @@
     color: #666666;
 }
 
+.el-button.info{
+    background-color: rgba(30, 31, 34, .8);
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+.el-button.info span{
+    color: #999999;
+}
+.el-button.info:hover{
+    background-color: rgba(30, 31, 34, 1);
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+.el-button.info:hover span{
+    color: #ffffff;
+}
+.el-button.info:focus {
+    background-color: rgba(30, 31, 34, 1);
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+
 .el-radio-group.cnc{
     background-color: rgba(30, 31, 34, .2);
     height: 30px;
@@ -301,9 +320,9 @@
 .el-radio-group.cnc.max .el-radio-button .el-radio-button__inner{
     height: 36px;
     line-height: 18px;
+    color: #999999;
 }
 .el-radio-group.cnc .el-radio-button .el-radio-button__inner:hover{
-    color: #999999;
     background-color: rgba(30, 31, 34, .8);
 }
 .el-radio-group.cnc .el-radio-button.is-active .el-radio-button__inner{

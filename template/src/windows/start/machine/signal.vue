@@ -3,8 +3,29 @@
         <div class="signal-box">
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
-                    <el-form-item label="主轴信号">
-
+                    <el-form-item label="主轴方向">
+                        <el-button class="info" type="primary">翻转方向</el-button>
+                    </el-form-item>
+                    <el-form-item label="主轴启停">
+                        <el-button class="info" type="primary">翻转信号</el-button>
+                    </el-form-item>
+                    <el-form-item label="冷却液开关">
+                        <el-button class="info" type="primary">翻转信号</el-button>
+                    </el-form-item>
+                    <el-form-item label="对刀仪">
+                        <el-button class="info" type="primary">翻转信号</el-button>
+                    </el-form-item>
+                    <el-form-item label="急停开关">
+                        <el-button class="info" type="primary">翻转信号</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="box-item">
+                <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
+                    <el-form-item :label="item + '轴'" v-for="(item, index) in props.cnc.machine.item.joints" :key="index">
+                        <el-button class="info" type="primary">翻转方向</el-button>
+                        <el-button class="info" type="primary">翻转脉冲</el-button>
+                        <el-button class="info" type="primary">翻转限位信号</el-button>
                     </el-form-item>
                 </el-form>
             </div>

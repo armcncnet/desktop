@@ -82,11 +82,12 @@
                     </div>
                     <div class="box">
                         <el-table class="cnc" empty-text="没有相关数据" :data="props.cnc.machine.item.user.Tool.Pockets" stripe style="width: 100%">
-                            <el-table-column label="编号" width="50">
-                                <template #default="scope">{{scope.row.id}}</template>
+                            <el-table-column label="编号" width="100">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.id"></el-input>
+                                </template>
                             </el-table-column>
-                            <el-table-column label="" width="10"></el-table-column>
-                            <el-table-column label="X轴坐标" width="180">
+                            <el-table-column label="X轴坐标" width="150">
                                 <template #default="scope">
                                     <el-input class="cnc" :value="scope.row.x">
                                         <template #append>
@@ -95,7 +96,7 @@
                                     </el-input>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="Y轴坐标" width="180">
+                            <el-table-column label="Y轴坐标" width="150">
                                 <template #default="scope">
                                     <el-input class="cnc" :value="scope.row.y">
                                         <template #append>
@@ -104,7 +105,7 @@
                                     </el-input>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="Z轴坐标" width="180">
+                            <el-table-column label="Z轴坐标" width="150">
                                 <template #default="scope">
                                     <el-input class="cnc" :value="scope.row.z">
                                         <template #append>
@@ -114,7 +115,10 @@
                                 </template>
                             </el-table-column>
                             <el-table-column label="">
-
+                                <template #default="scope">
+                                    <el-button class="info" type="primary" :icon="icons.LocationFilled" @click="onSetPocket(scope.row)"></el-button>
+                                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onRemovePocket(scope.row)"></el-button>
+                                </template>
                             </el-table-column>
                         </el-table>
                     </div>
@@ -123,6 +127,52 @@
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
                     <div class="title">刀具配置</div>
+                    <div class="box">
+                        <el-table class="cnc" empty-text="没有相关数据" :data="props.cnc.machine.item.table" stripe style="width: 100%">
+                            <el-table-column label="编号" width="100">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.t"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="刀袋" width="100">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.p"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="X轴偏移量" width="150">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.x">
+                                        <template #append>
+                                            <span>{{props.cnc.device.machine.linear_units}}</span>
+                                        </template>
+                                    </el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Y轴偏移量" width="150">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.y">
+                                        <template #append>
+                                            <span>{{props.cnc.device.machine.linear_units}}</span>
+                                        </template>
+                                    </el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Z轴偏移量" width="150">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.z">
+                                        <template #append>
+                                            <span>{{props.cnc.device.machine.linear_units}}</span>
+                                        </template>
+                                    </el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="">
+                                <template #default="scope">
+                                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onRemoveTool(scope.row)"></el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
                 </el-form>
             </div>
         </div>
@@ -132,6 +182,7 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
+import {ElMessageBox} from "element-plus";
 export default defineComponent({
     name: "ToolMachine",
     emits: [],
@@ -150,6 +201,42 @@ export default defineComponent({
             );
         }
 
+        function onSetPocket(pocket: any){
+            console.log(pocket);
+        }
+
+        function onRemovePocket(pocket: any){
+            ElMessageBox.confirm("是否确认移除刀袋？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                props.cnc.machine.item.user.Tool.Pockets.forEach((item: any, index: any)=>{
+                    if(item.id === pocket.id){
+                        props.cnc.machine.item.user.Tool.Pockets.splice(index, 1);
+                    }
+                });
+            }).catch(() => {});
+        }
+
+        function onRemoveTool(tool: any){
+            ElMessageBox.confirm("是否确认移除刀具？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                props.cnc.machine.item.table.forEach((item: any, index: any)=>{
+                    if(item.id === tool.id){
+                        props.cnc.machine.item.table.splice(index, 1);
+                    }
+                });
+            }).catch(() => {});
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -161,7 +248,10 @@ export default defineComponent({
         return {
             props,
             icons,
-            addPocket
+            addPocket,
+            onSetPocket,
+            onRemovePocket,
+            onRemoveTool
         }
     }
 });

@@ -98,6 +98,7 @@ export default defineComponent({
                             }
                             if(!message_json.data){
                                 props.cnc.device.restart = true;
+                                props.cnc.console.right.is_first = true;
                                 if((window as any).simulation){
                                     (window as any).simulation.clearToolLine();
                                     (window as any).simulation.clearGcode();
