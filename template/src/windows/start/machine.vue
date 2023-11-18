@@ -50,14 +50,16 @@
                         <ToolMachine ref="toolMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'tool'"/>
                         <SignalMachine ref="signalMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'signal'"/>
                         <WheelMachine ref="wheelMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'wheel'"/>
+                        <HalMachine ref="halMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'hal'"/>
+                        <XmlMachine ref="xmlMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'xml'"/>
                         <LaunchMachine ref="launchMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'launch'"/>
                     </el-tab-pane>
                 </el-tabs>
-                <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch'">
+                <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch' && props.cnc.machine.tab.value !== 'hal' && props.cnc.machine.tab.value !== 'xml'">
                     <el-tooltip popper-class="cnc" effect="dark" content="下载配置" placement="top">
                         <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle></el-button>
                     </el-tooltip>
-                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle></el-button>
+                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle v-if="!props.cnc.machine.item.is_default"></el-button>
                     <el-button color="#5e4eff" type="primary" @click="onUpdateMachine">保存配置</el-button>
                 </div>
             </div>
@@ -75,19 +77,23 @@ import JointMachine from "./machine/joint.vue";
 import ToolMachine from "./machine/tool.vue";
 import SignalMachine from "./machine/signal.vue";
 import WheelMachine from "./machine/wheel.vue";
+import HalMachine from "./machine/hal.vue";
+import XmlMachine from "./machine/xml.vue";
 import LaunchMachine from "./machine/launch.vue";
 export default defineComponent({
     name: "MachineStart",
     emits: [],
     props: ["cnc"],
     components: {
-        LaunchMachine,
         BaseMachine,
         SpindleMachine,
         ToolMachine,
         SignalMachine,
         WheelMachine,
-        JointMachine
+        JointMachine,
+        HalMachine,
+        XmlMachine,
+        LaunchMachine
     },
     setup(props, context) {
 
@@ -163,9 +169,9 @@ export default defineComponent({
                             {name: "刀库配置", id: "tool"},
                             {name: "信号配置", id: "signal"},
                             {name: "手轮配置", id: "wheel"},
-                            {name: "启动程序", id: "launch"},
                             {name: "HAL配置", id: "hal"},
                             {name: "XML配置", id: "xml"},
+                            {name: "启动程序", id: "launch"},
                         ]
                         props.cnc.machine.tab.items.push(...tabs);
                         props.cnc.machine.tab.value = "base";
