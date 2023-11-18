@@ -93,7 +93,6 @@ export default defineComponent({
 }
 .device-view .device-main{
     padding: 30px;
-    min-height: 1000px;
 }
 .device-view .device-main .device-box{
     width: 850px;

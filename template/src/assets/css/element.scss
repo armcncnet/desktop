@@ -139,8 +139,11 @@
 }
 .el-input.cnc .el-input__inner{
     font-size: 12px;
-    color: #ffffff;
+    color: #999999;
     letter-spacing: 0.1em;
+}
+.el-input.cnc .el-input__inner:hover{
+    color: #ffffff;
 }
 .el-input.cnc .el-input__inner::placeholder{
     color: #666666;
@@ -486,10 +489,10 @@
 }
 
 .el-table.cnc{
-    background-color: rgba(30, 31, 34, .5);
+    background-color: rgba(30, 31, 34, .6);
     --el-table-border: 0;
     --el-table-border-color: rgba(0, 0, 0, 0);
-    --el-table-header-bg-color: rgba(30, 31, 34, .8);
+    --el-table-header-bg-color: rgba(30, 31, 34, 1);
     --el-table-header-text-color: #666666;
     --el-table-tr-bg-color: rgba(0, 0, 0, 0);
     --el-table-row-hover-bg-color: rgba(30, 31, 34, 1);
@@ -504,39 +507,15 @@
 .el-table.cnc .el-table__cell{
     padding: 5px 0;
 }
-.el-table.cnc .el-table__header-wrapper th:nth-child(1){
-    text-align: center;
-}
-.el-table.cnc .el-table__header-wrapper th:nth-child(3){
-    text-align: center;
-}
-.el-table.cnc .el-table__header-wrapper th:nth-child(4){
-    text-align: center;
-}
-.el-table.cnc .el-table__header-wrapper th .el-icon:hover{
-    cursor: pointer;
-}
-.el-table.cnc .el-table__body-wrapper td:nth-child(1){
-    font-weight: bold;
-    color: #666666;
-    text-align: center;
-}
-.el-table.cnc .el-table__body-wrapper td:nth-child(2){
-    font-weight: bold;
-    color: #999999;
-}
-.el-table.cnc .el-table__body-wrapper td:nth-child(3){
-    text-align: center;
-}
-.el-table.cnc .el-table__body-wrapper td:nth-child(4){
-    text-align: center;
-}
 .el-table.cnc .el-table__body-wrapper td .el-icon:hover{
     cursor: pointer;
     color: #ffffff;
 }
 .el-table.cnc .el-table__body-wrapper .el-table__row--striped td.el-table__cell{
     background-color: rgba(30, 31, 34, .2) !important;
+}
+.el-table.cnc .el-table__empty-text{
+    color: #666666;
 }
 
 .el-cnc-select{
@@ -669,9 +648,9 @@
     background-color: rgba(30, 31, 34, 1);
     border: 1px solid rgba(59, 60, 61, .9);
     border-radius: 4px;
-    color: #666666;
+    color: #999999;
 }
 .el-cnc-input:hover{
-    color: #999999;
+    color: #ffffff;
     cursor: text;
 }

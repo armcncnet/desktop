@@ -1,7 +1,7 @@
 <template>
     <div class="right-view">
         <div class="right-axis">
-            <el-table class="cnc" :data="props.cnc.console.right.axes" stripe style="width: 100%">
+            <el-table class="cnc" empty-text="没有相关数据" :data="props.cnc.console.right.axes" stripe style="width: 100%">
                 <el-table-column label="轴" width="50">
                     <template #default="scope">{{scope.row.name}}</template>
                 </el-table-column>
@@ -332,6 +332,7 @@ export default defineComponent({
     width: 100%;
     margin-bottom: 10px;
 }
+
 .right-view .right-axis .el-icon.homed{
     color: #5e4eff;
 }

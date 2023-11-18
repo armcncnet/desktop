@@ -12,19 +12,19 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="名称">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.Base.Name" style="width: 300px" maxlength="12" show-word-limit/>
+                        <el-input class="cnc" v-model="props.cnc.machine.item.user.Base.Name" style="width: 300px" maxlength="12" show-word-limit/>
                     </el-form-item>
                     <el-form-item label="描述">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.Base.Describe" style="width: 400px" maxlength="40" show-word-limit/>
-                    </el-form-item>
-                    <el-form-item label="步长可选项">
-                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.Increments" style="width: 500px"/>
+                        <el-input class="cnc" v-model="props.cnc.machine.item.user.Base.Describe" style="width: 400px" maxlength="30" show-word-limit/>
                     </el-form-item>
                     <el-form-item label="单位">
                         <el-radio-group class="cnc max" v-model="props.cnc.machine.item.ini.Traj.LinearUnits">
                             <el-radio-button label="mm">mm</el-radio-button>
                             <el-radio-button label="inch">inch</el-radio-button>
                         </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="步长可选项">
+                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.Increments" style="width: 500px"/>
                     </el-form-item>
                 </el-form>
             </div>

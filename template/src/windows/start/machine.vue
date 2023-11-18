@@ -48,6 +48,7 @@
                         <SpindleMachine ref="spindleMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'spindle'"/>
                         <JointMachine ref="jointMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'joint'"/>
                         <ToolMachine ref="toolMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'tool'"/>
+                        <SignalMachine ref="signalMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'signal'"/>
                         <WheelMachine ref="wheelMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'wheel'"/>
                         <LaunchMachine ref="launchMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'launch'"/>
                     </el-tab-pane>
@@ -72,6 +73,7 @@ import BaseMachine from "./machine/base.vue";
 import SpindleMachine from "./machine/spindle.vue";
 import JointMachine from "./machine/joint.vue";
 import ToolMachine from "./machine/tool.vue";
+import SignalMachine from "./machine/signal.vue";
 import WheelMachine from "./machine/wheel.vue";
 import LaunchMachine from "./machine/launch.vue";
 export default defineComponent({
@@ -83,6 +85,7 @@ export default defineComponent({
         BaseMachine,
         SpindleMachine,
         ToolMachine,
+        SignalMachine,
         WheelMachine,
         JointMachine
     },
@@ -140,6 +143,7 @@ export default defineComponent({
                             props.cnc.machine.item.ini["Joint" + index].HomeLarchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
                             props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
                         });
+                        props.cnc.machine.item.user.Tool.Pockets = JSON.parse(props.cnc.machine.item.user.Tool.Pockets);
                         props.cnc.machine.tab.items = [];
                         let tabs = [
                             {name: "基础配置", id: "base"},
