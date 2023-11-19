@@ -12,7 +12,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	runtime2 "github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -70,6 +73,15 @@ func (start *Api) GetPlatform() string {
 	return platform
 }
 
+func (start *Api) OpenFile(title string, name string, pattern string) string {
+	options := runtime2.OpenDialogOptions{}
+	options.Title = title
+	options.Filters = make([]runtime2.FileFilter, 0)
+	options.Filters = append(options.Filters, runtime2.FileFilter{DisplayName: name, Pattern: pattern})
+	file, _ := runtime2.OpenFileDialog(start.ctx, options)
+	return file
+}
+
 func (start *Api) Shutdown(ctx context.Context) {
 
 }
@@ -112,7 +124,61 @@ func (start *Api) DeviceRequest(host string, path string, method string, paramet
 		response["code"] = 10000
 		return response
 	}
-	response["code"] = 0
+
+	return response
+}
+
+func (start *Api) DeviceUpload(host string, path string, method string, filePath string) map[string]interface{} {
+	response := map[string]interface{}{"code": 0}
+
+	urlWithParams := "http://" + host + path
+
+	platform := start.GetPlatform()
+	if platform == "Windows" {
+		filePath = strings.Replace(filePath, `\`, `\\`, -1)
+	}
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		response["code"] = 10000
+		return response
+	}
+	defer file.Close()
+
+	fileData, err := ioutil.ReadAll(file)
+	if err != nil {
+		response["code"] = 10000
+		return response
+	}
+
+	fileBody := &bytes.Buffer{}
+	fileWriter := multipart.NewWriter(fileBody)
+	filePart, err := fileWriter.CreateFormFile("file", filePath)
+	if err != nil {
+		response["code"] = 10000
+		return response
+	}
+	filePart.Write(fileData)
+	fileWriter.Close()
+
+	request, err := http.NewRequest(method, urlWithParams, fileBody)
+	if err != nil {
+		response["code"] = 10000
+		return response
+	}
+
+	responseBody, err := start.onRequest(request, fileWriter.FormDataContentType(), "")
+	if err != nil {
+		response["code"] = 10000
+		return response
+	}
+	defer responseBody.Close()
+
+	if err := json.NewDecoder(responseBody).Decode(&response); err != nil {
+		response["code"] = 10000
+		return response
+	}
+
 	return response
 }
 

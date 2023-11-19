@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import {defineComponent, nextTick, onBeforeUnmount, onMounted} from "vue";
+import * as icons from "@element-plus/icons";
 export default defineComponent({
     name: "ProgramDialog",
     emits: [],

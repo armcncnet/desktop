@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import {defineComponent, onBeforeUnmount, onMounted} from "vue";
+import * as icons from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 export default defineComponent({
     name: "DeviceDialog",

@@ -7,7 +7,7 @@
                 </div>
                 <div class="item-header-item">
                     <el-tooltip popper-class="cnc" effect="dark" content="新增机床配置" placement="bottom">
-                        <el-button class="cnc" :icon="icons.Plus"></el-button>
+                        <el-button class="cnc" :icon="icons.Plus" @click="newMachine"></el-button>
                     </el-tooltip>
                 </div>
             </div>
@@ -65,6 +65,7 @@
             </div>
         </div>
     </div>
+    <NewMachineDialog ref="newMachineDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'new_machine'" />
 </template>
 
 <script lang="ts">
@@ -80,6 +81,7 @@ import WheelMachine from "./machine/wheel.vue";
 import HalMachine from "./machine/hal.vue";
 import XmlMachine from "./machine/xml.vue";
 import LaunchMachine from "./machine/launch.vue";
+import NewMachineDialog from "../common/dialog/new_machine.vue";
 export default defineComponent({
     name: "MachineStart",
     emits: [],
@@ -93,7 +95,8 @@ export default defineComponent({
         JointMachine,
         HalMachine,
         XmlMachine,
-        LaunchMachine
+        LaunchMachine,
+        NewMachineDialog
     },
     setup(props, context) {
 
@@ -121,6 +124,17 @@ export default defineComponent({
                     props.cnc.machine.loading = false;
                 }
             });
+        }
+
+        function newMachine(){
+            props.cnc.dialog.config.type = "new_machine";
+            props.cnc.dialog.config.title = "新增机床配置";
+            props.cnc.dialog.config.width = "350px";
+            props.cnc.dialog.config.close = true;
+            props.cnc.dialog.form = {
+                upload_loading: false,
+            }
+            props.cnc.dialog.status = true;
         }
 
         function onSelect(item: any){
@@ -333,9 +347,36 @@ export default defineComponent({
                 type: "warning",
                 customClass: "cnc"
             }).then(() => {
-                props.cnc.machine.tab.loading = false;
-                props.cnc.machine.tab.items = [];
-                props.cnc.machine.item = false;
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/delete", "GET", {path: props.cnc.machine.item.path}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            props.cnc.machine.tab.loading = false;
+                            props.cnc.machine.tab.items = [];
+                            props.cnc.machine.item = false;
+                            (window as any).runtime.EventsEmit("event_page", {type: "page_machine"});
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "删除成功",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "删除失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    }else{
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "删除失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
             }).catch(() => {});
         }
 
@@ -352,6 +393,7 @@ export default defineComponent({
         return {
             props,
             icons,
+            newMachine,
             onSelect,
             onTabRemove,
             onUpdateMachine,

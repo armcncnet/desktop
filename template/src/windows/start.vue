@@ -381,10 +381,6 @@ export default defineComponent({
                     props.cnc.sleep = new NoSleep();
                     props.cnc.sleep.enable();
                 }
-                let ips = localStorage.getItem("cnc:device:ips");
-                if(ips){
-                    props.cnc.device.ips = JSON.parse(ips);
-                }
                 (window as any).go.StartWindows.Api.GetPlatform().then((platform: string)=>{
                     props.cnc.platform = platform;
                 });
@@ -394,6 +390,10 @@ export default defineComponent({
                         props.cnc.screen.height = screen[0].height;
                     }
                 });
+                let ips = localStorage.getItem("cnc:device:ips");
+                if(ips){
+                    props.cnc.device.ips = JSON.parse(ips);
+                }
                 props.cnc.loading.close();
             });
         });
