@@ -262,7 +262,9 @@ export default defineComponent({
                     value: "",
                     items: [],
                     loading: false
-                }
+                },
+                update_loading: false,
+                download_loading: false,
             },
             program: {
                 loading: false,

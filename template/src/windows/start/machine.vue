@@ -56,11 +56,14 @@
                     </el-tab-pane>
                 </el-tabs>
                 <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch' && props.cnc.machine.tab.value !== 'hal' && props.cnc.machine.tab.value !== 'xml'">
-                    <el-tooltip popper-class="cnc" effect="dark" content="下载配置" placement="top">
-                        <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle></el-button>
+                    <el-tooltip popper-class="cnc" effect="dark" content="下载配置" placement="top" v-if="props.cnc.machine.item.path !== ''">
+                        <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle v-if="!props.cnc.machine.download_loading"></el-button>
+                        <el-button class="info" type="primary" circle v-else>
+                            <el-icon class="is-loading"><Loading /></el-icon>
+                        </el-button>
                     </el-tooltip>
-                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle v-if="!props.cnc.machine.item.is_default"></el-button>
-                    <el-button color="#5e4eff" type="primary" :loading="props.cnc.machine.tab.update_loading" @click="onUpdateMachine">保存配置</el-button>
+                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle v-if="!props.cnc.machine.item.is_default && props.cnc.machine.item.path !== ''"></el-button>
+                    <el-button color="#5e4eff" type="primary" :loading="props.cnc.machine.update_loading" @click="onUpdateMachine">保存配置</el-button>
                 </div>
             </div>
         </div>
@@ -102,9 +105,7 @@ export default defineComponent({
 
         (window as any).runtime.EventsOn("event_page", (message: any) => {
             if(message.type && message.type === "page_machine"){
-                props.cnc.machine.item = false;
-                props.cnc.machine.tab.items = [];
-                props.cnc.machine.tab.value = "";
+                onCloseSelect();
                 onData();
             }
         });
@@ -133,8 +134,92 @@ export default defineComponent({
             props.cnc.dialog.config.close = true;
             props.cnc.dialog.form = {
                 upload_loading: false,
+                new_callback: ()=>{
+                    onNew();
+                }
             }
             props.cnc.dialog.status = true;
+        }
+
+        function onNew(){
+            onCloseSelect();
+            props.cnc.machine.tab.loading = true;
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/new", "GET", {}).then((response: any)=>{
+                if(response.code === 0){
+                    if(response.data){
+                        props.cnc.machine.item = JSON.parse(JSON.stringify(response.data));
+                        props.cnc.machine.item.joints = props.cnc.machine.item.ini.Traj.Coordinates.split("");
+                        props.cnc.machine.item.ini.Display.MaxSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxSpindleOverride) * 100 + "";
+                        props.cnc.machine.item.ini.Display.MinSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MinSpindleOverride) * 100 + "";
+                        props.cnc.machine.item.ini.Display.MaxFeedOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxFeedOverride) * 100 + "";
+                        props.cnc.machine.item.ini.Display.DefaultLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultLinearVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MinLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MinLinearVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MaxLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxLinearVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.DefaultAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultAngularVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MinAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MinAngularVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.ini.Display.MaxAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxAngularVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.joints.forEach((item: any, index: any, array: any)=>{
+                            props.cnc.machine.item.ini["Joint" + index].MaxVelocity = Math.round(props.cnc.machine.item.ini["Joint" + index].MaxVelocity * 60).toFixed(3) + "";
+                            props.cnc.machine.item.ini["Joint" + index].HomeSearchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeSearchVel * 60).toFixed(3) + "";
+                            props.cnc.machine.item.ini["Joint" + index].HomeLarchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
+                            props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
+                        });
+                        props.cnc.machine.item.user.HandWheel.XVelocity = Math.round(props.cnc.machine.item.user.HandWheel.XVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.YVelocity = Math.round(props.cnc.machine.item.user.HandWheel.YVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.ZVelocity = Math.round(props.cnc.machine.item.user.HandWheel.ZVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.AVelocity = Math.round(props.cnc.machine.item.user.HandWheel.AVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.BVelocity = Math.round(props.cnc.machine.item.user.HandWheel.BVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.CVelocity = Math.round(props.cnc.machine.item.user.HandWheel.CVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.Tool.SearchVelocity = Math.round(props.cnc.machine.item.user.Tool.SearchVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.Tool.LatchSearchVelocity = Math.round(props.cnc.machine.item.user.Tool.LatchSearchVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.Tool.Pockets = JSON.parse(props.cnc.machine.item.user.Tool.Pockets);
+                        props.cnc.machine.item.table = props.cnc.machine.item.table.split(";").map((item: any, index: any) => {
+                            let parts = item.trim().split(" ");
+                            if(parts.length > 1){
+                                return {id: index + "", t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
+                            }else{
+                                return false;
+                            }
+                        });
+                        if(!props.cnc.machine.item.table[props.cnc.machine.item.table.length - 1]){
+                            props.cnc.machine.item.table.pop();
+                        }
+                        props.cnc.machine.tab.items = [];
+                        let tabs = [
+                            {name: "基础配置", id: "base"},
+                            {name: "主轴配置", id: "spindle"},
+                            {name: "轴关节配置", id: "joint"},
+                            {name: "刀库配置", id: "tool"},
+                            {name: "信号配置", id: "signal"},
+                            {name: "手轮配置", id: "wheel"},
+                            {name: "HAL配置", id: "hal"},
+                            {name: "XML配置", id: "xml"},
+                            {name: "启动程序", id: "launch"},
+                        ]
+                        props.cnc.machine.tab.items.push(...tabs);
+                        props.cnc.machine.tab.value = "base";
+                        props.cnc.machine.tab.loading = false;
+                        props.cnc.machine.update_loading = false;
+                        props.cnc.machine.download_loading = false;
+                    }else{
+                        props.cnc.machine.tab.loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "请求失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                }else{
+                    props.cnc.machine.tab.loading = false;
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "请求失败，请重新尝试",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                }
+            });
         }
 
         function onSelect(item: any){
@@ -197,7 +282,8 @@ export default defineComponent({
                         props.cnc.machine.tab.items.push(...tabs);
                         props.cnc.machine.tab.value = "base";
                         props.cnc.machine.tab.loading = false;
-                        props.cnc.machine.tab.update_loading = false;
+                        props.cnc.machine.update_loading = false;
+                        props.cnc.machine.download_loading = false;
                     }else{
                         props.cnc.machine.tab.loading = false;
                         ElMessage.closeAll();
@@ -219,8 +305,17 @@ export default defineComponent({
             });
         }
 
+        function onCloseSelect(){
+            props.cnc.machine.tab.items = [];
+            props.cnc.machine.tab.value = "";
+            props.cnc.machine.tab.loading = false;
+            props.cnc.machine.update_loading = false;
+            props.cnc.machine.download_loading = false;
+            props.cnc.machine.item = false;
+        }
+
         function onUpdateMachine(){
-            if(!props.cnc.machine.tab.update_loading){
+            if(!props.cnc.machine.update_loading){
                 let check = true;
                 Object.entries(props.cnc.machine.item.ini).forEach(([key, value])=>{
                     if (typeof value === "object" && value !== null) {
@@ -261,7 +356,7 @@ export default defineComponent({
                         customClass: "cnc"
                     });
                 }else{
-                    props.cnc.machine.tab.update_loading = true;
+                    props.cnc.machine.update_loading = true;
                     let data = JSON.parse(JSON.stringify(props.cnc.machine.item));
                     data.ini.Display.MaxSpindleOverride = parseInt(data.ini.Display.MaxSpindleOverride) / 100 + "";
                     data.ini.Display.MinSpindleOverride = parseInt(data.ini.Display.MinSpindleOverride) / 100 + "";
@@ -305,7 +400,7 @@ export default defineComponent({
                                         props.cnc.machine.items[index].control = props.cnc.machine.item.user.Base.Control;
                                     }
                                 });
-                                props.cnc.machine.tab.update_loading = false;
+                                props.cnc.machine.update_loading = false;
                                 ElMessage.closeAll();
                                 ElMessage({
                                     message: "保存成功",
@@ -313,7 +408,7 @@ export default defineComponent({
                                     customClass: "cnc"
                                 });
                             }else{
-                                props.cnc.machine.tab.update_loading = false;
+                                props.cnc.machine.update_loading = false;
                                 ElMessage.closeAll();
                                 ElMessage({
                                     message: "保存失败，请重新尝试",
@@ -322,7 +417,7 @@ export default defineComponent({
                                 });
                             }
                         }else{
-                            props.cnc.machine.tab.update_loading = false;
+                            props.cnc.machine.update_loading = false;
                             ElMessage.closeAll();
                             ElMessage({
                                 message: "保存失败，请重新尝试",
@@ -336,7 +431,60 @@ export default defineComponent({
         }
 
         function onDownloadMachine(){
-
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/download", "GET", {path: props.cnc.machine.item.path}).then((response: any)=>{
+                if(response.code === 0){
+                    if(response.data){
+                        props.cnc.machine.download_loading = true;
+                        (window as any).go.StartWindows.Api.SaveFile("保存文件", response.data.file).then((path: string)=>{
+                            if(path !== ""){
+                                (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/uploads/" + response.data.file, path).then((status: string)=>{
+                                    if(status){
+                                        let message = {command: "desktop:delete:uploads:file", data: response.data.file};
+                                        props.cnc.device.message.socket.send(JSON.stringify(message));
+                                        props.cnc.machine.download_loading = false;
+                                        ElMessage.closeAll();
+                                        ElMessage({
+                                            message: "下载完成",
+                                            type: "success",
+                                            customClass: "cnc"
+                                        });
+                                    }else{
+                                        props.cnc.machine.download_loading = false;
+                                        let message = {command: "desktop:delete:uploads:file", data: response.data.file};
+                                        props.cnc.device.message.socket.send(JSON.stringify(message));
+                                        ElMessage.closeAll();
+                                        ElMessage({
+                                            message: "下载失败，请重新尝试",
+                                            type: "warning",
+                                            customClass: "cnc"
+                                        });
+                                    }
+                                });
+                            }else{
+                                props.cnc.machine.download_loading = false;
+                                let message = {command: "desktop:delete:uploads:file", data: response.data.file};
+                                props.cnc.device.message.socket.send(JSON.stringify(message));
+                            }
+                        });
+                    }else{
+                        props.cnc.machine.download_loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "下载失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                }else{
+                    props.cnc.machine.download_loading = false;
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "下载失败，请重新尝试",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                }
+            });
         }
 
         function onDeleteMachine(){
@@ -350,9 +498,7 @@ export default defineComponent({
                 (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/delete", "GET", {path: props.cnc.machine.item.path}).then((response: any)=>{
                     if(response.code === 0){
                         if(response.data){
-                            props.cnc.machine.tab.loading = false;
-                            props.cnc.machine.tab.items = [];
-                            props.cnc.machine.item = false;
+                            onCloseSelect();
                             (window as any).runtime.EventsEmit("event_page", {type: "page_machine"});
                             ElMessage.closeAll();
                             ElMessage({

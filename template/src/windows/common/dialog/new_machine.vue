@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="item">
-                <div class="box" @click="onNewConfig">手动配置</div>
+                <div class="box" @click="onNewMachine">手动配置</div>
             </div>
         </div>
     </el-dialog>
@@ -65,8 +65,11 @@ export default defineComponent({
             });
         }
 
-        function onNewConfig(){
-
+        function onNewMachine(){
+            if(props.cnc.dialog.form.new_callback){
+                dialogClose(false);
+                props.cnc.dialog.form.new_callback();
+            }
         }
 
         function dialogClose(close: any){
@@ -87,7 +90,7 @@ export default defineComponent({
         return {
             props,
             onUpdateZip,
-            onNewConfig,
+            onNewMachine,
             dialogClose
         }
     }

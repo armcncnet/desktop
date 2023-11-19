@@ -10,12 +10,20 @@ export function DeviceUpload(arg1, arg2, arg3, arg4) {
   return window['go']['StartWindows']['Api']['DeviceUpload'](arg1, arg2, arg3, arg4);
 }
 
+export function DownloadFile(arg1, arg2) {
+  return window['go']['StartWindows']['Api']['DownloadFile'](arg1, arg2);
+}
+
 export function GetPlatform() {
   return window['go']['StartWindows']['Api']['GetPlatform']();
 }
 
 export function OpenFile(arg1, arg2, arg3) {
   return window['go']['StartWindows']['Api']['OpenFile'](arg1, arg2, arg3);
+}
+
+export function SaveFile(arg1, arg2) {
+  return window['go']['StartWindows']['Api']['SaveFile'](arg1, arg2);
 }
 
 export function ServiceRequest(arg1, arg2, arg3, arg4) {

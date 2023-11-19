@@ -42,6 +42,10 @@ func (start *Api) Startup(ctx context.Context) {
 	start.ctx = ctx
 }
 
+func (start *Api) Shutdown(ctx context.Context) {
+
+}
+
 func (start *Api) GetPlatform() string {
 	platform := ""
 	switch runtime.GOOS {
@@ -82,8 +86,40 @@ func (start *Api) OpenFile(title string, name string, pattern string) string {
 	return file
 }
 
-func (start *Api) Shutdown(ctx context.Context) {
+func (start *Api) SaveFile(title string, name string) string {
+	options := runtime2.SaveDialogOptions{}
+	options.Title = title
+	options.DefaultFilename = name
+	path, _ := runtime2.SaveFileDialog(start.ctx, options)
+	return path
+}
 
+func (start *Api) DownloadFile(url string, path string) bool {
+	status := true
+
+	resp, err := http.Get("http://" + url)
+	if err != nil {
+		status = false
+	}
+	defer resp.Body.Close()
+
+	platform := start.GetPlatform()
+	if platform == "Windows" {
+		path = strings.Replace(path, `\`, `\\`, -1)
+	}
+
+	out, err := os.Create(path)
+	if err != nil {
+		status = false
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		status = false
+	}
+
+	return status
 }
 
 func (start *Api) DeviceRequest(host string, path string, method string, parameter any) map[string]interface{} {
@@ -231,7 +267,7 @@ func (start *Api) onRequest(request *http.Request, contentType string, token str
 	request.Header.Set("Account-Token", token)
 
 	HttpClient := &http.Client{
-		Timeout: 15 * time.Second,
+		Timeout: 35 * time.Second,
 	}
 
 	response, err := HttpClient.Do(request)

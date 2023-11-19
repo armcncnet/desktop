@@ -43,7 +43,7 @@ export default defineComponent({
             });
 
             editor_data.onKeyDown((key: any)=>{
-                if (key.code === "KeyS" && key.ctrlKey) {
+                if (key.code === "KeyS" && key.ctrlKey && props.cnc.machine.item.path !== "") {
                     let code = editor_data.getValue();
                     (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update/hal", "POST", {path: props.cnc.machine.item.path, content: code}).then((response: any)=>{
                         if(response.code === 0){
@@ -60,7 +60,7 @@ export default defineComponent({
                                 ElMessage({
                                     message: "保存失败，请重新尝试",
                                     type: "warning",
-                                    customClass: "studio"
+                                    customClass: "cnc"
                                 });
                             }
                         }else{
@@ -68,7 +68,7 @@ export default defineComponent({
                             ElMessage({
                                 message: "保存失败，请重新尝试",
                                 type: "warning",
-                                customClass: "studio"
+                                customClass: "cnc"
                             });
                         }
                     });
