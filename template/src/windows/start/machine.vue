@@ -191,10 +191,7 @@ export default defineComponent({
                             {name: "轴关节配置", id: "joint"},
                             {name: "刀库配置", id: "tool"},
                             {name: "信号配置", id: "signal"},
-                            {name: "手轮配置", id: "wheel"},
-                            {name: "HAL配置", id: "hal"},
-                            {name: "XML配置", id: "xml"},
-                            {name: "启动程序", id: "launch"},
+                            {name: "手轮配置", id: "wheel"}
                         ]
                         props.cnc.machine.tab.items.push(...tabs);
                         props.cnc.machine.tab.value = "base";
