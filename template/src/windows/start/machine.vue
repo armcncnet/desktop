@@ -60,7 +60,7 @@
                         <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle></el-button>
                     </el-tooltip>
                     <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteMachine" circle v-if="!props.cnc.machine.item.is_default"></el-button>
-                    <el-button color="#5e4eff" type="primary" @click="onUpdateMachine">保存配置</el-button>
+                    <el-button color="#5e4eff" type="primary" :loading="props.cnc.machine.tab.update_loading" @click="onUpdateMachine">保存配置</el-button>
                 </div>
             </div>
         </div>
@@ -149,11 +149,19 @@ export default defineComponent({
                             props.cnc.machine.item.ini["Joint" + index].HomeLarchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
                             props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
                         });
+                        props.cnc.machine.item.user.HandWheel.XVelocity = Math.round(props.cnc.machine.item.user.HandWheel.XVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.YVelocity = Math.round(props.cnc.machine.item.user.HandWheel.YVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.ZVelocity = Math.round(props.cnc.machine.item.user.HandWheel.ZVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.AVelocity = Math.round(props.cnc.machine.item.user.HandWheel.AVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.BVelocity = Math.round(props.cnc.machine.item.user.HandWheel.BVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.HandWheel.CVelocity = Math.round(props.cnc.machine.item.user.HandWheel.CVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.Tool.SearchVelocity = Math.round(props.cnc.machine.item.user.Tool.SearchVelocity * 60).toFixed(3) + "";
+                        props.cnc.machine.item.user.Tool.LatchSearchVelocity = Math.round(props.cnc.machine.item.user.Tool.LatchSearchVelocity * 60).toFixed(3) + "";
                         props.cnc.machine.item.user.Tool.Pockets = JSON.parse(props.cnc.machine.item.user.Tool.Pockets);
                         props.cnc.machine.item.table = props.cnc.machine.item.table.split(";").map((item: any, index: any) => {
                             let parts = item.trim().split(" ");
                             if(parts.length > 1){
-                                return {id: index, t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
+                                return {id: index + "", t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
                             }else{
                                 return false;
                             }
@@ -176,6 +184,7 @@ export default defineComponent({
                         props.cnc.machine.tab.items.push(...tabs);
                         props.cnc.machine.tab.value = "base";
                         props.cnc.machine.tab.loading = false;
+                        props.cnc.machine.tab.update_loading = false;
                     }else{
                         props.cnc.machine.tab.loading = false;
                         ElMessage.closeAll();
@@ -198,7 +207,120 @@ export default defineComponent({
         }
 
         function onUpdateMachine(){
-
+            if(!props.cnc.machine.tab.update_loading){
+                let check = true;
+                Object.entries(props.cnc.machine.item.ini).forEach(([key, value])=>{
+                    if (typeof value === "object" && value !== null) {
+                        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                            if (nestedValue === null || nestedValue === "") {
+                                check = false;
+                            }
+                        });
+                    }
+                });
+                if(props.cnc.machine.item.user.Tool.Pockets.length > 0){
+                    Object.entries(props.cnc.machine.item.user.Tool.Pockets).forEach(([key, value])=>{
+                        if (typeof value === "object" && value !== null) {
+                            Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                                if (nestedValue === null || nestedValue === "") {
+                                    check = false;
+                                }
+                            });
+                        }
+                    });
+                }
+                if(props.cnc.machine.item.table.length > 0){
+                    Object.entries(props.cnc.machine.item.table).forEach(([key, value])=>{
+                        if (typeof value === "object" && value !== null) {
+                            Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+                                if (nestedValue === null || nestedValue === "") {
+                                    check = false;
+                                }
+                            });
+                        }
+                    });
+                }
+                if(!check){
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "配置信息不完整，请检查",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                }else{
+                    props.cnc.machine.tab.update_loading = true;
+                    let data = JSON.parse(JSON.stringify(props.cnc.machine.item));
+                    data.ini.Display.MaxSpindleOverride = parseInt(data.ini.Display.MaxSpindleOverride) / 100 + "";
+                    data.ini.Display.MinSpindleOverride = parseInt(data.ini.Display.MinSpindleOverride) / 100 + "";
+                    data.ini.Display.MaxFeedOverride = parseInt(data.ini.Display.MaxFeedOverride) / 100 + "";
+                    data.ini.Display.DefaultLinearVelocity = (parseFloat(data.ini.Display.DefaultLinearVelocity) / 60).toFixed(3) + "";
+                    data.ini.Display.MinLinearVelocity = (parseFloat(data.ini.Display.MinLinearVelocity) / 60).toFixed(3) + "";
+                    data.ini.Display.MaxLinearVelocity = (parseFloat(data.ini.Display.MaxLinearVelocity) / 60).toFixed(3) + "";
+                    data.ini.Display.DefaultAngularVelocity = (parseFloat(data.ini.Display.DefaultAngularVelocity) / 60).toFixed(3) + "";
+                    data.ini.Display.MinAngularVelocity = (parseFloat(data.ini.Display.MinAngularVelocity) / 60).toFixed(3) + "";
+                    data.ini.Display.MaxAngularVelocity = (parseFloat(data.ini.Display.MaxAngularVelocity) / 60).toFixed(3) + "";
+                    data.joints.forEach((item: any, index: any, array: any)=>{
+                        data.ini["Joint" + index].MaxVelocity = (parseFloat(data.ini["Joint" + index].MaxVelocity) / 60).toFixed(3) + "";
+                        data.ini["Joint" + index].HomeSearchVel = (parseFloat(data.ini["Joint" + index].HomeSearchVel) / 60).toFixed(3) + "";
+                        data.ini["Joint" + index].HomeLarchVel = (parseFloat(data.ini["Joint" + index].HomeLarchVel) / 60).toFixed(3) + "";
+                        data.ini["Joint" + index].HomeFinalVel = (parseFloat(data.ini["Joint" + index].HomeFinalVel) / 60).toFixed(3) + "";
+                        data.ini["Axis" + item].MaxVelocity = data.ini["Joint" + index].MaxVelocity;
+                        data.ini["Axis" + item].MaxAcceleration = parseFloat(data.ini["Joint" + index].MaxAcceleration).toFixed(3) + "";
+                        data.ini["Axis" + item].MinLimit = parseFloat(data.ini["Joint" + index].MinLimit).toFixed(3) + "";
+                        data.ini["Axis" + item].MaxLimit = parseFloat(data.ini["Joint" + index].MaxLimit).toFixed(3) + "";
+                    });
+                    data.user.HandWheel.XVelocity = (parseFloat(data.user.HandWheel.XVelocity) / 60).toFixed(3) + "";
+                    data.user.HandWheel.YVelocity = (parseFloat(data.user.HandWheel.YVelocity) / 60).toFixed(3) + "";
+                    data.user.HandWheel.ZVelocity = (parseFloat(data.user.HandWheel.ZVelocity) / 60).toFixed(3) + "";
+                    data.user.HandWheel.AVelocity = (parseFloat(data.user.HandWheel.AVelocity) / 60).toFixed(3) + "";
+                    data.user.HandWheel.BVelocity = (parseFloat(data.user.HandWheel.BVelocity) / 60).toFixed(3) + "";
+                    data.user.HandWheel.CVelocity = (parseFloat(data.user.HandWheel.CVelocity) / 60).toFixed(3) + "";
+                    data.user.Tool.SearchVelocity = (parseFloat(data.user.Tool.SearchVelocity) / 60).toFixed(3) + "";
+                    data.user.Tool.LatchSearchVelocity = (parseFloat(data.user.Tool.LatchSearchVelocity) / 60).toFixed(3) + "";
+                    data.user.Tool.Pockets = JSON.stringify(data.user.Tool.Pockets);
+                    data.table = data.table.map((item: any, index: any) => {
+                        return item.t + " " + item.p + " " + "D" + parseFloat(item.d).toFixed(3) + " " + "X" + parseFloat(item.x).toFixed(3) + " " + "Y" + parseFloat(item.y).toFixed(3) + " " + "Z" + parseFloat(item.z).toFixed(3) + ";\n";
+                    });
+                    data.table = data.table.join("");
+                    console.log(data);
+                    (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update", "POST", data).then((response: any)=>{
+                        if(response.code === 0){
+                            if(response.data){
+                                props.cnc.machine.items.forEach((item: any, index: any, array: any)=>{
+                                    if(item.path === props.cnc.machine.item.path){
+                                        props.cnc.machine.items[index].name = props.cnc.machine.item.user.Base.Name;
+                                        props.cnc.machine.items[index].describe = props.cnc.machine.item.user.Base.Describe;
+                                        props.cnc.machine.items[index].control = props.cnc.machine.item.user.Base.Control;
+                                    }
+                                });
+                                props.cnc.machine.tab.update_loading = false;
+                                ElMessage.closeAll();
+                                ElMessage({
+                                    message: "保存成功",
+                                    type: "success",
+                                    customClass: "cnc"
+                                });
+                            }else{
+                                props.cnc.machine.tab.update_loading = false;
+                                ElMessage.closeAll();
+                                ElMessage({
+                                    message: "保存失败，请重新尝试",
+                                    type: "warning",
+                                    customClass: "cnc"
+                                });
+                            }
+                        }else{
+                            props.cnc.machine.tab.update_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "保存失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    });
+                }
+            }
         }
 
         function onDownloadMachine(){

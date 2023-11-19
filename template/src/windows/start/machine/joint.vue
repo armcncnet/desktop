@@ -7,49 +7,49 @@
                         <el-input class="cnc" v-model="props.cnc.machine.item.ini.Traj.Coordinates" style="width: 150px" maxlength="5" show-word-limit @change="onChangeJoint"/>
                     </el-form-item>
                     <el-form-item label="最大进给倍率">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.MaxFeedOverride" style="width: 100px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MaxFeedOverride" style="width: 100px">
                             <template #append>
                                 <span>%</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="默认速度">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.DefaultLinearVelocity" style="width: 160px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.DefaultLinearVelocity" style="width: 160px">
                             <template #append>
                                 <span>{{props.cnc.device.machine.linear_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最小速度">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.MinLinearVelocity" style="width: 160px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MinLinearVelocity" style="width: 160px">
                             <template #append>
                                 <span>{{props.cnc.device.machine.linear_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最大速度">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.MaxLinearVelocity" style="width: 160px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MaxLinearVelocity" style="width: 160px">
                             <template #append>
                                 <span>{{props.cnc.device.machine.linear_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="默认转速">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.DefaultAngularVelocity" style="width: 160px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.DefaultAngularVelocity" style="width: 160px">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最小转速">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.MinAngularVelocity" style="width: 160px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MinAngularVelocity" style="width: 160px">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最大转速">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.MaxAngularVelocity" style="width: 160px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MaxAngularVelocity" style="width: 160px">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
@@ -187,7 +187,6 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessage} from "element-plus";
 export default defineComponent({
     name: "JointMachine",
     emits: [],

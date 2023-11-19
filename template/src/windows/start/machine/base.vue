@@ -35,59 +35,12 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessage} from "element-plus";
 export default defineComponent({
     name: "BaseMachine",
     emits: [],
     props: ["cnc", "item"],
     components: {},
     setup(props, context) {
-
-        function onUpdateUser(){
-            if(!props.item.loading){
-                if(props.cnc.machine.item.user.Base.Name === "" || (props.cnc.machine.item.user.Base.Name.replace(/\n|\r/g, "")).trim().length === 0){
-                    return;
-                }
-                props.item.loading = true;
-                props.cnc.machine.item.user.Base.Control = parseInt(props.cnc.machine.item.user.Base.Control);
-                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update/user", "POST", {path: props.cnc.machine.item.path, user: props.cnc.machine.item.user}).then((response: any)=>{
-                    if(response.code === 0){
-                        if(response.data){
-                            props.cnc.machine.items.forEach((item: any, index: any, array: any)=>{
-                                if(item.path === props.cnc.machine.item.path){
-                                    props.cnc.machine.items[index].name = props.cnc.machine.item.user.Base.Name;
-                                    props.cnc.machine.items[index].describe = props.cnc.machine.item.user.Base.Describe;
-                                    props.cnc.machine.items[index].control = props.cnc.machine.item.user.Base.Control;
-                                }
-                            });
-                            props.item.loading = false;
-                            ElMessage.closeAll();
-                            ElMessage({
-                                message: "保存成功",
-                                type: "success",
-                                customClass: "cnc"
-                            });
-                        }else{
-                            props.item.loading = false;
-                            ElMessage.closeAll();
-                            ElMessage({
-                                message: "保存失败，请重新尝试",
-                                type: "warning",
-                                customClass: "cnc"
-                            });
-                        }
-                    }else{
-                        props.item.loading = false;
-                        ElMessage.closeAll();
-                        ElMessage({
-                            message: "保存失败，请重新尝试",
-                            type: "warning",
-                            customClass: "cnc"
-                        });
-                    }
-                });
-            }
-        }
 
         onBeforeMount(() => {});
 
@@ -99,8 +52,7 @@ export default defineComponent({
 
         return {
             props,
-            icons,
-            onUpdateUser
+            icons
         }
     }
 });

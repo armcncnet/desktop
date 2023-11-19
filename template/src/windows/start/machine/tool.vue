@@ -127,6 +127,11 @@
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
                     <div class="title">刀具配置</div>
+                    <div class="button">
+                        <el-tooltip popper-class="cnc" effect="dark" content="添加刀具" placement="bottom">
+                            <el-button class="cnc" :icon="icons.Plus" @click="addTool"></el-button>
+                        </el-tooltip>
+                    </div>
                     <div class="box">
                         <el-table class="cnc" empty-text="没有相关数据" :data="props.cnc.machine.item.table" stripe style="width: 100%">
                             <el-table-column label="编号" width="100">
@@ -139,7 +144,16 @@
                                     <el-input class="cnc" :value="scope.row.p"></el-input>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="X轴偏移量" width="150">
+                            <el-table-column label="直径" width="130">
+                                <template #default="scope">
+                                    <el-input class="cnc" :value="scope.row.d">
+                                        <template #append>
+                                            <span>mm</span>
+                                        </template>
+                                    </el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="X轴偏移量" width="130">
                                 <template #default="scope">
                                     <el-input class="cnc" :value="scope.row.x">
                                         <template #append>
@@ -148,7 +162,7 @@
                                     </el-input>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="Y轴偏移量" width="150">
+                            <el-table-column label="Y轴偏移量" width="130">
                                 <template #default="scope">
                                     <el-input class="cnc" :value="scope.row.y">
                                         <template #append>
@@ -157,7 +171,7 @@
                                     </el-input>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="Z轴偏移量" width="150">
+                            <el-table-column label="Z轴偏移量" width="130">
                                 <template #default="scope">
                                     <el-input class="cnc" :value="scope.row.z">
                                         <template #append>
@@ -221,6 +235,20 @@ export default defineComponent({
             }).catch(() => {});
         }
 
+        function addTool() {
+            props.cnc.machine.item.table.push(
+                {
+                    id: "" + (props.cnc.machine.item.table.length + 1),
+                    t: "T0",
+                    p: "P0",
+                    d: "0.000",
+                    x: "0.000",
+                    y: "0.000",
+                    z: "0.000",
+                }
+            );
+        }
+
         function onRemoveTool(tool: any){
             ElMessageBox.confirm("是否确认移除刀具？", "操作确认", {
                 draggable: true,
@@ -251,6 +279,7 @@ export default defineComponent({
             addPocket,
             onSetPocket,
             onRemovePocket,
+            addTool,
             onRemoveTool
         }
     }
