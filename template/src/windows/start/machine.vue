@@ -131,7 +131,6 @@ export default defineComponent({
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/get", "GET", {path: item.path}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
-                        console.log(response.data);
                         props.cnc.machine.item = JSON.parse(JSON.stringify(response.data));
                         props.cnc.machine.item.joints = props.cnc.machine.item.ini.Traj.Coordinates.split("");
                         props.cnc.machine.item.ini.Display.MaxSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxSpindleOverride) * 100 + "";
@@ -282,7 +281,6 @@ export default defineComponent({
                         return item.t + " " + item.p + " " + "D" + parseFloat(item.d).toFixed(3) + " " + "X" + parseFloat(item.x).toFixed(3) + " " + "Y" + parseFloat(item.y).toFixed(3) + " " + "Z" + parseFloat(item.z).toFixed(3) + ";\n";
                     });
                     data.table = data.table.join("");
-                    console.log(data);
                     (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update", "POST", data).then((response: any)=>{
                         if(response.code === 0){
                             if(response.data){
