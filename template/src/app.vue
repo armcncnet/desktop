@@ -271,7 +271,13 @@ export default defineComponent({
                 search_keyword: "",
                 items: [],
                 item: false,
-                item_loading: false,
+                tab: {
+                    value: "",
+                    items: [],
+                    loading: false
+                },
+                update_loading: false,
+                download_loading: false,
             },
             plugin: {
 

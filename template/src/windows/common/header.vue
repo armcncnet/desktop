@@ -10,7 +10,7 @@
                             <el-icon><Refresh /></el-icon>
                         </div>
                         <div class="dropdown-item-item">
-                            <span>重载应用</span>
+                            <span>重载软件</span>
                         </div>
                         <div class="dropdown-item-item"></div>
                     </div>

@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="item">
-                <div class="box" @click="onNewMachine">手动配置</div>
+                <div class="box" @click="onNewMachine">自定义配置</div>
             </div>
         </div>
     </el-dialog>

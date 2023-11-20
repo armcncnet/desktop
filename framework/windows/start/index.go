@@ -267,7 +267,7 @@ func (start *Api) onRequest(request *http.Request, contentType string, token str
 	request.Header.Set("Account-Token", token)
 
 	HttpClient := &http.Client{
-		Timeout: 35 * time.Second,
+		Timeout: 60 * time.Second,
 	}
 
 	response, err := HttpClient.Do(request)

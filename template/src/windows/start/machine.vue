@@ -42,7 +42,7 @@
             </div>
             <el-empty class="cnc none" :image-size="30" v-if="!props.cnc.machine.item && !props.cnc.machine.tab.loading"/>
             <div class="machine-box" v-if="!props.cnc.machine.tab.loading && props.cnc.machine.item">
-                <el-tabs v-model="props.cnc.machine.tab.value" type="card" class="cnc" @tab-remove="onTabRemove">
+                <el-tabs v-model="props.cnc.machine.tab.value" type="card" class="cnc">
                     <el-tab-pane class="cnc" :closable="item.close" v-for="(item, index) in props.cnc.machine.tab.items" :key="index" :label="item.name" :name="item.id">
                         <BaseMachine ref="baseMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'base'"/>
                         <SpindleMachine ref="spindleMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'spindle'"/>
@@ -142,7 +142,7 @@ export default defineComponent({
         }
 
         function onSelect(item: any){
-            if(props.cnc.machine.item && props.cnc.machine.item.path === item.path){
+            if(props.cnc.machine.item && props.cnc.machine.item.path === item.path || props.cnc.machine.tab.loading){
                 return;
             }
             props.cnc.machine.tab.loading = true;
@@ -457,8 +457,6 @@ export default defineComponent({
             }).catch(() => {});
         }
 
-        function onTabRemove(){}
-
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -472,7 +470,6 @@ export default defineComponent({
             icons,
             newMachine,
             onSelect,
-            onTabRemove,
             onUpdateMachine,
             onDownloadMachine,
             onDeleteMachine

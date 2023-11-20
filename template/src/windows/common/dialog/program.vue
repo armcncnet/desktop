@@ -58,7 +58,7 @@ export default defineComponent({
 
         onMounted(() => {
             nextTick(()=>{
-                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/code/select", "GET", {}).then((response: any)=>{
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/select", "GET", {}).then((response: any)=>{
                     if(response.code === 0){
                         if(response.data){
                             props.cnc.dialog.form.items = response.data.code;

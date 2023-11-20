@@ -74,7 +74,7 @@ export default defineComponent({
             props.cnc.console.bottom.line.tmp_index = 0;
             props.cnc.console.bottom.line.tmp = [];
             props.cnc.console.bottom.line.items = [];
-            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/code/read/line", "GET", {file_name: file}).then((response: any)=>{
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/read/line", "GET", {file_name: file}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
                         let file_blob = new Blob([response.data.content], {type:"application/text;charset=utf-8"});
