@@ -38,20 +38,21 @@
             </div>
         </div>
     </div>
+    <NewProgramDialog ref="newProgramDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'new_program'"/>
 </template>
 
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 import {ElMessage} from "element-plus";
-import BaseProgram from "./program/base.vue";
+import NewProgramDialog from "../common/dialog/new_program.vue";
 import CodeProgram from "./program/code.vue";
 export default defineComponent({
     name: "ProgramStart",
     emits: [],
     props: ["cnc"],
     components: {
-        BaseProgram,
+        NewProgramDialog,
         CodeProgram,
     },
     setup(props, context) {
