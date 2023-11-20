@@ -135,88 +135,10 @@ export default defineComponent({
             props.cnc.dialog.form = {
                 upload_loading: false,
                 new_callback: ()=>{
-                    onNew();
+                    onSelect({path: ""});
                 }
             }
             props.cnc.dialog.status = true;
-        }
-
-        function onNew(){
-            onCloseSelect();
-            props.cnc.machine.tab.loading = true;
-            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/new", "GET", {}).then((response: any)=>{
-                if(response.code === 0){
-                    if(response.data){
-                        props.cnc.machine.item = JSON.parse(JSON.stringify(response.data));
-                        props.cnc.machine.item.joints = props.cnc.machine.item.ini.Traj.Coordinates.split("");
-                        props.cnc.machine.item.ini.Display.MaxSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxSpindleOverride) * 100 + "";
-                        props.cnc.machine.item.ini.Display.MinSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MinSpindleOverride) * 100 + "";
-                        props.cnc.machine.item.ini.Display.MaxFeedOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxFeedOverride) * 100 + "";
-                        props.cnc.machine.item.ini.Display.DefaultLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultLinearVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MinLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MinLinearVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MaxLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxLinearVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.DefaultAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultAngularVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MinAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MinAngularVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MaxAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxAngularVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.joints.forEach((item: any, index: any, array: any)=>{
-                            props.cnc.machine.item.ini["Joint" + index].MaxVelocity = Math.round(props.cnc.machine.item.ini["Joint" + index].MaxVelocity * 60).toFixed(3) + "";
-                            props.cnc.machine.item.ini["Joint" + index].HomeSearchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeSearchVel * 60).toFixed(3) + "";
-                            props.cnc.machine.item.ini["Joint" + index].HomeLarchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
-                            props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
-                        });
-                        props.cnc.machine.item.user.HandWheel.XVelocity = Math.round(props.cnc.machine.item.user.HandWheel.XVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.YVelocity = Math.round(props.cnc.machine.item.user.HandWheel.YVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.ZVelocity = Math.round(props.cnc.machine.item.user.HandWheel.ZVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.AVelocity = Math.round(props.cnc.machine.item.user.HandWheel.AVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.BVelocity = Math.round(props.cnc.machine.item.user.HandWheel.BVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.CVelocity = Math.round(props.cnc.machine.item.user.HandWheel.CVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.Tool.SearchVelocity = Math.round(props.cnc.machine.item.user.Tool.SearchVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.Tool.LatchSearchVelocity = Math.round(props.cnc.machine.item.user.Tool.LatchSearchVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.Tool.Pockets = JSON.parse(props.cnc.machine.item.user.Tool.Pockets);
-                        props.cnc.machine.item.table = props.cnc.machine.item.table.split(";").map((item: any, index: any) => {
-                            let parts = item.trim().split(" ");
-                            if(parts.length > 1){
-                                return {id: index + "", t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
-                            }else{
-                                return false;
-                            }
-                        });
-                        if(!props.cnc.machine.item.table[props.cnc.machine.item.table.length - 1]){
-                            props.cnc.machine.item.table.pop();
-                        }
-                        props.cnc.machine.tab.items = [];
-                        let tabs = [
-                            {name: "基础配置", id: "base"},
-                            {name: "主轴配置", id: "spindle"},
-                            {name: "轴关节配置", id: "joint"},
-                            {name: "刀库配置", id: "tool"},
-                            {name: "信号配置", id: "signal"},
-                            {name: "手轮配置", id: "wheel"}
-                        ]
-                        props.cnc.machine.tab.items.push(...tabs);
-                        props.cnc.machine.tab.value = "base";
-                        props.cnc.machine.tab.loading = false;
-                        props.cnc.machine.update_loading = false;
-                        props.cnc.machine.download_loading = false;
-                    }else{
-                        props.cnc.machine.tab.loading = false;
-                        ElMessage.closeAll();
-                        ElMessage({
-                            message: "请求失败，请重新尝试",
-                            type: "warning",
-                            customClass: "cnc"
-                        });
-                    }
-                }else{
-                    props.cnc.machine.tab.loading = false;
-                    ElMessage.closeAll();
-                    ElMessage({
-                        message: "请求失败，请重新尝试",
-                        type: "warning",
-                        customClass: "cnc"
-                    });
-                }
-            });
         }
 
         function onSelect(item: any){
@@ -227,43 +149,7 @@ export default defineComponent({
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/get", "GET", {path: item.path}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
-                        props.cnc.machine.item = JSON.parse(JSON.stringify(response.data));
-                        props.cnc.machine.item.joints = props.cnc.machine.item.ini.Traj.Coordinates.split("");
-                        props.cnc.machine.item.ini.Display.MaxSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxSpindleOverride) * 100 + "";
-                        props.cnc.machine.item.ini.Display.MinSpindleOverride = parseFloat(props.cnc.machine.item.ini.Display.MinSpindleOverride) * 100 + "";
-                        props.cnc.machine.item.ini.Display.MaxFeedOverride = parseFloat(props.cnc.machine.item.ini.Display.MaxFeedOverride) * 100 + "";
-                        props.cnc.machine.item.ini.Display.DefaultLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultLinearVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MinLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MinLinearVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MaxLinearVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxLinearVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.DefaultAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.DefaultAngularVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MinAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MinAngularVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.ini.Display.MaxAngularVelocity = Math.round(props.cnc.machine.item.ini.Display.MaxAngularVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.joints.forEach((item: any, index: any, array: any)=>{
-                            props.cnc.machine.item.ini["Joint" + index].MaxVelocity = Math.round(props.cnc.machine.item.ini["Joint" + index].MaxVelocity * 60).toFixed(3) + "";
-                            props.cnc.machine.item.ini["Joint" + index].HomeSearchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeSearchVel * 60).toFixed(3) + "";
-                            props.cnc.machine.item.ini["Joint" + index].HomeLarchVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
-                            props.cnc.machine.item.ini["Joint" + index].HomeFinalVel = Math.round(props.cnc.machine.item.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
-                        });
-                        props.cnc.machine.item.user.HandWheel.XVelocity = Math.round(props.cnc.machine.item.user.HandWheel.XVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.YVelocity = Math.round(props.cnc.machine.item.user.HandWheel.YVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.ZVelocity = Math.round(props.cnc.machine.item.user.HandWheel.ZVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.AVelocity = Math.round(props.cnc.machine.item.user.HandWheel.AVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.BVelocity = Math.round(props.cnc.machine.item.user.HandWheel.BVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.HandWheel.CVelocity = Math.round(props.cnc.machine.item.user.HandWheel.CVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.Tool.SearchVelocity = Math.round(props.cnc.machine.item.user.Tool.SearchVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.Tool.LatchSearchVelocity = Math.round(props.cnc.machine.item.user.Tool.LatchSearchVelocity * 60).toFixed(3) + "";
-                        props.cnc.machine.item.user.Tool.Pockets = JSON.parse(props.cnc.machine.item.user.Tool.Pockets);
-                        props.cnc.machine.item.table = props.cnc.machine.item.table.split(";").map((item: any, index: any) => {
-                            let parts = item.trim().split(" ");
-                            if(parts.length > 1){
-                                return {id: index + "", t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
-                            }else{
-                                return false;
-                            }
-                        });
-                        if(!props.cnc.machine.item.table[props.cnc.machine.item.table.length - 1]){
-                            props.cnc.machine.item.table.pop();
-                        }
+                        props.cnc.machine.item = onFormatData(response);
                         props.cnc.machine.tab.items = [];
                         let tabs = [
                             {name: "基础配置", id: "base"},
@@ -271,11 +157,13 @@ export default defineComponent({
                             {name: "轴关节配置", id: "joint"},
                             {name: "刀库配置", id: "tool"},
                             {name: "信号配置", id: "signal"},
-                            {name: "手轮配置", id: "wheel"},
-                            {name: "HAL配置", id: "hal"},
-                            {name: "XML配置", id: "xml"},
-                            {name: "启动程序", id: "launch"},
+                            {name: "手轮配置", id: "wheel"}
                         ]
+                        if(item.path !== ""){
+                            tabs.push({name: "HAL配置", id: "hal"});
+                            tabs.push({name: "XML配置", id: "xml"});
+                            tabs.push({name: "启动程序", id: "launch"});
+                        }
                         props.cnc.machine.tab.items.push(...tabs);
                         props.cnc.machine.tab.value = "base";
                         props.cnc.machine.tab.loading = false;
@@ -300,6 +188,47 @@ export default defineComponent({
                     });
                 }
             });
+        }
+
+        function onFormatData(response: any){
+            let data = JSON.parse(JSON.stringify(response.data));
+            data.joints = data.ini.Traj.Coordinates.split("");
+            data.ini.Display.MaxSpindleOverride = parseFloat(data.ini.Display.MaxSpindleOverride) * 100 + "";
+            data.ini.Display.MinSpindleOverride = parseFloat(data.ini.Display.MinSpindleOverride) * 100 + "";
+            data.ini.Display.MaxFeedOverride = parseFloat(data.ini.Display.MaxFeedOverride) * 100 + "";
+            data.ini.Display.DefaultLinearVelocity = Math.round(data.ini.Display.DefaultLinearVelocity * 60).toFixed(3) + "";
+            data.ini.Display.MinLinearVelocity = Math.round(data.ini.Display.MinLinearVelocity * 60).toFixed(3) + "";
+            data.ini.Display.MaxLinearVelocity = Math.round(data.ini.Display.MaxLinearVelocity * 60).toFixed(3) + "";
+            data.ini.Display.DefaultAngularVelocity = Math.round(data.ini.Display.DefaultAngularVelocity * 60).toFixed(3) + "";
+            data.ini.Display.MinAngularVelocity = Math.round(data.ini.Display.MinAngularVelocity * 60).toFixed(3) + "";
+            data.ini.Display.MaxAngularVelocity = Math.round(data.ini.Display.MaxAngularVelocity * 60).toFixed(3) + "";
+            data.joints.forEach((item: any, index: any, array: any)=>{
+                data.ini["Joint" + index].MaxVelocity = Math.round(data.ini["Joint" + index].MaxVelocity * 60).toFixed(3) + "";
+                data.ini["Joint" + index].HomeSearchVel = Math.round(data.ini["Joint" + index].HomeSearchVel * 60).toFixed(3) + "";
+                data.ini["Joint" + index].HomeLarchVel = Math.round(data.ini["Joint" + index].HomeLarchVel * 60).toFixed(3) + "";
+                data.ini["Joint" + index].HomeFinalVel = Math.round(data.ini["Joint" + index].HomeFinalVel * 60).toFixed(3) + "";
+            });
+            data.user.HandWheel.XVelocity = Math.round(data.user.HandWheel.XVelocity * 60).toFixed(3) + "";
+            data.user.HandWheel.YVelocity = Math.round(data.user.HandWheel.YVelocity * 60).toFixed(3) + "";
+            data.user.HandWheel.ZVelocity = Math.round(data.user.HandWheel.ZVelocity * 60).toFixed(3) + "";
+            data.user.HandWheel.AVelocity = Math.round(data.user.HandWheel.AVelocity * 60).toFixed(3) + "";
+            data.user.HandWheel.BVelocity = Math.round(data.user.HandWheel.BVelocity * 60).toFixed(3) + "";
+            data.user.HandWheel.CVelocity = Math.round(data.user.HandWheel.CVelocity * 60).toFixed(3) + "";
+            data.user.Tool.SearchVelocity = Math.round(data.user.Tool.SearchVelocity * 60).toFixed(3) + "";
+            data.user.Tool.LatchSearchVelocity = Math.round(data.user.Tool.LatchSearchVelocity * 60).toFixed(3) + "";
+            data.user.Tool.Pockets = JSON.parse(data.user.Tool.Pockets);
+            data.table = data.table.split(";").map((item: any, index: any) => {
+                let parts = item.trim().split(" ");
+                if(parts.length > 1){
+                    return {id: index + "", t: parts[0], p: parts[1], d: parseFloat(parts[2].replace("D", "")).toFixed(3), x: parseFloat(parts[3].replace("X", "")).toFixed(3), y: parseFloat(parts[4].replace("Y", "")).toFixed(3), z: parseFloat(parts[5].replace("Z", "")).toFixed(3)};
+                }else{
+                    return false;
+                }
+            });
+            if(!data.table[data.table.length - 1]){
+                data.table.pop();
+            }
+            return data;
         }
 
         function onCloseSelect(){
@@ -390,13 +319,18 @@ export default defineComponent({
                     (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update", "POST", data).then((response: any)=>{
                         if(response.code === 0){
                             if(response.data){
-                                props.cnc.machine.items.forEach((item: any, index: any, array: any)=>{
-                                    if(item.path === props.cnc.machine.item.path){
-                                        props.cnc.machine.items[index].name = props.cnc.machine.item.user.Base.Name;
-                                        props.cnc.machine.items[index].describe = props.cnc.machine.item.user.Base.Describe;
-                                        props.cnc.machine.items[index].control = props.cnc.machine.item.user.Base.Control;
-                                    }
-                                });
+                                if(data.path !== ""){
+                                    props.cnc.machine.items.forEach((item: any, index: any, array: any)=>{
+                                        if(item.path === props.cnc.machine.item.path){
+                                            props.cnc.machine.items[index].name = props.cnc.machine.item.user.Base.Name;
+                                            props.cnc.machine.items[index].describe = props.cnc.machine.item.user.Base.Describe;
+                                            props.cnc.machine.items[index].control = props.cnc.machine.item.user.Base.Control;
+                                        }
+                                    });
+                                }
+                                if(data.path === ""){
+                                    (window as any).runtime.EventsEmit("event_page", {type: "page_machine"});
+                                }
                                 props.cnc.machine.update_loading = false;
                                 ElMessage.closeAll();
                                 ElMessage({
