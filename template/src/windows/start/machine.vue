@@ -419,12 +419,6 @@ export default defineComponent({
                                 props.cnc.machine.download_loading = false;
                                 let message = {command: "desktop:delete:uploads:file", data: response.data.file};
                                 props.cnc.device.message.socket.send(JSON.stringify(message));
-                                ElMessage.closeAll();
-                                ElMessage({
-                                    message: "下载失败，请重新尝试",
-                                    type: "warning",
-                                    customClass: "cnc"
-                                });
                             }
                         });
                     }else{

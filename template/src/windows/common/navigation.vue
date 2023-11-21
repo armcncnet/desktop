@@ -23,7 +23,7 @@
             </div>
             <div class="item" :class="props.cnc.navigation.select === 'store' ? 'select' : ''" @click="onNavigation('store')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="市场" placement="right">
-                    <el-icon><Grid /></el-icon>
+                    <el-icon><Handbag /></el-icon>
                 </el-tooltip>
             </div>
         </div>

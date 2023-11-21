@@ -7,6 +7,7 @@
                         <el-radio-button label="all">全部</el-radio-button>
                         <el-radio-button label="machine">机床配置</el-radio-button>
                         <el-radio-button label="program">程序</el-radio-button>
+                        <el-radio-button label="plugin">插件</el-radio-button>
                         <el-radio-button label="script">脚本</el-radio-button>
                     </el-radio-group>
                 </el-form-item>
@@ -17,20 +18,12 @@
         </div>
         <div class="backup-main">
             <el-table class="cnc" empty-text="没有相关数据" :data="props.cnc.settings.backup.items" stripe style="width: 100%">
-                <el-table-column label="编号" width="100">
-                    <template #default="scope">
-
-                    </template>
+                <el-table-column label="" width="5"></el-table-column>
+                <el-table-column label="备份文件名" width="400">
+                    <template #default="scope">{{scope.row.name}}</template>
                 </el-table-column>
-                <el-table-column label="文件名" width="400">
-                    <template #default="scope">
-
-                    </template>
-                </el-table-column>
-                <el-table-column label="备份时间" width="150">
-                    <template #default="scope">
-
-                    </template>
+                <el-table-column label="备份时间" width="250">
+                    <template #default="scope">{{scope.row.date}}</template>
                 </el-table-column>
                 <el-table-column label="">
                     <template #default="scope">
@@ -54,13 +47,65 @@ export default defineComponent({
     setup(props, context) {
 
         function onData(){
+            props.cnc.settings.backup.type = "all";
             props.cnc.settings.backup.items = [];
             props.cnc.settings.backup.loading = false;
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/settings/backup/select", "GET", {}).then((response: any)=>{
+                if(response.code === 0){
+                    if(response.data){
+                        props.cnc.settings.backup.items = response.data.backup;
+                    }else{
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "服务请求失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                }else{
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "服务请求失败，请重新尝试",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                }
+            });
         }
 
         function onBackup(){
             if(!props.cnc.settings.backup.loading){
                 props.cnc.settings.backup.loading = true;
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/settings/backup/pack", "GET", {type: props.cnc.settings.backup.type}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            props.cnc.settings.backup.loading = false;
+                            onData();
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "备份成功",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            props.cnc.settings.backup.loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "备份失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    }else{
+                        props.cnc.settings.backup.loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "备份失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
             }
         }
 
