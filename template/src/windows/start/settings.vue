@@ -10,13 +10,15 @@
             <div class="group">
                 <div class="title">设备管理</div>
                 <div class="box">
-                    <div class="box-item" :class="props.cnc.settings.select === 'update' ? 'select' : ''" @click="onSelect('update')">系统升级</div>
+                    <div class="box-item" :class="props.cnc.settings.select === 'backup' ? 'select' : ''" @click="onSelect('backup')">数据备份</div>
+                    <div class="box-item" :class="props.cnc.settings.select === 'version' ? 'select' : ''" @click="onSelect('version')">系统升级</div>
                 </div>
             </div>
         </div>
         <div class="item">
             <LanguageSettings ref="languageSettings" :cnc="props.cnc" v-if="props.cnc.settings.select === 'language'"/>
-            <UpdateSettings ref="updateSettings" :cnc="props.cnc" v-if="props.cnc.settings.select === 'update'"/>
+            <BackupSettings ref="backupSettings" :cnc="props.cnc" v-if="props.cnc.settings.select === 'backup'"/>
+            <VersionSettings ref="versionSettings" :cnc="props.cnc" v-if="props.cnc.settings.select === 'version'"/>
         </div>
     </div>
 </template>
@@ -25,14 +27,16 @@
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 import LanguageSettings from "./settings/language.vue";
-import UpdateSettings from "./settings/update.vue";
+import BackupSettings from "./settings/backup.vue";
+import VersionSettings from "./settings/version.vue";
 export default defineComponent({
     name: "SettingsStart",
     emits: [],
     props: ["cnc"],
     components: {
         LanguageSettings,
-        UpdateSettings
+        BackupSettings,
+        VersionSettings
     },
     setup(props, context) {
 

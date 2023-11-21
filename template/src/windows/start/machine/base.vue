@@ -23,7 +23,7 @@
                             <el-radio-button label="inch">inch</el-radio-button>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="步长可选项">
+                    <el-form-item label="步长选项">
                         <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.Increments" style="width: 500px"/>
                     </el-form-item>
                 </el-form>

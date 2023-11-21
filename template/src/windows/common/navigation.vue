@@ -12,12 +12,17 @@
                 </el-tooltip>
             </div>
             <div class="item" :class="props.cnc.navigation.select === 'program' ? 'select' : ''" @click="onNavigation('program')" v-if="props.cnc.device.message.status">
-                <el-tooltip popper-class="cnc" effect="dark" content="程序" placement="right">
+                <el-tooltip popper-class="cnc" effect="dark" content="G程序" placement="right">
                     <el-icon><Tickets /></el-icon>
                 </el-tooltip>
             </div>
             <div class="item" :class="props.cnc.navigation.select === 'plugin' ? 'select' : ''" @click="onNavigation('plugin')" v-if="props.cnc.device.message.status">
                 <el-tooltip popper-class="cnc" effect="dark" content="插件" placement="right">
+                    <el-icon><Grid /></el-icon>
+                </el-tooltip>
+            </div>
+            <div class="item" :class="props.cnc.navigation.select === 'store' ? 'select' : ''" @click="onNavigation('store')" v-if="props.cnc.device.message.status">
+                <el-tooltip popper-class="cnc" effect="dark" content="市场" placement="right">
                     <el-icon><Grid /></el-icon>
                 </el-tooltip>
             </div>

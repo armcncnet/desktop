@@ -295,11 +295,19 @@ export default defineComponent({
             },
             settings: {
                 select: "language",
+                backup: {
+                    type: "all",
+                    items: [],
+                    loading: false
+                },
                 update: {
                     loading: false,
                     armcnc: "",
                     linuxcnc: "",
-                    sdk: ""
+                    sdk: "",
+                    armcnc_version: "",
+                    linuxcnc_version: "",
+                    sdk_version: ""
                 }
             },
             layer: {
