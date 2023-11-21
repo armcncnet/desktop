@@ -30,11 +30,21 @@
             </div>
             <el-empty class="cnc none" :image-size="30" v-if="!props.cnc.program.item && !props.cnc.program.tab.loading"/>
             <div class="program-box" v-if="!props.cnc.program.tab.loading && props.cnc.program.item">
-                <el-tabs v-model="props.cnc.program.tab.value" type="card" class="cnc" @tab-remove="onTabRemove">
+                <el-tabs v-model="props.cnc.program.tab.value" type="card" class="cnc">
                     <el-tab-pane class="cnc" :closable="item.close" v-for="(item, index) in props.cnc.program.tab.items" :key="index" :label="item.name" :name="item.id">
                         <CodeProgram ref="codeProgram" :cnc="props.cnc" :item="item"/>
                     </el-tab-pane>
                 </el-tabs>
+                <div class="program-button">
+                    <el-tooltip popper-class="cnc" effect="dark" content="下载程序" placement="top" v-if="props.cnc.program.item.path !== ''">
+                        <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadProgram" circle v-if="!props.cnc.program.download_loading"></el-button>
+                        <el-button class="info" type="primary" circle v-else>
+                            <el-icon class="is-loading"><Loading /></el-icon>
+                        </el-button>
+                    </el-tooltip>
+                    <el-button class="info" type="primary" :icon="icons.Delete" @click="onDeleteProgram" circle v-if="!props.cnc.program.item.is_default && props.cnc.program.item.path !== ''"></el-button>
+                    <el-button color="#5e4eff" type="primary" :loading="props.cnc.program.update_loading" @click="onUpdateProgram">保存程序</el-button>
+                </div>
             </div>
         </div>
     </div>
@@ -42,9 +52,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
+import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, ref} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import NewProgramDialog from "../common/dialog/new_program.vue";
 import CodeProgram from "./program/code.vue";
 export default defineComponent({
@@ -90,7 +100,20 @@ export default defineComponent({
             props.cnc.dialog.form = {
                 upload_loading: false,
                 new_callback: ()=>{
-                    onSelect({path: ""});
+                    onCloseSelect();
+                    props.cnc.program.item = false;
+                    setTimeout(()=>{
+                        props.cnc.program.item = {name: "新程序", describe: "程序描述", version: "1.0.0"};
+                        props.cnc.program.item.content = "(" + JSON.stringify(props.cnc.program.item) + ")";
+                        props.cnc.program.item.line = [];
+                        props.cnc.program.item.path = "";
+                        props.cnc.program.tab.items = [];
+                        let tabs = [
+                            {name: props.cnc.program.item.name, id: "new"}
+                        ];
+                        props.cnc.program.tab.items.push(...tabs);
+                        props.cnc.program.tab.value = "new";
+                    }, 200);
                 }
             }
             props.cnc.dialog.status = true;
@@ -108,6 +131,7 @@ export default defineComponent({
                     if(response.data){
                         props.cnc.program.item = JSON.parse(JSON.stringify(item));
                         props.cnc.program.item.content = response.data.content;
+                        props.cnc.program.item.is_default = response.data.is_default;
                         let tabs = [
                             {name: props.cnc.program.item.name, id: props.cnc.program.item.path}
                         ];
@@ -137,6 +161,112 @@ export default defineComponent({
             });
         }
 
+        function onDownloadProgram(){
+            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/download", "GET", {file_name: props.cnc.program.item.path}).then((response: any)=>{
+                if(response.code === 0){
+                    if(response.data){
+                        props.cnc.program.download_loading = true;
+                        (window as any).go.StartWindows.Api.SaveFile("保存文件", response.data.file).then((path: string)=>{
+                            if(path !== ""){
+                                (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/programs/" + response.data.file, path).then((status: string)=>{
+                                    if(status){
+                                        props.cnc.program.download_loading = false;
+                                        ElMessage.closeAll();
+                                        ElMessage({
+                                            message: "下载完成",
+                                            type: "success",
+                                            customClass: "cnc"
+                                        });
+                                    }else{
+                                        props.cnc.program.download_loading = false;
+                                        ElMessage.closeAll();
+                                        ElMessage({
+                                            message: "下载失败，请重新尝试",
+                                            type: "warning",
+                                            customClass: "cnc"
+                                        });
+                                    }
+                                });
+                            }else{
+                                props.cnc.program.download_loading = false;
+                                ElMessage.closeAll();
+                                ElMessage({
+                                    message: "下载失败，请重新尝试",
+                                    type: "warning",
+                                    customClass: "cnc"
+                                });
+                            }
+                        });
+                    }else{
+                        props.cnc.program.download_loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "下载失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                }else{
+                    props.cnc.program.download_loading = false;
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "下载失败，请重新尝试",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                }
+            });
+        }
+
+        function onDeleteProgram(){
+            ElMessageBox.confirm("是否确认删除程序？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/delete", "GET", {file_name: props.cnc.program.item.path}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            onCloseSelect();
+                            (window as any).runtime.EventsEmit("event_page", {type: "page_program"});
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "删除成功",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "删除失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    }else{
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "删除失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
+            }).catch(() => {});
+        }
+
+        const codeProgram = ref(null);
+        function onUpdateProgram(){
+            if(!props.cnc.program.update_loading){
+                if((codeProgram as any).value){
+                    props.cnc.program.update_loading = true;
+                    (codeProgram as any).value[0].onSaveProgram();
+                }
+            }
+        }
+
         function onCloseSelect(){
             props.cnc.program.tab.items = [];
             props.cnc.program.tab.value = "";
@@ -144,10 +274,6 @@ export default defineComponent({
             props.cnc.program.update_loading = false;
             props.cnc.program.download_loading = false;
             props.cnc.program.item = false;
-        }
-
-        function onTabRemove(tab: any){
-            console.log(tab);
         }
 
         onBeforeMount(() => {});
@@ -161,9 +287,12 @@ export default defineComponent({
         return {
             props,
             icons,
+            codeProgram,
             newProgram,
             onSelect,
-            onTabRemove
+            onDownloadProgram,
+            onDeleteProgram,
+            onUpdateProgram
         }
     }
 });
@@ -261,5 +390,19 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     position: relative;
+}
+.program-view .program-box .program-button{
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    padding: 4px 20px;
+    text-align: right;
+    z-index: 100;
+}
+.program-view .program-box .program-button{
+    padding-right: 60px;
 }
 </style>

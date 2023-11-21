@@ -41,85 +41,97 @@ export default defineComponent({
                 colorDecorators: false,
                 contextmenu: true,
             });
+        }
 
-            editor_data.onKeyDown((key: any)=>{
-                if (key.code === "KeyS" && key.ctrlKey && props.cnc.program.item.path !== "") {
-                    let code = editor_data.getValue();
-                    const model = editor_data.getModel();
-                    if (!model) {
+        function onSaveProgram(){
+            let code = editor_data.getValue();
+            const model = editor_data.getModel();
+            if (!model) {
+                props.cnc.program.update_loading = false;
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "保存失败，请重新尝试",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+                return;
+            }
+            const firstLine = model.getLineContent(1);
+            if(firstLine === ""){
+                props.cnc.program.update_loading = false;
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "缺少程序基本信息",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+                return;
+            }
+            if(!firstLine.includes("({") || !firstLine.includes("})")){
+                props.cnc.program.update_loading = false;
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "缺少程序基本信息",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+                return;
+            }
+            const firstJson = JSON.parse(firstLine.replace("(", "").replace(")", ""));
+            if(firstJson.name && firstJson.name !== "" && firstJson.describe && firstJson.describe !== "" && firstJson.version && firstJson.version !==""){
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/update/content", "POST", {file_name: props.cnc.program.item.path, content: code}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            if(props.cnc.program.item.path !== ""){
+                                props.cnc.program.item.name = firstJson.name;
+                                props.cnc.program.item.version = firstJson.version;
+                                props.cnc.program.item.content = code;
+                                props.cnc.program.tab.items[0].name = firstJson.name;
+                                props.cnc.program.items.forEach((item: any, index: any, array: any)=>{
+                                    if(item.path === props.cnc.program.item.path){
+                                        props.cnc.program.items[index].name = firstJson.name;
+                                        props.cnc.program.items[index].describe = firstJson.describe;
+                                        props.cnc.program.items[index].version = firstJson.version;
+                                    }
+                                });
+                            }
+                            if(props.cnc.program.item.path === ""){
+                                (window as any).runtime.EventsEmit("event_page", {type: "page_program"});
+                            }
+                            props.cnc.program.update_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "保存成功",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            props.cnc.program.update_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "保存失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    }else{
+                        props.cnc.program.update_loading = false;
                         ElMessage.closeAll();
                         ElMessage({
                             message: "保存失败，请重新尝试",
                             type: "warning",
                             customClass: "cnc"
                         });
-                        return;
                     }
-                    const firstLine = model.getLineContent(1);
-                    if(firstLine === ""){
-                        ElMessage.closeAll();
-                        ElMessage({
-                            message: "缺少程序基本信息",
-                            type: "warning",
-                            customClass: "cnc"
-                        });
-                        return;
-                    }
-                    if(!firstLine.includes("({") || !firstLine.includes("})")){
-                        ElMessage.closeAll();
-                        ElMessage({
-                            message: "缺少程序基本信息",
-                            type: "warning",
-                            customClass: "cnc"
-                        });
-                        return;
-                    }
-                    const firstJson = JSON.parse(firstLine.replace("(", "").replace(")", ""));
-                    if(firstJson.name && firstJson.name !== "" && firstJson.describe && firstJson.describe !== "" && firstJson.version && firstJson.version !==""){
-                        (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/update/content", "POST", {file_name: props.cnc.program.item.path, content: code}).then((response: any)=>{
-                            if(response.code === 0){
-                                if(response.data){
-                                    props.cnc.program.item.content = code;
-                                    props.cnc.program.items.forEach((item: any, index: any, array: any)=>{
-                                        if(item.path === props.cnc.program.item.path){
-                                            props.cnc.program.items[index].name = firstJson.name;
-                                            props.cnc.program.items[index].describe = firstJson.describe;
-                                            props.cnc.program.items[index].version = firstJson.version;
-                                        }
-                                    });
-                                    ElMessage.closeAll();
-                                    ElMessage({
-                                        message: "保存成功",
-                                        type: "success",
-                                        customClass: "cnc"
-                                    });
-                                }else{
-                                    ElMessage.closeAll();
-                                    ElMessage({
-                                        message: "保存失败，请重新尝试",
-                                        type: "warning",
-                                        customClass: "cnc"
-                                    });
-                                }
-                            }else{
-                                ElMessage.closeAll();
-                                ElMessage({
-                                    message: "保存失败，请重新尝试",
-                                    type: "warning",
-                                    customClass: "cnc"
-                                });
-                            }
-                        });
-                    }else{
-                        ElMessage.closeAll();
-                        ElMessage({
-                            message: "缺少程序基本信息",
-                            type: "warning",
-                            customClass: "cnc"
-                        });
-                    }
-                }
-            });
+                });
+            }else{
+                ElMessage.closeAll();
+                ElMessage({
+                    message: "缺少程序基本信息",
+                    type: "warning",
+                    customClass: "cnc"
+                });
+            }
         }
 
         onBeforeMount(() => {});
@@ -141,7 +153,8 @@ export default defineComponent({
         return {
             props,
             icons,
-            editor
+            editor,
+            onSaveProgram
         }
     }
 });

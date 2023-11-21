@@ -41,29 +41,24 @@ export default defineComponent({
                 colorDecorators: false,
                 contextmenu: true,
             });
+        }
 
-            editor_data.onKeyDown((key: any)=>{
-                if (key.code === "KeyS" && key.ctrlKey && props.cnc.machine.item.path !== "") {
-                    let code = editor_data.getValue();
-                    (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update/launch", "POST", {path: props.cnc.machine.item.path, content: code}).then((response: any)=>{
-                        if(response.code === 0){
-                            if(response.data){
-                                props.cnc.machine.item.launch = code;
-                                ElMessage.closeAll();
-                                ElMessage({
-                                    message: "保存成功",
-                                    type: "success",
-                                    customClass: "cnc"
-                                });
-                            }else{
-                                ElMessage.closeAll();
-                                ElMessage({
-                                    message: "保存失败，请重新尝试",
-                                    type: "warning",
-                                    customClass: "cnc"
-                                });
-                            }
+        function onSaveLaunch(){
+            if (props.cnc.machine.item.path !== "") {
+                let code = editor_data.getValue();
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/update/launch", "POST", {path: props.cnc.machine.item.path, content: code}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            props.cnc.machine.update_loading = false;
+                            props.cnc.machine.item.launch = code;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "保存成功",
+                                type: "success",
+                                customClass: "cnc"
+                            });
                         }else{
+                            props.cnc.machine.update_loading = false;
                             ElMessage.closeAll();
                             ElMessage({
                                 message: "保存失败，请重新尝试",
@@ -71,9 +66,17 @@ export default defineComponent({
                                 customClass: "cnc"
                             });
                         }
-                    });
-                }
-            });
+                    }else{
+                        props.cnc.machine.update_loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "保存失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
+            }
         }
 
         onBeforeMount(() => {});
@@ -95,7 +98,8 @@ export default defineComponent({
         return {
             props,
             icons,
-            editor
+            editor,
+            onSaveLaunch
         }
     }
 });

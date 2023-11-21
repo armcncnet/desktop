@@ -55,7 +55,7 @@
                         <LaunchMachine ref="launchMachine" :cnc="props.cnc" :item="item" v-if="item.id === 'launch'"/>
                     </el-tab-pane>
                 </el-tabs>
-                <div class="machine-button" v-if="props.cnc.machine.tab.value !== 'launch' && props.cnc.machine.tab.value !== 'hal' && props.cnc.machine.tab.value !== 'xml'">
+                <div class="machine-button">
                     <el-tooltip popper-class="cnc" effect="dark" content="下载配置" placement="top" v-if="props.cnc.machine.item.path !== ''">
                         <el-button class="info" type="primary" :icon="icons.Download" @click="onDownloadMachine" circle v-if="!props.cnc.machine.download_loading"></el-button>
                         <el-button class="info" type="primary" circle v-else>
@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
+import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, ref} from "vue";
 import * as icons from "@element-plus/icons";
 import {ElMessage, ElMessageBox} from "element-plus";
 import BaseMachine from "./machine/base.vue";
@@ -240,8 +240,32 @@ export default defineComponent({
             props.cnc.machine.item = false;
         }
 
+        const halMachine = ref(null);
+        const xmlMachine = ref(null);
+        const launchMachine = ref(null);
         function onUpdateMachine(){
             if(!props.cnc.machine.update_loading){
+                if(props.cnc.machine.tab.value == "hal"){
+                    if((halMachine as any).value){
+                        props.cnc.machine.update_loading = true;
+                        (halMachine as any).value[0].onSaveHal();
+                    }
+                    return
+                }
+                if(props.cnc.machine.tab.value == "xml"){
+                    if((xmlMachine as any).value){
+                        props.cnc.machine.update_loading = true;
+                        (xmlMachine as any).value[0].onSaveXml();
+                    }
+                    return
+                }
+                if(props.cnc.machine.tab.value == "launch"){
+                    if((launchMachine as any).value){
+                        props.cnc.machine.update_loading = true;
+                        (launchMachine as any).value[0].onSaveLaunch();
+                    }
+                    return
+                }
                 let check = true;
                 Object.entries(props.cnc.machine.item.ini).forEach(([key, value])=>{
                     if (typeof value === "object" && value !== null) {
@@ -395,6 +419,12 @@ export default defineComponent({
                                 props.cnc.machine.download_loading = false;
                                 let message = {command: "desktop:delete:uploads:file", data: response.data.file};
                                 props.cnc.device.message.socket.send(JSON.stringify(message));
+                                ElMessage.closeAll();
+                                ElMessage({
+                                    message: "下载失败，请重新尝试",
+                                    type: "warning",
+                                    customClass: "cnc"
+                                });
                             }
                         });
                     }else{
@@ -468,6 +498,9 @@ export default defineComponent({
         return {
             props,
             icons,
+            halMachine,
+            xmlMachine,
+            launchMachine,
             newMachine,
             onSelect,
             onUpdateMachine,
