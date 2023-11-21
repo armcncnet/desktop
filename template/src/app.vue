@@ -280,7 +280,15 @@ export default defineComponent({
                 download_loading: false,
             },
             plugin: {
-
+                loading: false,
+                search_keyword: "",
+                items: [],
+                item: false,
+                tab: {
+                    value: "",
+                    items: [],
+                    loading: false
+                },
             },
             store: {
 
