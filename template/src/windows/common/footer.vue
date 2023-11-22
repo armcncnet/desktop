@@ -18,7 +18,7 @@
             <div class="item">
                 <el-text class="cnc">
                     <el-icon><Bell /></el-icon>
-                    <span>ARMCNC 1.0.0</span>
+                    <span v-if="props.cnc.version.length > 0">{{props.cnc.version[0]}} {{props.cnc.version[1]}}</span>
                 </el-text>
             </div>
         </div>

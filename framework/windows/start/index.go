@@ -9,6 +9,7 @@ package StartWindows
 
 import (
 	"bytes"
+	"cnc/framework/config"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -74,7 +75,12 @@ func (start *Api) GetPlatform() string {
 	default:
 		platform = "-"
 	}
+
 	return platform
+}
+
+func (start *Api) GetVersion() []string {
+	return []string{Config.Get.Info.ProductName, Config.Get.Info.ProductVersion}
 }
 
 func (start *Api) OpenFile(title string, name string, pattern string) string {

@@ -3,9 +3,9 @@
         <div class="item">
             <div class="item-footer">
                 <div class="item-footer-box" v-if="!props.cnc.store.loading">
-                    <div class="store-item" :class="props.cnc.store.item && props.cnc.store.item.path === item.path ? 'select' : ''" v-for="(item, index) in props.cnc.store.items" :key="index" v-if="props.cnc.store.items.length > 0" @click="onSelect(item)">
-                        <div class="title">{{item.name}}</div>
-                        <div class="describe">{{item.describe}}</div>
+                    <div class="store-item" :class="props.cnc.store.class_item && props.cnc.store.class_item.token === item.token ? 'select' : ''" v-for="(item, index) in props.cnc.store.class" :key="index" v-if="props.cnc.store.class.length > 0" @click="onSelectClass(item)">
+                        <div class="title">{{item.class_name}}</div>
+                        <div class="describe">{{item.class_describe}}</div>
                     </div>
                     <el-empty class="cnc none" :image-size="30" v-else/>
                 </div>
@@ -14,13 +14,20 @@
                 </div>
             </div>
         </div>
-        <div class="item">1212</div>
+        <div class="item">
+            <div class="loading-view" v-if="props.cnc.store.list_loading">
+                <el-icon class="is-loading"><Loading /></el-icon>
+            </div>
+            <el-empty class="cnc none" :image-size="30" v-if="props.cnc.store.list.length === 0 && !props.cnc.store.list_loading"/>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
+import Network from "../../package/network/network";
+import {ElMessage} from "element-plus";
 export default defineComponent({
     name: "StoreStart",
     emits: [],
@@ -29,23 +36,61 @@ export default defineComponent({
     setup(props, context) {
 
         (window as any).runtime.EventsOn("event_page", (message: any) => {
-            if(message.type && message.type === "page_plugin"){
+            if(message.type && message.type === "page_store"){
                 onCloseSelect();
                 onData();
             }
         });
 
         function onData(){
-            props.cnc.store.items = [];
-            props.cnc.store.loading = false;
+            Network.status(()=>{
+                props.cnc.store.loading = true;
+                (window as any).go.StartWindows.Api.ServiceRequest("/armcnc/store", "GET", {}, "").then((service: any)=>{
+                    if(service.code === 0){
+                        props.cnc.store.class = service.data.class;
+                        props.cnc.store.loading = false;
+                    }else{
+                        props.cnc.store.loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "云服务请求失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
+            },()=>{});
         }
 
-        function onSelect(item: any){
-
+        function onSelectClass(item: any){
+            if(props.cnc.store.class_item && props.cnc.store.class_item.token === item.token){
+                return;
+            }
+            Network.status(()=>{
+                props.cnc.store.list_loading = true;
+                (window as any).go.StartWindows.Api.ServiceRequest("/armcnc/store/list", "GET", {token: item.token}, "").then((service: any)=>{
+                    if(service.code === 0){
+                        props.cnc.store.class_item = item;
+                        props.cnc.store.list = service.data.list;
+                        props.cnc.store.list_loading = false;
+                    }else{
+                        props.cnc.store.list_loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "云服务请求失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
+            },()=>{});
         }
 
         function onCloseSelect(){
-            props.cnc.store.item = false;
+            props.cnc.store.class = [];
+            props.cnc.store.class_item = false;
+            props.cnc.store.list = [];
+            props.cnc.store.list_loading = false;
         }
 
         onBeforeMount(() => {});
@@ -59,7 +104,7 @@ export default defineComponent({
         return {
             props,
             icons,
-            onSelect
+            onSelectClass
         }
     }
 });

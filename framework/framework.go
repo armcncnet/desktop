@@ -8,6 +8,7 @@
 package Framework
 
 import (
+	"cnc/framework/config"
 	"cnc/framework/windows/start"
 	"embed"
 	"fmt"
@@ -19,7 +20,9 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
-func Init(template embed.FS) {
+func Init(template embed.FS, version embed.FS) {
+
+	Config.Init(version)
 
 	start := StartWindows.Init()
 

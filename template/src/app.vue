@@ -23,6 +23,7 @@ export default defineComponent({
             sleep: false, // 控制休眠状态
             fullscreen: false, // 全屏状态切换
             platform: "-",
+            version: [],
             screen: {
                 width: "-",
                 height: "-"
@@ -293,8 +294,10 @@ export default defineComponent({
             store: {
                 loading: false,
                 search_keyword: "",
-                items: [],
-                item: false
+                class: [],
+                class_item: false,
+                list: [],
+                list_loading: false,
             },
             settings: {
                 select: "language",

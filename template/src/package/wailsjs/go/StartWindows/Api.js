@@ -18,6 +18,10 @@ export function GetPlatform() {
   return window['go']['StartWindows']['Api']['GetPlatform']();
 }
 
+export function GetVersion() {
+  return window['go']['StartWindows']['Api']['GetVersion']();
+}
+
 export function OpenFile(arg1, arg2, arg3) {
   return window['go']['StartWindows']['Api']['OpenFile'](arg1, arg2, arg3);
 }

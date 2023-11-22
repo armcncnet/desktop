@@ -40,6 +40,7 @@ import PluginStart from "./start/plugin.vue";
 import StoreStart from "./start/store.vue";
 import SettingsStart from "./start/settings.vue";
 import SelectLayer from "./common/layer/select.vue";
+import Network from "../package/network/network";
 export default defineComponent({
     name: "Start",
     emits: [],
@@ -386,6 +387,9 @@ export default defineComponent({
                 (window as any).go.StartWindows.Api.GetPlatform().then((platform: string)=>{
                     props.cnc.platform = platform;
                 });
+                (window as any).go.StartWindows.Api.GetVersion().then((version: string)=>{
+                    props.cnc.version = version;
+                });
                 (window as any).runtime.ScreenGetAll().then((screen: any)=>{
                     if(screen.length > 0){
                         props.cnc.screen.width = screen[0].width;
@@ -397,6 +401,31 @@ export default defineComponent({
                     props.cnc.device.ips = JSON.parse(ips);
                 }
                 props.cnc.loading.close();
+                Network.status(()=>{
+                    props.cnc.store.loading = true;
+                    (window as any).go.StartWindows.Api.ServiceRequest("/version/check", "GET", {product: "armcnc_desktop"}, "").then((service: any)=>{
+                        if(service.code === 0){
+                            if(service.data && service.data.version && service.data.version.version_number) {
+                                if (props.cnc.version.length > 0) {
+                                    if(service.data.version.version_number !== props.cnc.version[1]){
+                                        ElNotification({
+                                            title: "消息提醒",
+                                            message: "有的新的软件更新，请前往官网下载",
+                                            type: "info",
+                                            position: "bottom-right",
+                                            duration: 0,
+                                            customClass: "cnc",
+                                            onClick:() => {
+                                                (window as any).runtime.BrowserOpenURL("https://www.armcnc.net");
+                                                ElNotification.closeAll();
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },()=>{});
             });
         });
 

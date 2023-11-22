@@ -166,7 +166,7 @@ export default defineComponent({
             item.download_loading = true;
             (window as any).go.StartWindows.Api.SaveFile("保存文件", item.name).then((path: string)=>{
                 if(path !== ""){
-                    (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/backup/" + item.name, path).then((status: string)=>{
+                    (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/backups/" + item.name, path).then((status: string)=>{
                         if(status){
                             item.download_loading = false;
                             ElMessage.closeAll();

@@ -10,6 +10,8 @@ export function DownloadFile(arg1:string,arg2:string):Promise<boolean>;
 
 export function GetPlatform():Promise<string>;
 
+export function GetVersion():Promise<Array<string>>;
+
 export function OpenFile(arg1:string,arg2:string,arg3:string):Promise<string>;
 
 export function SaveFile(arg1:string,arg2:string):Promise<string>;

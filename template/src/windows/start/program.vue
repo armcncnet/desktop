@@ -161,50 +161,28 @@ export default defineComponent({
         }
 
         function onDownloadProgram(){
-            (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/download", "GET", {file_name: props.cnc.program.item.path}).then((response: any)=>{
-                if(response.code === 0){
-                    if(response.data){
-                        props.cnc.program.download_loading = true;
-                        (window as any).go.StartWindows.Api.SaveFile("保存文件", response.data.file).then((path: string)=>{
-                            if(path !== ""){
-                                (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/programs/" + response.data.file, path).then((status: string)=>{
-                                    if(status){
-                                        props.cnc.program.download_loading = false;
-                                        ElMessage.closeAll();
-                                        ElMessage({
-                                            message: "下载完成",
-                                            type: "success",
-                                            customClass: "cnc"
-                                        });
-                                    }else{
-                                        props.cnc.program.download_loading = false;
-                                        ElMessage.closeAll();
-                                        ElMessage({
-                                            message: "下载失败，请重新尝试",
-                                            type: "warning",
-                                            customClass: "cnc"
-                                        });
-                                    }
-                                });
-                            }else{
-                                props.cnc.program.download_loading = false;
-                                ElMessage.closeAll();
-                                ElMessage({
-                                    message: "下载失败，请重新尝试",
-                                    type: "warning",
-                                    customClass: "cnc"
-                                });
-                            }
-                        });
-                    }else{
-                        props.cnc.program.download_loading = false;
-                        ElMessage.closeAll();
-                        ElMessage({
-                            message: "下载失败，请重新尝试",
-                            type: "warning",
-                            customClass: "cnc"
-                        });
-                    }
+            props.cnc.program.download_loading = true;
+            (window as any).go.StartWindows.Api.SaveFile("保存文件", props.cnc.program.item.path).then((path: string)=>{
+                if(path !== ""){
+                    (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/programs/" + props.cnc.program.item.path, path).then((status: string)=>{
+                        if(status){
+                            props.cnc.program.download_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "下载完成",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            props.cnc.program.download_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "下载失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    });
                 }else{
                     props.cnc.program.download_loading = false;
                     ElMessage.closeAll();

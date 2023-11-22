@@ -17,7 +17,10 @@ import (
 //go:embed all:template/dist
 var Template embed.FS
 
+//go:embed all:wails.json
+var VersionInfo embed.FS
+
 func main() {
 	fmt.Println("[cnc][main]：" + color.Gray.Text("starting..."))
-	Framework.Init(Template)
+	Framework.Init(Template, VersionInfo)
 }
