@@ -6,7 +6,7 @@
                     <el-radio-group class="cnc max" v-model="props.cnc.settings.backup.type">
                         <el-radio-button label="all">全部</el-radio-button>
                         <el-radio-button label="machine">机床配置</el-radio-button>
-                        <el-radio-button label="program">程序</el-radio-button>
+                        <el-radio-button label="program">G程序</el-radio-button>
                         <el-radio-button label="plugin">插件</el-radio-button>
                         <el-radio-button label="script">脚本</el-radio-button>
                     </el-radio-group>
@@ -22,12 +22,24 @@
                 <el-table-column label="备份文件名" width="400">
                     <template #default="scope">{{scope.row.name}}</template>
                 </el-table-column>
-                <el-table-column label="备份时间" width="250">
+                <el-table-column label="备份时间" width="200">
                     <template #default="scope">{{scope.row.date}}</template>
                 </el-table-column>
                 <el-table-column label="">
                     <template #default="scope">
-
+                        <el-tooltip popper-class="cnc" effect="dark" content="恢复备份" placement="top">
+                            <el-button class="info" type="primary" :icon="icons.RefreshLeft" @click="onRestore(scope.row)" v-if="!scope.row.restore_loading"></el-button>
+                            <el-button class="info" type="primary" v-else>
+                                <el-icon class="is-loading"><Loading /></el-icon>
+                            </el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="cnc" effect="dark" content="下载备份" placement="top">
+                            <el-button class="info" type="primary" :icon="icons.Download" @click="onDownload(scope.row)" v-if="!scope.row.download_loading"></el-button>
+                            <el-button class="info" type="primary" v-else>
+                                <el-icon class="is-loading"><Loading /></el-icon>
+                            </el-button>
+                        </el-tooltip>
+                        <el-button class="info" type="primary" :icon="icons.Delete" @click="onDelete(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -38,7 +50,7 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, nextTick} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 export default defineComponent({
     name: "BackupSettings",
     emits: [],
@@ -109,6 +121,114 @@ export default defineComponent({
             }
         }
 
+        function onRestore(item: any){
+            ElMessageBox.confirm("恢复备份将覆盖当前的相关数据，是否继续？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "继续",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                item.restore_loading = true;
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/settings/backup/restore", "GET", {file_name: item.path}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            item.restore_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "恢复完成",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            item.restore_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "恢复失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    }else{
+                        item.restore_loading = false;
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "恢复失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
+            }).catch(() => {});
+        }
+
+        function onDownload(item: any){
+            item.download_loading = true;
+            (window as any).go.StartWindows.Api.SaveFile("保存文件", item.name).then((path: string)=>{
+                if(path !== ""){
+                    (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/backup/" + item.name, path).then((status: string)=>{
+                        if(status){
+                            item.download_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "下载完成",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            item.download_loading = false;
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "下载失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    });
+                }else{
+                    item.download_loading = false;
+                }
+            });
+        }
+
+        function onDelete(item: any){
+            ElMessageBox.confirm("是否确认删除备份？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/settings/backup/delete", "GET", {file_name: item.path}).then((response: any)=>{
+                    if(response.code === 0){
+                        if(response.data){
+                            onData();
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "删除成功",
+                                type: "success",
+                                customClass: "cnc"
+                            });
+                        }else{
+                            ElMessage.closeAll();
+                            ElMessage({
+                                message: "删除失败，请重新尝试",
+                                type: "warning",
+                                customClass: "cnc"
+                            });
+                        }
+                    }else{
+                        ElMessage.closeAll();
+                        ElMessage({
+                            message: "删除失败，请重新尝试",
+                            type: "warning",
+                            customClass: "cnc"
+                        });
+                    }
+                });
+            }).catch(() => {});
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {
@@ -124,7 +244,10 @@ export default defineComponent({
         return {
             props,
             icons,
-            onBackup
+            onBackup,
+            onRestore,
+            onDownload,
+            onDelete
         }
     }
 });
