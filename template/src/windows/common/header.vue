@@ -92,6 +92,7 @@
         </div>
     </div>
     <NewDeviceDialog ref="newDeviceDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'device'" />
+    <AboutDialog ref="aboutDialog" :cnc="props.cnc" v-if="props.cnc.dialog.config.type === 'about'" />
 </template>
 
 <script lang="ts">
@@ -99,12 +100,14 @@ import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted}
 import * as icons from "@element-plus/icons";
 import {ElMessage, ElMessageBox} from "element-plus";
 import NewDeviceDialog from "./dialog/device.vue";
+import AboutDialog from "./dialog/about.vue";
 export default defineComponent({
     name: "HeaderCommon",
     emits: [],
     props: ["cnc"],
     components: {
-        NewDeviceDialog
+        NewDeviceDialog,
+        AboutDialog
     },
     setup(props, context) {
 
@@ -117,7 +120,12 @@ export default defineComponent({
         }
 
         function onAbout(){
-
+            props.cnc.dialog.config.type = "about";
+            props.cnc.dialog.config.title = "关于";
+            props.cnc.dialog.config.width = "300px";
+            props.cnc.dialog.config.close = true;
+            props.cnc.dialog.form = {}
+            props.cnc.dialog.status = true;
         }
 
         function onQuit(){
