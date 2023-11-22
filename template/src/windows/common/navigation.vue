@@ -6,34 +6,34 @@
                     <el-icon><Place /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'machine' ? 'select' : ''" @click="onNavigation('machine')" v-if="props.cnc.device.message.status">
+            <div class="item" :class="props.cnc.navigation.select === 'machine' ? 'select' : ''" @click="onNavigation('machine')" >
                 <el-tooltip popper-class="cnc" effect="dark" content="机床" placement="right">
                     <el-icon><Files /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'program' ? 'select' : ''" @click="onNavigation('program')" v-if="props.cnc.device.message.status">
+            <div class="item" :class="props.cnc.navigation.select === 'program' ? 'select' : ''" @click="onNavigation('program')">
                 <el-tooltip popper-class="cnc" effect="dark" content="G程序" placement="right">
                     <el-icon><Tickets /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'plugin' ? 'select' : ''" @click="onNavigation('plugin')" v-if="props.cnc.device.message.status">
+            <div class="item" :class="props.cnc.navigation.select === 'plugin' ? 'select' : ''" @click="onNavigation('plugin')">
                 <el-tooltip popper-class="cnc" effect="dark" content="插件" placement="right">
                     <el-icon><Grid /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'store' ? 'select' : ''" @click="onNavigation('store')" v-if="props.cnc.device.message.status">
+            <div class="item" :class="props.cnc.navigation.select === 'store' ? 'select' : ''" @click="onNavigation('store')">
                 <el-tooltip popper-class="cnc" effect="dark" content="市场" placement="right">
                     <el-icon><Handbag /></el-icon>
                 </el-tooltip>
             </div>
         </div>
         <div class="navigation-item">
-            <div class="item" @click="onDeviceRestart" v-if="props.cnc.device.message.status">
-                <el-tooltip popper-class="cnc" effect="dark" content="重启设备" placement="right">
-                    <el-icon><RefreshRight /></el-icon>
+            <div class="item">
+                <el-tooltip popper-class="cnc" effect="dark" content="重启设备" placement="right" v-if="props.cnc.device.message.status">
+                    <el-icon @click="onDeviceRestart"><RefreshRight /></el-icon>
                 </el-tooltip>
             </div>
-            <div class="item" :class="props.cnc.navigation.select === 'settings' ? 'select' : ''" @click="onNavigation('settings')" v-if="props.cnc.device.message.status">
+            <div class="item" :class="props.cnc.navigation.select === 'settings' ? 'select' : ''" @click="onNavigation('settings')">
                 <el-tooltip popper-class="cnc" effect="dark" content="设置" placement="right">
                     <el-icon><Tools /></el-icon>
                 </el-tooltip>
@@ -45,7 +45,7 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElLoading, ElMessageBox} from "element-plus";
+import {ElLoading, ElMessage, ElMessageBox} from "element-plus";
 export default defineComponent({
     name: "NavigationCommon",
     emits: [],
@@ -55,6 +55,16 @@ export default defineComponent({
 
         function onNavigation(navigation: any){
             if(props.cnc.navigation.select !== navigation){
+                let array = ["machine", "program", "plugin"];
+                if(array.includes(navigation) && !props.cnc.device.message.status){
+                    ElMessage.closeAll();
+                    ElMessage({
+                        message: "请先连接设备",
+                        type: "warning",
+                        customClass: "cnc"
+                    });
+                    return
+                }
                 props.cnc.navigation.select = navigation;
                 (window as any).runtime.EventsEmit("event_page", {type: "page_" + navigation});
             }

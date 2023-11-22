@@ -13,6 +13,7 @@
                     <MachineStart ref="machineStart" :cnc="props.cnc" />
                     <ProgramStart ref="programStart" :cnc="props.cnc" />
                     <PluginStart ref="pluginStart" :cnc="props.cnc" />
+                    <StoreStart ref="storeStart" :cnc="props.cnc" />
                     <SettingsStart ref="settingsStart" :cnc="props.cnc" />
                 </div>
             </div>
@@ -33,9 +34,10 @@ import HeaderCommon from "./common/header.vue";
 import FooterCommon from "./common/footer.vue";
 import NavigationCommon from "./common/navigation.vue";
 import ConsoleStart from "./start/console.vue";
+import MachineStart from "./start/machine.vue";
 import ProgramStart from "./start/program.vue";
 import PluginStart from "./start/plugin.vue";
-import MachineStart from "./start/machine.vue";
+import StoreStart from "./start/store.vue";
 import SettingsStart from "./start/settings.vue";
 import SelectLayer from "./common/layer/select.vue";
 export default defineComponent({
@@ -50,6 +52,7 @@ export default defineComponent({
         MachineStart,
         ProgramStart,
         PluginStart,
+        StoreStart,
         SettingsStart,
         SelectLayer
     },

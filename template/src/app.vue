@@ -291,7 +291,10 @@ export default defineComponent({
                 },
             },
             store: {
-
+                loading: false,
+                search_keyword: "",
+                items: [],
+                item: false
             },
             settings: {
                 select: "language",

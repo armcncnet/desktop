@@ -1,5 +1,5 @@
 <template>
-    <DeviceConsole ref="deviceConsole" :cnc="props.cnc" v-if="!props.cnc.device.message.status" />
+    <DeviceConsole ref="deviceConsole" :cnc="props.cnc" v-if="!props.cnc.device.message.status && props.cnc.navigation.select === 'console'" />
     <div class="console-view" :class="props.cnc.navigation.select" v-else>
         <div class="console-item">
             <div class="console-main-item">

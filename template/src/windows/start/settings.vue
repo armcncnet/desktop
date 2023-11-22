@@ -7,7 +7,7 @@
                     <div class="box-item" :class="props.cnc.settings.select === 'language' ? 'select' : ''" @click="onSelect('language')">界面语言</div>
                 </div>
             </div>
-            <div class="group">
+            <div class="group" v-if="props.cnc.device.message.status">
                 <div class="title">设备管理</div>
                 <div class="box">
                     <div class="box-item" :class="props.cnc.settings.select === 'backup' ? 'select' : ''" @click="onSelect('backup')">数据备份</div>
