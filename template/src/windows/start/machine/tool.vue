@@ -216,7 +216,25 @@ export default defineComponent({
         }
 
         function onSetPocket(pocket: any){
-            console.log(pocket);
+            ElMessageBox.confirm("是否确认将当前坐标设置为刀袋位置？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                props.cnc.console.right.axes.forEach((item: any, index: any)=>{
+                    if(item.name === "X"){
+                        pocket.x = item.position.toFixed(3);
+                    }
+                    if(item.name === "Y"){
+                        pocket.y = item.position.toFixed(3);
+                    }
+                    if(item.name === "Z"){
+                        pocket.z = item.position.toFixed(3);
+                    }
+                });
+            }).catch(() => {});
         }
 
         function onRemovePocket(pocket: any){
