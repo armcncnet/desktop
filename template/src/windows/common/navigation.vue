@@ -59,7 +59,7 @@ export default defineComponent({
                 if(array.includes(navigation) && !props.cnc.device.message.status){
                     ElMessage.closeAll();
                     ElMessage({
-                        message: "请先连接设备",
+                        message: "请连接设备",
                         type: "warning",
                         customClass: "cnc"
                     });
