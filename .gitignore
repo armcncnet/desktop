@@ -7,3 +7,4 @@ node_modules
 template/dist
 release/bin
 release/windows
+template/src/package/wailsjs-
