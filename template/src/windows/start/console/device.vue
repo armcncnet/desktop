@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
+import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, nextTick} from "vue";
 import * as icons from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 export default defineComponent({
@@ -69,7 +69,13 @@ export default defineComponent({
 
         onBeforeMount(() => {});
 
-        onMounted(() => {});
+        onMounted(() => {
+            nextTick(()=>{
+                if(props.cnc.platform === "Debian"){
+                    onSelectDevice({ip: "127.0.0.1"});
+                }
+            });
+        });
 
         onBeforeUnmount(() => {});
 

@@ -392,6 +392,10 @@ export default defineComponent({
                 }
                 (window as any).go.StartWindows.Api.GetPlatform().then((platform: string)=>{
                     props.cnc.platform = platform;
+                    if(props.cnc.platform === "Debian"){
+                        (window as any).runtime.WindowSetAlwaysOnTop(true);
+                        (window as any).runtime.WindowFullscreen();
+                    }
                 });
                 (window as any).go.StartWindows.Api.GetVersion().then((version: string)=>{
                     props.cnc.version = version;
