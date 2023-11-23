@@ -69,13 +69,7 @@ export default defineComponent({
 
         onBeforeMount(() => {});
 
-        onMounted(() => {
-            nextTick(()=>{
-                if(props.cnc.platform === "Debian"){
-                    onSelectDevice({ip: "127.0.0.1"});
-                }
-            });
-        });
+        onMounted(() => {});
 
         onBeforeUnmount(() => {});
 
