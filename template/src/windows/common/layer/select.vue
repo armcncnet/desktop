@@ -44,7 +44,14 @@ export default defineComponent({
 
         onBeforeMount(() => {});
 
-        onMounted(() => {});
+        onMounted(() => {
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+        });
 
         onBeforeUnmount(() => {});
 

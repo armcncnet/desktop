@@ -193,6 +193,13 @@
     background-color: rgba(30, 31, 34, .5);
 }
 
+.el-input.cnc.max{
+    height: 40px;
+}
+.el-input.cnc.max .el-input__wrapper{
+    height: 40px;
+}
+
 .el-button{
     font-size: 12px !important;
 }

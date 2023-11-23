@@ -23,6 +23,8 @@
         </div>
     </div>
     <SelectLayer ref="selectLayer" :cnc="props.cnc" v-if="props.cnc.layer.select" />
+    <NumberLayer ref="numberLayer" :cnc="props.cnc" v-if="props.cnc.layer.number" />
+    <StringLayer ref="stringLayer" :cnc="props.cnc" v-if="props.cnc.layer.string" />
 </template>
 
 <script lang="ts">
@@ -30,6 +32,7 @@ import {defineComponent, nextTick, onBeforeMount, onBeforeUnmount, onMounted, on
 import {ElLoading, ElMessage, ElNotification} from "element-plus";
 import * as icons from "@element-plus/icons";
 import NoSleep from "nosleep.js";
+import Network from "../package/network/network";
 import HeaderCommon from "./common/header.vue";
 import FooterCommon from "./common/footer.vue";
 import NavigationCommon from "./common/navigation.vue";
@@ -40,7 +43,8 @@ import PluginStart from "./start/plugin.vue";
 import StoreStart from "./start/store.vue";
 import SettingsStart from "./start/settings.vue";
 import SelectLayer from "./common/layer/select.vue";
-import Network from "../package/network/network";
+import NumberLayer from "./common/layer/number.vue";
+import StringLayer from "./common/layer/string.vue";
 export default defineComponent({
     name: "Start",
     emits: [],
@@ -55,7 +59,9 @@ export default defineComponent({
         PluginStart,
         StoreStart,
         SettingsStart,
-        SelectLayer
+        SelectLayer,
+        NumberLayer,
+        StringLayer
     },
     setup(props, context) {
 

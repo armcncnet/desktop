@@ -4,28 +4,28 @@
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
                     <el-form-item label="最大转速">
-                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Spindle0.MaxForwardVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Spindle0.MaxForwardVelocity" style="width: 150px" @focus="setSpindleMaxForwardVelocity(props.cnc.machine.item.ini.Spindle0.MaxForwardVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最小转速">
-                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Spindle0.MinForwardVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Spindle0.MinForwardVelocity" style="width: 150px" @focus="setSpindleMinForwardVelocity(props.cnc.machine.item.ini.Spindle0.MinForwardVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最大倍率">
-                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MaxSpindleOverride" style="width: 100px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MaxSpindleOverride" style="width: 100px" @focus="setDisplayMaxSpindleOverride(props.cnc.machine.item.ini.Display.MaxSpindleOverride)">
                             <template #append>
                                 <span>%</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="最小倍率">
-                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MinSpindleOverride" style="width: 100px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MinSpindleOverride" style="width: 100px" @focus="setDisplayMinSpindleOverride(props.cnc.machine.item.ini.Display.MinSpindleOverride)">
                             <template #append>
                                 <span>%</span>
                             </template>
@@ -48,6 +48,62 @@ export default defineComponent({
     components: {},
     setup(props, context) {
 
+        function setSpindleMaxForwardVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.ini.Spindle0.MaxForwardVelocity = parseInt(value) + "";
+                }
+            }
+        }
+
+        function setSpindleMinForwardVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.ini.Spindle0.MinForwardVelocity = parseInt(value) + "";
+                }
+            }
+        }
+
+        function setDisplayMaxSpindleOverride(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.ini.Display.MaxSpindleOverride = parseInt(value) + "";
+                }
+            }
+        }
+
+        function setDisplayMinSpindleOverride(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.ini.Display.MinSpindleOverride = parseInt(value);
+                }
+            }
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -58,7 +114,11 @@ export default defineComponent({
 
         return {
             props,
-            icons
+            icons,
+            setSpindleMaxForwardVelocity,
+            setSpindleMinForwardVelocity,
+            setDisplayMaxSpindleOverride,
+            setDisplayMinSpindleOverride
         }
     }
 });

@@ -15,7 +15,7 @@
                 </el-table-column>
                 <el-table-column label="原点偏移" width="100">
                     <template #default="scope">
-                        <div class="el-cnc-input">{{parseFloat(props.cnc.console.left.simulation.g5x_offset[scope.row.index]).toFixed(3)}}</div>
+                        <div class="el-cnc-input" @click="setAxesOffset(parseFloat(props.cnc.console.left.simulation.g5x_offset[scope.row.index]).toFixed(3), scope.row.index)">{{parseFloat(props.cnc.console.left.simulation.g5x_offset[scope.row.index]).toFixed(3)}}</div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -80,7 +80,7 @@
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.velocity" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.spindle.velocity}}</div>
+                        <div class="el-cnc-input" @click="updateSpindleVelocity(props.cnc.console.right.spindle.velocity, props.cnc.console.right.spindle.min_velocity, props.cnc.console.right.spindle.max_velocity)">{{props.cnc.console.right.spindle.velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.override" :step="1" :min="props.cnc.console.right.spindle.min_override" :max="props.cnc.console.right.spindle.max_override" :show-input-controls="false" @change="setSpindleOverride"/>
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.spindle.override}}</div>
+                        <div class="el-cnc-input" @click="updateSpindleOverride(props.cnc.console.right.spindle.override, props.cnc.console.right.spindle.min_override, props.cnc.console.right.spindle.max_override)">{{props.cnc.console.right.spindle.override}}</div>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.max_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_linear_velocity" :show-input-controls="false" @change="setMaxVelocity" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.max_velocity}}</div>
+                        <div class="el-cnc-input" @click="updateMaxVelocity(props.cnc.console.right.max_velocity, 0, props.cnc.console.right.max_linear_velocity)">{{props.cnc.console.right.max_velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -115,7 +115,7 @@
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.feed.override" :step="1" :min="0" :max="props.cnc.console.right.feed.max_override" :show-input-controls="false" @change="setFeedRate"/>
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.feed.override}}</div>
+                        <div class="el-cnc-input" @click="updateFeedOverride(props.cnc.console.right.feed.override, 0, props.cnc.console.right.feed.max_override)">{{props.cnc.console.right.feed.override}}</div>
                     </div>
                 </div>
             </div>
@@ -128,7 +128,7 @@
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.default_linear_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_linear_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.default_linear_velocity}}</div>
+                        <div class="el-cnc-input" @click="updateDefaultLinearVelocity(props.cnc.console.right.default_linear_velocity, 0, props.cnc.console.right.max_linear_velocity)">{{props.cnc.console.right.default_linear_velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -139,7 +139,7 @@
                         <el-slider class="cnc" size="small" v-model="props.cnc.console.right.default_angular_velocity" :step="1" :min="0" :max="props.cnc.console.right.max_angular_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input">{{props.cnc.console.right.default_angular_velocity}}</div>
+                        <div class="el-cnc-input" @click="updateDefaultAngularVelocity(props.cnc.console.right.default_angular_velocity, 0, props.cnc.console.right.max_angular_velocity)">{{props.cnc.console.right.default_angular_velocity}}</div>
                     </div>
                 </div>
             </div>
@@ -161,19 +161,33 @@ export default defineComponent({
     },
     setup(props, context) {
 
+        function setAxesOffset(data: any, index: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: data,
+                set: data,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.left.simulation.g5x_offset[index] = value;
+                    setRelativeOffset("");
+                }
+            }
+        }
+
         function setOffset(){
             if(props.cnc.layer.select){
                 props.cnc.layer.select = false;
-            }else{
-                props.cnc.layer.select = {
-                    value: props.cnc.console.right.offset.index,
-                    options: props.cnc.console.right.offset.options,
-                    callback: (value: any)=>{
-                        let message: any = {command: "desktop:control:set:offset", data: {name: ""}};
-                        message.data.name = props.cnc.console.right.offset.options[value - 1].name;
-                        props.cnc.device.message.socket.send(JSON.stringify(message));
-                        props.cnc.console.right.offset.index = value;
-                    }
+            }
+            props.cnc.layer.select = {
+                value: props.cnc.console.right.offset.index,
+                options: props.cnc.console.right.offset.options,
+                callback: (value: any)=>{
+                    let message: any = {command: "desktop:control:set:offset", data: {name: ""}};
+                    message.data.name = props.cnc.console.right.offset.options[value - 1].name;
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                    props.cnc.console.right.offset.index = value;
                 }
             }
         }
@@ -192,9 +206,9 @@ export default defineComponent({
             }
             let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
             message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
-            message.data.x = parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
-            message.data.y = parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
-            message.data.z = parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
+            message.data.x = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
+            message.data.y = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
+            message.data.z = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
             if(current === "all"){
                 message.data.x = parseFloat("0.000").toFixed(3);
                 message.data.y = parseFloat("0.000").toFixed(3);
@@ -282,6 +296,105 @@ export default defineComponent({
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
+        function updateSpindleVelocity(value: any, min: any, max:any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                min: min,
+                max: max,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.right.spindle.velocity = parseInt(value);
+                }
+            }
+        }
+
+        function updateSpindleOverride(value: any, min: any, max:any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                min: min,
+                max: max,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.right.spindle.override = parseInt(value);
+                    setSpindleOverride(props.cnc.console.right.spindle.override);
+                }
+            }
+        }
+
+        function updateMaxVelocity(value: any, min: any, max:any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                min: min,
+                max: max,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.right.max_velocity = parseInt(value);
+                    setMaxVelocity(props.cnc.console.right.spindle.override);
+                }
+            }
+        }
+
+        function updateFeedOverride(value: any, min: any, max:any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                min: min,
+                max: max,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.right.feed.override = parseInt(value);
+                    setFeedRate(props.cnc.console.right.feed.override);
+                }
+            }
+        }
+
+        function updateDefaultLinearVelocity(value: any, min: any, max:any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                min: min,
+                max: max,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.right.default_linear_velocity = parseInt(value);;
+                }
+            }
+        }
+
+        function updateDefaultAngularVelocity(value: any, min: any, max:any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                min: min,
+                max: max,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.console.right.default_angular_velocity = parseInt(value);
+                }
+            }
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -293,6 +406,7 @@ export default defineComponent({
         return {
             props,
             icons,
+            setAxesOffset,
             setOffset,
             onHome,
             setRelativeOffset,
@@ -304,7 +418,13 @@ export default defineComponent({
             setSpindleLeft,
             setSpindleOverride,
             setMaxVelocity,
-            setFeedRate
+            setFeedRate,
+            updateSpindleVelocity,
+            updateSpindleOverride,
+            updateMaxVelocity,
+            updateFeedOverride,
+            updateDefaultLinearVelocity,
+            updateDefaultAngularVelocity
         }
     }
 });

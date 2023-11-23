@@ -10,42 +10,42 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="X轴速度">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.XVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.XVelocity" style="width: 150px" @focus="setHandWheelXVelocity(props.cnc.machine.item.user.HandWheel.XVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.linear_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="Y轴速度">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.YVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.YVelocity" style="width: 150px" @focus="setHandWheelYVelocity(props.cnc.machine.item.user.HandWheel.YVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.linear_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="Z轴速度">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.ZVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.ZVelocity" style="width: 150px" @focus="setHandWheelZVelocity(props.cnc.machine.item.user.HandWheel.ZVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.linear_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="A轴速度">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.AVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.AVelocity" style="width: 150px" @focus="setHandWheelCVelocity(props.cnc.machine.item.user.HandWheel.CVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="B轴速度">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.BVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.BVelocity" style="width: 150px" @focus="setHandWheelBVelocity(props.cnc.machine.item.user.HandWheel.BVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="C轴速度">
-                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.CVelocity" style="width: 150px">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.HandWheel.CVelocity" style="width: 150px" @focus="setHandWheelCVelocity(props.cnc.machine.item.user.HandWheel.CVelocity)">
                             <template #append>
                                 <span>{{props.cnc.device.machine.angular_units}}/min</span>
                             </template>
@@ -67,6 +67,90 @@ export default defineComponent({
     components: {},
     setup(props, context) {
 
+        function setHandWheelXVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.HandWheel.XVelocity = parseFloat(value).toFixed(3);
+                }
+            }
+        }
+
+        function setHandWheelYVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.HandWheel.YVelocity = parseFloat(value).toFixed(3);
+                }
+            }
+        }
+
+        function setHandWheelZVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.HandWheel.ZVelocity = parseFloat(value).toFixed(3);
+                }
+            }
+        }
+
+        function setHandWheelAVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.HandWheel.AVelocity = parseFloat(value).toFixed(3);
+                }
+            }
+        }
+
+        function setHandWheelBVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.HandWheel.BVelocity = parseFloat(value).toFixed(3);
+                }
+            }
+        }
+
+        function setHandWheelCVelocity(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.HandWheel.CVelocity = parseFloat(value).toFixed(3);
+                }
+            }
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -77,7 +161,13 @@ export default defineComponent({
 
         return {
             props,
-            icons
+            icons,
+            setHandWheelXVelocity,
+            setHandWheelYVelocity,
+            setHandWheelZVelocity,
+            setHandWheelAVelocity,
+            setHandWheelBVelocity,
+            setHandWheelCVelocity
         }
     }
 });

@@ -317,7 +317,9 @@ export default defineComponent({
                 }
             },
             layer: {
-                select: false
+                select: false,
+                number: false,
+                string: false
             },
             dialog: {
                 type: "",
