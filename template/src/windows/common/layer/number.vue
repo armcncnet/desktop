@@ -115,13 +115,11 @@ export default defineComponent({
             if (props.cnc.layer.number.set === "") {
                 props.cnc.layer.number.set = props.cnc.layer.number.value;
             }
-            if (props.cnc.layer.number.set !== "") {
-                if(props.cnc.layer.number.min && parseFloat(props.cnc.layer.number.set) < props.cnc.layer.number.min){
-                    props.cnc.layer.number.set = props.cnc.layer.number.value;
-                }
-                if(props.cnc.layer.number.max && parseFloat(props.cnc.layer.number.set) > props.cnc.layer.number.max){
-                    props.cnc.layer.number.set = props.cnc.layer.number.value;
-                }
+            if(props.cnc.layer.number.min && parseFloat(props.cnc.layer.number.set) < props.cnc.layer.number.min){
+                props.cnc.layer.number.set = props.cnc.layer.number.value;
+            }
+            if(props.cnc.layer.number.max && parseFloat(props.cnc.layer.number.set) > props.cnc.layer.number.max){
+                props.cnc.layer.number.set = props.cnc.layer.number.value;
             }
             if(props.cnc.layer.number.callback){
                 props.cnc.layer.number.callback(props.cnc.layer.number.set);

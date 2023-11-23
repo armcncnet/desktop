@@ -226,8 +226,16 @@ export default defineComponent({
 
         function onDeviceOverrideLimits(){
             if(props.cnc.device.machine.info){
-                let message = {command: "desktop:control:device:override_limits"}
-                props.cnc.device.message.socket.send(JSON.stringify(message));
+                ElMessageBox.confirm("是否确认忽略限位？", "操作确认", {
+                    draggable: true,
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消",
+                    type: "warning",
+                    customClass: "cnc"
+                }).then(() => {
+                    let message = {command: "desktop:control:device:override_limits"}
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }).catch(() => {});
             }else{
                 ElMessage.closeAll();
                 ElMessage({

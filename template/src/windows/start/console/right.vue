@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="right-tools-item">
-                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === 'disabled' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">重置原点</el-button>
+                <el-button class="cnc" :class="props.cnc.console.right.relative_offset" :disabled="props.cnc.console.right.relative_offset === 'disabled' || !props.cnc.console.right.homed" type="warning" :icon="icons.MapLocation" @click="setRelativeOffset('all')">设置原点</el-button>
             </div>
         </div>
         <div class="right-step">
@@ -151,6 +151,7 @@
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 import {ArrowRight, Bottom} from "@element-plus/icons-vue";
+import {ElMessage, ElMessageBox} from "element-plus";
 export default defineComponent({
     name: "RightConsole",
     emits: [],
@@ -196,25 +197,45 @@ export default defineComponent({
             if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2) {
                 return;
             }
-            let message = {command: "desktop:control:device:home", data: axis};
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            ElMessageBox.confirm("是否确认全部回零？", "操作确认", {
+                draggable: true,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                type: "warning",
+                customClass: "cnc"
+            }).then(() => {
+                let message = {command: "desktop:control:device:home", data: axis};
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }).catch(() => {});
         }
 
         function setRelativeOffset(current: string){
             if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2 || !props.cnc.device.machine.info.user_data.is_homed) {
                 return;
             }
-            let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
-            message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
-            message.data.x = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
-            message.data.y = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
-            message.data.z = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
             if(current === "all"){
-                message.data.x = parseFloat("0.000").toFixed(3);
-                message.data.y = parseFloat("0.000").toFixed(3);
-                message.data.z = parseFloat("0.000").toFixed(3);
+                ElMessageBox.confirm("是否确认设置原点？", "操作确认", {
+                    draggable: true,
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消",
+                    type: "warning",
+                    customClass: "cnc"
+                }).then(() => {
+                    let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
+                    message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
+                    message.data.x = parseFloat("0.000").toFixed(3);
+                    message.data.y = parseFloat("0.000").toFixed(3);
+                    message.data.z = parseFloat("0.000").toFixed(3);
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }).catch(() => {});
+            }else{
+                let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
+                message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
+                message.data.x = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
+                message.data.y = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
+                message.data.z = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
+                props.cnc.device.message.socket.send(JSON.stringify(message));
             }
-            props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
         function setStep(item: any){

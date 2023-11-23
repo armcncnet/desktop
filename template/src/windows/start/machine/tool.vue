@@ -396,7 +396,17 @@ export default defineComponent({
         }
 
         function setPocketId(index: any, value: any){
-
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: false,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.Tool.Pockets[index].id = value;
+                }
+            }
         }
 
         function setPocketX(index: any, value: any){
@@ -442,11 +452,31 @@ export default defineComponent({
         }
 
         function setTableT(index: any, value: any){
-
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: false,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.table[index].t = value;
+                }
+            }
         }
 
         function setTableP(index: any, value: any){
-
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: false,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.table[index].p = value;
+                }
+            }
         }
 
         function setTableD(index: any, value: any){

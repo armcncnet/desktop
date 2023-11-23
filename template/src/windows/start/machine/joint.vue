@@ -4,7 +4,7 @@
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
                     <el-form-item label="轴关节">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Traj.Coordinates" style="width: 150px" maxlength="5" show-word-limit @change="onChangeJoint"/>
+                        <el-input class="cnc" :value="props.cnc.machine.item.ini.Traj.Coordinates" style="width: 150px" maxlength="5" show-word-limit @focus="setTrajCoordinates(props.cnc.machine.item.ini.Traj.Coordinates)"/>
                     </el-form-item>
                     <el-form-item label="最大进给倍率">
                         <el-input class="cnc" :value="props.cnc.machine.item.ini.Display.MaxFeedOverride" style="width: 100px" @focus="setDisplayMaxFeedOverride(props.cnc.machine.item.ini.Display.MaxFeedOverride)">
@@ -194,13 +194,24 @@ export default defineComponent({
     components: {},
     setup(props, context) {
 
-        function onChangeJoint(value: string){
-            props.cnc.machine.item.joints = value.split("");
-            props.cnc.machine.item.ini.Kins.Joints = props.cnc.machine.item.joints.length + "";
-            if(props.cnc.machine.item.joints.length !== 5){
-                props.cnc.machine.item.ini.Kins.Kinematics = "trivkins coordinates=" + value.toLowerCase();
-            }else{
-                props.cnc.machine.item.ini.Kins.Kinematics = value.toLowerCase() + "-trt-kins sparm=identityfirst";
+        function setTrajCoordinates(value: any){
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.ini.Traj.Coordinates = value;
+                    props.cnc.machine.item.joints = value.split("");
+                    props.cnc.machine.item.ini.Kins.Joints = props.cnc.machine.item.joints.length + "";
+                    if(props.cnc.machine.item.joints.length !== 5){
+                        props.cnc.machine.item.ini.Kins.Kinematics = "trivkins coordinates=" + value.toLowerCase();
+                    }else{
+                        props.cnc.machine.item.ini.Kins.Kinematics = value.toLowerCase() + "-trt-kins sparm=identityfirst";
+                    }
+                }
             }
         }
 
@@ -509,7 +520,7 @@ export default defineComponent({
         return {
             props,
             icons,
-            onChangeJoint,
+            setTrajCoordinates,
             setDisplayMaxFeedOverride,
             setDisplayDefaultLinearVelocity,
             setDisplayMinLinearVelocity,

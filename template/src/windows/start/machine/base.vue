@@ -12,10 +12,10 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="名称">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.user.Base.Name" style="width: 300px" maxlength="12" show-word-limit/>
+                        <el-input class="cnc" v-model="props.cnc.machine.item.user.Base.Name" style="width: 300px" maxlength="12" show-word-limit @focus="setBaseName(props.cnc.machine.item.user.Base.Name)"/>
                     </el-form-item>
                     <el-form-item label="描述">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.user.Base.Describe" style="width: 400px" maxlength="30" show-word-limit/>
+                        <el-input class="cnc" v-model="props.cnc.machine.item.user.Base.Describe" style="width: 400px" maxlength="30" show-word-limit @focus="setBaseDescribe(props.cnc.machine.item.user.Base.Describe)"/>
                     </el-form-item>
                     <el-form-item label="单位">
                         <el-radio-group class="cnc max" v-model="props.cnc.machine.item.ini.Traj.LinearUnits">
@@ -24,7 +24,7 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="步长选项">
-                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.Increments" style="width: 500px"/>
+                        <el-input class="cnc" v-model="props.cnc.machine.item.ini.Display.Increments" style="width: 500px" @focus="setDisplayIncrements(props.cnc.machine.item.ini.Display.Increments)"/>
                     </el-form-item>
                 </el-form>
             </div>
@@ -42,6 +42,48 @@ export default defineComponent({
     components: {},
     setup(props, context) {
 
+        function setBaseName(value: any){
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: false,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.Base.Name = value;
+                }
+            }
+        }
+
+        function setBaseDescribe(value: any){
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: false,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.Base.Describe = value;
+                }
+            }
+        }
+
+        function setDisplayIncrements(value: any){
+            if(props.cnc.layer.string){
+                props.cnc.layer.string = false;
+            }
+            props.cnc.layer.string = {
+                value: value,
+                set: value,
+                capslock: false,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.ini.Display.Increments = value;
+                }
+            }
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -52,7 +94,10 @@ export default defineComponent({
 
         return {
             props,
-            icons
+            icons,
+            setBaseName,
+            setBaseDescribe,
+            setDisplayIncrements
         }
     }
 });
