@@ -53,7 +53,7 @@ export default defineComponent({
             if(!(window as any).simulation){
                 let world: any = document.getElementById("world");
                 world.innerHTML = "";
-                (window as any).simulation = new Simulation((message: any)=>{
+                (window as any).simulation = new Simulation(props.cnc.platform, (message: any)=>{
                     if(message.type === "resource:loading:progress"){
                         props.cnc.console.left.simulation.mask = true;
                     }
