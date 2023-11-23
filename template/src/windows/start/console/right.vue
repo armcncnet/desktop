@@ -197,7 +197,7 @@ export default defineComponent({
             if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2) {
                 return;
             }
-            ElMessageBox.confirm("是否确认全部回零？", "操作确认", {
+            ElMessageBox.confirm("是否确认回零？", "操作确认", {
                 draggable: true,
                 confirmButtonText: "确认",
                 cancelButtonText: "取消",
