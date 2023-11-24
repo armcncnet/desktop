@@ -70,7 +70,7 @@ func Init(template embed.FS, version embed.FS) {
 			WebviewGpuPolicy:    linux.WebviewGpuPolicyNever,
 		},
 		Debug: options.Debug{
-			OpenInspectorOnStartup: false,
+			OpenInspectorOnStartup: true,
 		},
 	})
 
