@@ -10,6 +10,7 @@ package Config
 import (
 	"embed"
 	"encoding/json"
+	"golang.org/x/sync/errgroup"
 )
 
 var Get = &Data{}
@@ -20,6 +21,7 @@ type Data struct {
 		ProductName    string `json:"productName"`
 		ProductVersion string `json:"productVersion"`
 	} `json:"info"`
+	Group errgroup.Group
 }
 
 func Init(version embed.FS) {
