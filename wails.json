@@ -9,7 +9,7 @@
     "frontend:build": "yarn build",
     "frontend:dev:watcher": "yarn dev",
     "frontend:dev:serverUrl": "auto",
-    "devServer": "localhost:34225",
+    "devServer": "localhost:10090",
     "author": {
         "name": "ARMCNC",
         "email": "admin@wileho.com"

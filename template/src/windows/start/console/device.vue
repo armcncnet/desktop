@@ -9,17 +9,18 @@
                     </el-text>
                 </div>
                 <div class="device-item">
-                    <el-row class="cnc" :gutter="20">
+                    <el-row class="cnc" :gutter="20" v-if="props.cnc.device.ips.length > 0">
                         <el-col class="cnc" :span="8" v-for="(item, index) in props.cnc.device.ips" :key="index">
                             <div class="grid-content" @click="onSelectDevice(item)">
                                 <div class="device-name">{{item.name}}</div>
                                 <div class="device-ip">{{item.ip}}</div>
-                                <div class="device-loading" v-if="props.cnc.device.loading">
+                                <div class="device-loading" v-if="item.loading">
                                     <el-icon class="is-loading"><Loading /></el-icon>
                                 </div>
                             </div>
                         </el-col>
                     </el-row>
+                    <el-empty class="cnc none" :image-size="30" v-else/>
                 </div>
             </div>
         </div>
@@ -27,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, nextTick} from "vue";
+import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
 import {ElMessage} from "element-plus";
 export default defineComponent({
@@ -38,16 +39,16 @@ export default defineComponent({
     setup(props, context) {
 
         function onSelectDevice(device: any){
-            props.cnc.device.loading = true;
+            device.loading = true;
             (window as any).go.StartWindows.Api.DeviceRequest(device.ip + ":" + props.cnc.device.message.port, "/config/index", "GET", {}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
                         props.cnc.device.ip = device.ip;
                         props.cnc.device.machine.path = response.data.machine;
                         (window as any).runtime.EventsEmit("event_message", {type: "connected_device"});
-                        props.cnc.device.loading = false;
+                        device.loading = false;
                     }else{
-                        props.cnc.device.loading = false;
+                        device.loading = false;
                         ElMessage.closeAll();
                         ElMessage({
                             message: "设备连接失败，请检查后重新尝试",
@@ -56,7 +57,7 @@ export default defineComponent({
                         });
                     }
                 }else{
-                    props.cnc.device.loading = false;
+                    device.loading = false;
                     ElMessage.closeAll();
                     ElMessage({
                         message: "设备连接失败，请检查后重新尝试",

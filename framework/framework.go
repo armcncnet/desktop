@@ -41,7 +41,7 @@ func Init(template embed.FS, version embed.FS) {
 		Bind: []interface{}{
 			start,
 		},
-		WindowStartState: options.Minimised,
+		WindowStartState: options.Maximised,
 		Windows: &windows.Options{
 			WebviewDisableRendererCodeIntegrity: true,
 			DisableWindowIcon:                   true,
@@ -70,7 +70,7 @@ func Init(template embed.FS, version embed.FS) {
 			WebviewGpuPolicy:    linux.WebviewGpuPolicyNever,
 		},
 		Debug: options.Debug{
-			OpenInspectorOnStartup: true,
+			OpenInspectorOnStartup: false,
 		},
 	})
 
