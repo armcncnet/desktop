@@ -31,8 +31,13 @@ wails dev
 
 Build the installation package for the application using the following command script
 
-```[readme.md](readme.md)
+```
+# Windows
 wails build -webview2 embed -nsis
+# Linux
+wails build
+# Or Debug
+wails build -debug
 ```
 
 ## 🌞 Development Team
