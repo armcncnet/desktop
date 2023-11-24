@@ -49,7 +49,7 @@ export default defineComponent({
 .about-dialog .logo{
     width: 100%;
     height: 40px;
-    background: url("../src/assets/image/logo.png") no-repeat center center;
+    background: url("/static/image/logo.png") no-repeat center center;
     background-size: 14%;
     margin-bottom: 10px;
 }

@@ -302,7 +302,7 @@ export default defineComponent({
 }
 .header-main .header-item .item.logo{
     width: 40px;
-    background: url("../src/assets/image/logo.png") no-repeat center center;
+    background: url("/static/image/logo.png") no-repeat center center;
     background-size: 50%;
 }
 .header-main .header-item .item.menu{
