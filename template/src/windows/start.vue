@@ -320,9 +320,6 @@ export default defineComponent({
                             }
                             (window as any).runtime.EventsEmit("set_highlight_line", {line: props.cnc.device.machine.info.motion_line});
                             if((window as any).simulation){
-                                let x_position = message_json.data.joint[0].homing === 1 ? message_json.data.joint_actual_position[0] : props.cnc.console.right.axes[0].position;
-                                let y_position = message_json.data.joint[1].homing === 1 ? message_json.data.joint_actual_position[1] : props.cnc.console.right.axes[1].position;
-                                let z_position = message_json.data.joint[2].homing === 1 ? message_json.data.joint_actual_position[2] : props.cnc.console.right.axes[2].position;
                                 (window as any).simulation.updateToolPosition(props.cnc.device.machine.info.state, props.cnc.console.right.axes[0].position, props.cnc.console.right.axes[1].position, props.cnc.console.right.axes[2].position);
                             }
                         }
