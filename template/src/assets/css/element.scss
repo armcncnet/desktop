@@ -65,7 +65,7 @@
     left: 0;
     top: 0;
     content:" ";
-    background: url("../image/logo.png") no-repeat center center;
+    background: url("/static/image/logo.png") no-repeat center center;
     background-size: 50%;
 }
 .el-dialog.cnc .el-dialog__header .el-dialog__title{
@@ -395,7 +395,7 @@
     left: 0;
     top: 0;
     content:" ";
-    background: url("../image/logo.png") no-repeat center center;
+    background: url("/static/image/logo.png") no-repeat center center;
     background-size: 50%;
 }
 .el-message-box.cnc .el-message-box__header .el-message-box__title{

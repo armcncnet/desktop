@@ -84,88 +84,10 @@ class GCODE extends THREE.Loader {
                 scope.state = line;
                 let geometry = scope.addLine(line);
                 geometries.push(geometry);
-                // if(cmd === "G0" || cmd === "G1"){
-                //     const line = {
-                //         cmd: cmd,
-                //         x: args.x ? args.x : scope.state.x,
-                //         y: args.y ? args.y : scope.state.y,
-                //         z: args.z ? args.z : scope.state.z,
-                //         e: args.e ? args.e : scope.state.e,
-                //         f: args.f ? args.f : scope.state.f,
-                //         i: args.i ? args.i : scope.state.i,
-                //         j: args.j ? args.j : scope.state.j
-                //     }
-                //     layers.push(line);
-                //     scope.state = line;
-                //     let geometry = scope.addLine(line);
-                //     geometries.push(geometry);
-                // }else if(cmd === "G2" || cmd === "G3"){
-                //     const line = {
-                //         cmd: cmd,
-                //         x: args.x ? args.x : scope.state.x,
-                //         y: args.y ? args.y : scope.state.y,
-                //         z: args.z ? args.z : scope.state.z,
-                //         e: args.e ? args.e : scope.state.e,
-                //         f: args.f ? args.f : scope.state.f,
-                //         i: args.i ? args.i : scope.state.i,
-                //         j: args.j ? args.j : scope.state.j
-                //     }
-                //     layers.push(line);
-                //     scope.state = line;
-                //     let geometry = scope.addLine(line);
-                //     geometries.push(geometry);
-                // }else if(cmd === "G92"){
-                //     const line = {
-                //         cmd: cmd,
-                //         x: args.x ? args.x : scope.state.x,
-                //         y: args.y ? args.y : scope.state.y,
-                //         z: args.z ? args.z : scope.state.z,
-                //         e: args.e ? args.e : scope.state.e,
-                //         f: args.f ? args.f : scope.state.f,
-                //         i: args.i ? args.i : scope.state.i,
-                //         j: args.j ? args.j : scope.state.j
-                //     }
-                //     layers.push(line);
-                //     scope.state = line;
-                //     let geometry = scope.addLine(line);
-                //     geometries.push(geometry);
-                // }else{
-                //     if(cmd.indexOf("N") !== -1){
-                //         const line = {
-                //             cmd: cmd,
-                //             x: args.x ? args.x : scope.state.x,
-                //             y: args.y ? args.y : scope.state.y,
-                //             z: args.z ? args.z : scope.state.z,
-                //             e: args.e ? args.e : scope.state.e,
-                //             f: args.f ? args.f : scope.state.f,
-                //             i: args.i ? args.i : scope.state.i,
-                //             j: args.j ? args.j : scope.state.j
-                //         }
-                //         layers.push(line);
-                //         scope.state = line;
-                //         let geometry = scope.addLine(line);
-                //         geometries.push(geometry);
-                //     }else{
-                //         const line = {
-                //             cmd: cmd,
-                //             x: args.x ? args.x : scope.state.x,
-                //             y: args.y ? args.y : scope.state.y,
-                //             z: args.z ? args.z : scope.state.z,
-                //             e: args.e ? args.e : scope.state.e,
-                //             f: args.f ? args.f : scope.state.f,
-                //             i: args.i ? args.i : scope.state.i,
-                //             j: args.j ? args.j : scope.state.j
-                //         }
-                //         layers.push(line);
-                //         scope.state = line;
-                //         let geometry = scope.addLine(line);
-                //         geometries.push(geometry);
-                //     }
-                // }
             }
         }
 
-        const mergedGeometry = mergeGeometries(geometries, false);
+        const mergedGeometry = mergeGeometries(geometries, true);
         let line = new THREE.Line(mergedGeometry, scope.material);
         line.name = "layer";
         scope.object.userData.segments.push({segment: line, passed: false});
