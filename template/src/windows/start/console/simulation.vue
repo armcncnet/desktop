@@ -15,8 +15,8 @@
                 <div class="dro-line">刀具号: <span>{{props.cnc.console.left.simulation.tool.id}}</span></div>
                 <div class="dro-line">刀具直径: <span>{{props.cnc.console.left.simulation.tool.diameter}}</span></div>
                 <div class="dro-line">偏移量: <span>{{props.cnc.console.left.simulation.tool.offset.toFixed(3)}}</span></div>
-                <div class="dro-line">预计时长: <span>10分钟</span></div>
-                <div class="dro-line">剩余时长: <span>10分钟</span></div>
+                <div class="dro-line">预计时长: <span>-</span></div>
+                <div class="dro-line">剩余时长: <span>-</span></div>
             </div>
             <div class="dro-group">
                 <div class="dro-line">速度: <span>{{props.cnc.console.left.simulation.current_velocity.toFixed(3)}}</span></div>
