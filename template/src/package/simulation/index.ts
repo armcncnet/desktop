@@ -98,11 +98,7 @@ export default class Simulation {
         _this.engine.tool.add(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0, 0.3, 32, 2, false)));
         _this.engine.tool.position.z = 0.25;
         _this.engine.tool.matrixAutoUpdate = true;
-        const tool_line_geometry = new THREE.BufferGeometry();
-        tool_line_geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
-        _this.engine.tool_line = new THREE.Line(tool_line_geometry, new THREE.LineBasicMaterial({color: 0x00FF00}));
-        _this.engine.tool_line.name = "default_tool_line";
-        _this.engine.scene.add(_this.engine.tool, _this.engine.tool_line);
+        _this.engine.scene.add(_this.engine.tool);
 
         _this.engine.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
         _this.engine.renderer.setClearColor(0x00FF00, 1);
@@ -143,42 +139,16 @@ export default class Simulation {
 
     updateToolPosition(state: any, homing: any, x: any, y: any, z: any){
         const _this: any = this;
-        _this.engine.tool.position.x = x * 0.1;
-        _this.engine.tool.position.y = y * 0.1;
-        _this.engine.tool.position.z = (z * 0.1) + 0.15;
-        if (!homing) {
-            const gcode = _this.engine.scene.getObjectByName("gcode");
-            if(state === 2){
-                const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.15);
-                const vertices = (_this.engine.tool_line.geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
-                const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
-                _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
-                if(gcode){
-                    gcode.children.forEach((lineSegment: any) => {
-                        if (lineSegment.material && lineSegment.material.isMaterial) {
-                            lineSegment.material.transparent = true;
-                            lineSegment.material.opacity = 0.5;
-                            lineSegment.material.needsUpdate = true;
-                        }
-                    });
-                }
-            }else{
-                if(gcode){
-                    gcode.children.forEach((lineSegment: any) => {
-                        if (lineSegment.material && lineSegment.material.isMaterial) {
-                            lineSegment.material.transparent = false;
-                            lineSegment.material.needsUpdate = true;
-                        }
-                    });
-                }
-            }
+        const gcode = _this.engine.scene.getObjectByName("gcode");
+        if(_this.engine.tool && gcode){
+            _this.engine.tool.position.x = x * 0.1;
+            _this.engine.tool.position.y = y * 0.1;
+            _this.engine.tool.position.z = (z * 0.1) + 0.15;
         }
     }
 
     clearToolLine(){
         const _this: any = this;
-        _this.engine.tool_line.geometry.setAttribute("position", new THREE.Float32BufferAttribute([], 3));
-        _this.engine.tool_line.geometry.needsUpdate = true;
     }
 
     clearGcode(){
