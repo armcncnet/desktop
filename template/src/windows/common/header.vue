@@ -171,6 +171,7 @@ export default defineComponent({
                 }
                 let message = {command: "desktop:control:start", data: {line: line}}
                 props.cnc.device.message.socket.send(JSON.stringify(message));
+                (window as any).runtime.EventsEmit("set_start_line", {});
             }
         }
 

@@ -321,15 +321,11 @@ export default defineComponent({
                             (window as any).runtime.EventsEmit("set_highlight_line", {line: props.cnc.device.machine.info.motion_line});
                             if((window as any).simulation){
                                 let homing = message_json.data.joint.some((item: any) => item.homing === 1);
-                                if(homing){
-
-                                }
                                 (window as any).simulation.updateToolPosition(props.cnc.device.machine.info.state, homing, props.cnc.console.right.axes[0].position, props.cnc.console.right.axes[1].position, props.cnc.console.right.axes[2].position);
                             }
                         }
                         if(message_json.command === "launch:machine:error"){
                             let kind = [11];
-                            console.log(message_json);
                             if(kind.includes(message_json.data)){
                                 let new_message = message_json.message.split(":");
                                 ElNotification({

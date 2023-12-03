@@ -245,7 +245,7 @@ export default defineComponent({
         }
 
         function handleRockerDown(event: any, value: string){
-            if(props.cnc.header.right.enabled === "active"){
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state == 1){
                 let axis = value.substr(0,1);
                 let direction = value.substr(1,1);
                 let speed = 0;

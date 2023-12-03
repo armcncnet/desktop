@@ -26,13 +26,19 @@
                     </el-radio-group>
                 </div>
             </div>
-            <div class="bottom-header-item"></div>
+            <div class="bottom-header-item">
+                <div class="item">
+                    <el-tooltip popper-class="cnc" effect="dark" content="清除刀轨" placement="top">
+                        <el-button class="cnc" :icon="icons.DeleteLocation" @click="clearLine"></el-button>
+                    </el-tooltip>
+                </div>
+            </div>
         </div>
         <div class="bottom-footer" ref="bottomFooter" style="overflow-y: auto">
-            <div class="code-box" v-infinite-scroll="onScroll">
-                <div :name="'line' + (index + 1)" class="code-line" :class="props.cnc.console.bottom.line.motion_line > 0 && (props.cnc.console.bottom.line.motion_line - 1) === index ? 'current' : ''" v-for="(item, index) in props.cnc.console.bottom.line.items" :key="index">
-                    <div class="item">{{item}}</div>
-                    <div class="item">{{index + 1}}</div>
+            <div class="code-box" v-infinite-scroll="onScroll" v-if="props.cnc.console.bottom.line.items.length > 0">
+                <div :name="'line' + (item.id + 1)" class="code-line" :class="props.cnc.console.bottom.line.motion_line > 0 && props.cnc.console.bottom.line.motion_line === item.id + 1 ? 'current' : ''" v-for="(item, index) in props.cnc.console.bottom.line.items" :key="index">
+                    <div class="item">{{item.code}}</div>
+                    <div class="item">{{item.id + 1}}</div>
                 </div>
             </div>
         </div>
@@ -42,10 +48,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted, ref} from "vue";
+import {defineComponent, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted, ref} from "vue";
 import * as icons from "@element-plus/icons";
 import ProgramDialog from "../../common/dialog/program.vue";
 import MachineDialog from "../../common/dialog/machine.vue";
+
 export default defineComponent({
     name: "BottomConsole",
     emits: [],
@@ -63,33 +70,36 @@ export default defineComponent({
         });
 
         (window as any).runtime.EventsOn("set_highlight_line", (message: any) => {
-            if(message.line && message.line !== ""){
-                setHighlightLine(message.line);
-            }
+            setHighlightLine(message.line ? message.line : 0);
+        });
+
+        (window as any).runtime.EventsOn("set_start_line", (message: any) => {
+            props.cnc.console.bottom.line.page = 0;
+            props.cnc.console.bottom.line.motion_line = 0;
+            props.cnc.console.bottom.line.items = [];
+            onScroll(true);
         });
 
         function onCode(file: string){
             props.cnc.console.left.simulation.mask = true;
             props.cnc.console.bottom.line.loading = true;
-            props.cnc.console.bottom.line.tmp_index = 0;
+            props.cnc.console.bottom.line.page = 0;
             props.cnc.console.bottom.line.tmp = [];
             props.cnc.console.bottom.line.items = [];
             (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/program/read/line", "GET", {file_name: file}).then((response: any)=>{
                 if(response.code === 0){
                     if(response.data){
-                        let file_blob = new Blob([response.data.content], {type:"application/text;charset=utf-8"});
                         if((window as any).simulation){
                             (window as any).simulation.clearToolLine();
-                            (window as any).simulation.onLoadCode((window as any).URL.createObjectURL(file_blob));
+                            (window as any).simulation.onLoadCode(response.data.lines);
                         }
                         props.cnc.console.bottom.line.content = response.data.content;
-                        props.cnc.console.bottom.line.tmp = response.data.lines;
-                        if(props.cnc.console.bottom.line.tmp.length <= 1000){
-                            props.cnc.console.bottom.line.items = response.data.lines;
-                        }else{
-                            props.cnc.console.bottom.line.items = response.data.lines.slice(0, 1000);
-                            props.cnc.console.bottom.line.tmp_index = 1;
+                        props.cnc.console.bottom.line.tmp = response.data.lines.map((item: any, index: any)=>{return {id: index, code: item}});
+                        props.cnc.console.bottom.line.page = 0;
+                        if(props.cnc.console.bottom.line.motion_line > 0){
+                            props.cnc.console.bottom.line.page = Math.ceil(props.cnc.console.bottom.line.motion_line / 1000) - 1;
                         }
+                        onScroll(true);
                         props.cnc.console.bottom.line.loading = false;
                     }else{
                         props.cnc.console.bottom.line.loading = false;
@@ -100,18 +110,21 @@ export default defineComponent({
             });
         }
 
-        function onScroll(){
-            if(props.cnc.console.bottom.line.tmp_index > 0){
-                let data = props.cnc.console.bottom.line.tmp.slice(props.cnc.console.bottom.line.tmp_index * 1000, -1);
+        function onScroll(event = false){
+            if(props.cnc.console.bottom.line.page > -1){
+                let data = props.cnc.console.bottom.line.tmp.slice(props.cnc.console.bottom.line.page * 1000, -1);
                 if(data.length >= 1000){
                     let new_data = data.slice(0, 1000);
                     props.cnc.console.bottom.line.items.push(...new_data);
-                    props.cnc.console.bottom.line.tmp_index++;
+                    props.cnc.console.bottom.line.page++;
+                    if(!event){
+                        props.cnc.console.bottom.line.items.splice(0, 950);
+                    }
                 }else{
                     let new_data = data.slice(0, 1000);
                     props.cnc.console.bottom.line.items.push(...new_data);
                     props.cnc.console.bottom.line.items.push(props.cnc.console.bottom.line.tmp[props.cnc.console.bottom.line.tmp.length - 1]);
-                    props.cnc.console.bottom.line.tmp_index = 0;
+                    props.cnc.console.bottom.line.page = -1;
                 }
             }
         }
@@ -119,12 +132,12 @@ export default defineComponent({
         const bottomFooter = ref(null);
         function setHighlightLine(line: any){
             props.cnc.console.bottom.line.motion_line = line;
-            if((bottomFooter as any).value && props.cnc.device.machine.info.state === 2){
+            if((bottomFooter as any).value && props.cnc.device.machine.info.state === 2 && props.cnc.device.machine.info.task_paused === 0 && props.cnc.console.bottom.line.items.length > 0){
                 const targetLine = (bottomFooter as any).value.querySelector(`[name="line${line}"]`);
                 if (targetLine) {
                     const containerTop = (bottomFooter as any).value.offsetTop;
                     const targetLineTop = targetLine.offsetTop;
-                    const topPositionToScroll = targetLineTop - containerTop - 50;
+                    const topPositionToScroll = targetLineTop - containerTop - 48;
                     (bottomFooter as any).value.scrollTo({
                         top: topPositionToScroll,
                         behavior: "auto"
@@ -173,6 +186,12 @@ export default defineComponent({
             }
         }
 
+        function clearLine(){
+            if((window as any).simulation){
+                (window as any).simulation.clearToolLine();
+            }
+        }
+
         onBeforeMount(() => {});
 
         onMounted(() => {});
@@ -189,7 +208,8 @@ export default defineComponent({
             openMachine,
             openProgram,
             refreshProgram,
-            onSwitchView
+            onSwitchView,
+            clearLine
         }
     }
 });
@@ -241,6 +261,7 @@ export default defineComponent({
 }
 .bottom-view .bottom-footer .code-box{
     width: 100%;
+    height: 100%;
 }
 .bottom-view .bottom-footer .code-box .code-line{
     width: 100%;

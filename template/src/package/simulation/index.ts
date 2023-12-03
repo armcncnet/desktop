@@ -6,9 +6,7 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {ViewHelper} from "three/examples/jsm/helpers/ViewHelper";
 // @ts-ignore
 import {TransformControls} from "three/examples/jsm/controls/TransformControls.js";
-// @ts-ignore
-import {GCodeLoader} from "three/examples/jsm/loaders/GCodeLoader.js";
-import {GCODE} from "../gcode";
+import Gcode from "./gcode";
 
 export default class Simulation {
 
@@ -36,10 +34,10 @@ export default class Simulation {
             control_camera: false,
             view_helper: false,
             tool: false,
-            tool_line: false,
+            tool_lines: false,
             renderer: false,
         }
-        _this.gocode = new GCODE(_this.loading);
+        _this.gocode = new Gcode();
         _this.view = "p";
         _this.object = {
             box: false
@@ -98,7 +96,11 @@ export default class Simulation {
         _this.engine.tool.add(new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0, 0.3, 32, 2, false)));
         _this.engine.tool.position.z = 0.25;
         _this.engine.tool.matrixAutoUpdate = true;
-        _this.engine.scene.add(_this.engine.tool);
+        _this.engine.tool_lines = new THREE.Group();
+        _this.engine.tool_lines.userData = {
+            count: 0
+        }
+        _this.engine.scene.add(_this.engine.tool, _this.engine.tool_lines);
 
         _this.engine.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
         _this.engine.renderer.setClearColor(0x00FF00, 1);
@@ -113,10 +115,10 @@ export default class Simulation {
         _this.onEngineAnimate()
     }
 
-    onLoadCode(file_path: string){
+    onLoadCode(lines: any){
         const _this: any = this;
         _this.clearGcode();
-        _this.gocode.load(file_path, (object: any)=>{
+        _this.gocode.load(lines, (object: any)=>{
             _this.engine.scene.add(object);
             if(object.userData.dimensions){
                 _this.object.box = new THREE.Box3().setFromObject(object);
@@ -145,10 +147,52 @@ export default class Simulation {
             _this.engine.tool.position.y = y * 0.1;
             _this.engine.tool.position.z = (z * 0.1) + 0.15;
         }
+        if (!homing && gcode) {
+            if(state === 2){
+                gcode.children.forEach((lineSegment: any) => {
+                    if (lineSegment.material && lineSegment.material.isMaterial) {
+                        lineSegment.material.transparent = true;
+                        lineSegment.material.opacity = 0.2;
+                        lineSegment.material.needsUpdate = true;
+                    }
+                });
+                if(_this.engine.tool_lines.children.length === 0 || _this.engine.tool_lines.userData.count === 1000){
+                    _this.engine.tool_lines.userData.count = 0;
+                    let line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({color: 0x00FF00}));
+                    line.name = "tool_line";
+                    const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.15);
+                    line.geometry.setAttribute("position", new THREE.Float32BufferAttribute([newPosition.x, newPosition.y, newPosition.z], 3));
+                    _this.engine.tool_lines.userData.count++;
+                    _this.engine.tool_lines.add(line);
+                }else{
+                    const newPosition = new THREE.Vector3(_this.engine.tool.position.x, _this.engine.tool.position.y, _this.engine.tool.position.z - 0.15);
+                    const vertices = (_this.engine.tool_lines.children[_this.engine.tool_lines.children.length - 1].geometry as THREE.BufferGeometry).attributes.position.array as Float32Array;
+                    const newVertices = Float32Array.from([...vertices, newPosition.x, newPosition.y, newPosition.z]);
+                    _this.engine.tool_lines.children[_this.engine.tool_lines.children.length - 1].geometry.setAttribute("position", new THREE.Float32BufferAttribute(newVertices, 3));
+                    _this.engine.tool_lines.userData.count++;
+                }
+            }else{
+                gcode.children.forEach((lineSegment: any) => {
+                    if (lineSegment.material && lineSegment.material.isMaterial) {
+                        lineSegment.material.transparent = false;
+                        lineSegment.material.needsUpdate = true;
+                    }
+                });
+            }
+        }
     }
 
     clearToolLine(){
         const _this: any = this;
+        if(_this.engine.tool_lines.children.length > 0){
+            _this.engine.tool_lines.children.forEach((object: any)=>{
+                if (object.isLine) {
+                    object.geometry.dispose();
+                    object.material.dispose();
+                }
+                _this.engine.tool_lines.remove(object);
+            });
+        }
     }
 
     clearGcode(){

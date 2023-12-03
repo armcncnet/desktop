@@ -15,7 +15,7 @@
                 <div class="dro-line">刀具号: <span>{{props.cnc.console.left.simulation.tool.id}}</span></div>
                 <div class="dro-line">刀具直径: <span>{{props.cnc.console.left.simulation.tool.diameter}}</span></div>
                 <div class="dro-line">偏移量: <span>{{props.cnc.console.left.simulation.tool.offset.toFixed(3)}}</span></div>
-                <div class="dro-line">预计时长: <span>-</span></div>
+                <div class="dro-line">预计时长: <span>{{props.cnc.console.bottom.line.motion_line}}</span></div>
                 <div class="dro-line">剩余时长: <span>-</span></div>
             </div>
             <div class="dro-group">
@@ -54,14 +54,6 @@ export default defineComponent({
                 let world: any = document.getElementById("world");
                 world.innerHTML = "";
                 (window as any).simulation = new Simulation(props.cnc.platform, (message: any)=>{
-                    if(message.type === "resource:loading:progress"){
-                        props.cnc.console.left.simulation.mask = true;
-                    }
-                    if(message.type === "resource:loading:end"){
-                        setTimeout(()=>{
-                            props.cnc.console.left.simulation.mask = false;
-                        }, 1000);
-                    }
                     if(message.type === "resource:update:data"){
                         if(message.box){
                             props.cnc.console.left.simulation.box.x = parseFloat(message.box.maxX).toFixed(2);
@@ -72,6 +64,9 @@ export default defineComponent({
                         if(message.view){
                             props.cnc.console.bottom.view = message.view;
                         }
+                        setTimeout(()=>{
+                            props.cnc.console.left.simulation.mask = false;
+                        }, 500);
                     }
                 });
                 (window as any).simulation.InitEngine();

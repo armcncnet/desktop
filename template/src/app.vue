@@ -247,7 +247,7 @@ export default defineComponent({
                     line: {
                         loading: false,
                         content: "",
-                        tmp_index: 0,
+                        page: -1,
                         tmp: [],
                         items: [],
                         motion_line: 0
