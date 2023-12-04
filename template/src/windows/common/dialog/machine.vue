@@ -35,7 +35,8 @@ export default defineComponent({
             if(item.path !== props.cnc.device.machine.path && !props.cnc.dialog.form.item){
                 props.cnc.dialog.form.item = item;
                 props.cnc.dialog.form.item.loading = true;
-                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/set", "GET", {path: item.path}).then((response: any)=>{
+                (window as any).go.StartWindows.Api.DeviceRequest(props.cnc.device.ip + ":" + props.cnc.device.message.port, "/machine/set/current", "GET", {path: item.path}).then((response: any)=>{
+                    console.log(response);
                     if(response.code === 0){
                         if(response.data){
                             props.cnc.device.machine.path = item.path;
