@@ -409,7 +409,7 @@ export default defineComponent({
                 });
                 let ips = localStorage.getItem("cnc:device:ips");
                 if(ips){
-                    props.cnc.device.ips = [{name: "localhost", ip: "127.0.0.1", version: "1.0.0"}];
+                    props.cnc.device.ips = [];
                     props.cnc.device.ips.push(...JSON.parse(ips));
                 }else{
                     props.cnc.device.ips = [{name: "localhost", ip: "127.0.0.1", version: "1.0.0"}];
