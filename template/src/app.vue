@@ -226,8 +226,8 @@ export default defineComponent({
                         direction: 0,
                         min_velocity: 0,
                         max_velocity: 0,
-                        velocity_tmp: 0,
-                        velocity: 0,
+                        default_speed: 0,
+                        speed: 0,
                         min_override: 0,
                         max_override: 0,
                         override: 100

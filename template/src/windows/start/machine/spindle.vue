@@ -3,6 +3,13 @@
         <div class="spindle-box">
             <div class="box-item">
                 <el-form class="cnc" :model="props.cnc.machine.item" label-width="120px">
+                    <el-form-item label="默认转速">
+                        <el-input class="cnc" :value="props.cnc.machine.item.user.Spindle.DefaultSpindleSpeed" style="width: 150px" @focus="setSpindleDefaultSpindleSpeed(props.cnc.machine.item.user.Spindle.DefaultSpindleSpeed)">
+                            <template #append>
+                                <span>{{props.cnc.device.machine.angular_units}}/min</span>
+                            </template>
+                        </el-input>
+                    </el-form-item>
                     <el-form-item label="最大转速">
                         <el-input class="cnc" :value="props.cnc.machine.item.ini.Spindle0.MaxForwardVelocity" style="width: 150px" @focus="setSpindleMaxForwardVelocity(props.cnc.machine.item.ini.Spindle0.MaxForwardVelocity)">
                             <template #append>
@@ -40,13 +47,26 @@
 <script lang="ts">
 import {defineComponent, onBeforeMount, onMounted, onBeforeUnmount, onUnmounted} from "vue";
 import * as icons from "@element-plus/icons";
-import {ElMessage} from "element-plus";
 export default defineComponent({
     name: "SpindleMachine",
     emits: [],
     props: ["cnc", "item"],
     components: {},
     setup(props, context) {
+
+        function setSpindleDefaultSpindleSpeed(value: any){
+            if(props.cnc.layer.number){
+                props.cnc.layer.number = false;
+            }
+            props.cnc.layer.number = {
+                value: value,
+                set: value,
+                first: true,
+                callback: (value: any)=>{
+                    props.cnc.machine.item.user.Spindle.DefaultSpindleSpeed = parseInt(value) + "";
+                }
+            }
+        }
 
         function setSpindleMaxForwardVelocity(value: any){
             if(props.cnc.layer.number){
@@ -115,6 +135,7 @@ export default defineComponent({
         return {
             props,
             icons,
+            setSpindleDefaultSpindleSpeed,
             setSpindleMaxForwardVelocity,
             setSpindleMinForwardVelocity,
             setDisplayMaxSpindleOverride,

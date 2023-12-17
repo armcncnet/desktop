@@ -150,7 +150,6 @@ export default defineComponent({
                 if(response.code === 0){
                     if(response.data){
                         props.cnc.machine.item = onFormatData(response);
-                        console.log(props.cnc.machine.item);
                         props.cnc.machine.tab.items = [];
                         let tabs = [
                             {name: "基础配置", id: "base"},
@@ -337,7 +336,6 @@ export default defineComponent({
                     data.user.Tool.SearchVelocity = (parseFloat(data.user.Tool.SearchVelocity) / 60).toFixed(3) + "";
                     data.user.Tool.LatchSearchVelocity = (parseFloat(data.user.Tool.LatchSearchVelocity) / 60).toFixed(3) + "";
                     data.user.Tool.Pockets = JSON.stringify(data.user.Tool.Pockets);
-                    data.user.Io.EstopPin = data.user.Io.EstopPin;
                     data.table = data.table.map((item: any, index: any) => {
                         return item.t + " " + item.p + " " + "D" + parseFloat(item.d).toFixed(3) + " " + "X" + parseFloat(item.x).toFixed(3) + " " + "Y" + parseFloat(item.y).toFixed(3) + " " + "Z" + parseFloat(item.z).toFixed(3) + ";\n";
                     });
@@ -394,7 +392,7 @@ export default defineComponent({
                         props.cnc.machine.download_loading = true;
                         (window as any).go.StartWindows.Api.SaveFile("保存文件", response.data.file).then((path: string)=>{
                             if(path !== ""){
-                                (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/runtime/" + response.data.file, path).then((status: string)=>{
+                                (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/resources/runtime/" + response.data.file, path).then((status: string)=>{
                                     if(status){
                                         let message = {command: "desktop:delete:uploads:file", data: response.data.file};
                                         props.cnc.device.message.socket.send(JSON.stringify(message));

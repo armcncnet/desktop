@@ -87,7 +87,7 @@
                 <el-button class="cnc" :class="props.cnc.header.right.enabled" :disabled="props.cnc.header.right.enabled === 'disabled'" type="primary" :icon="icons.Promotion" @click="onDeviceStart">启动</el-button>
             </div>
             <div class="item global" v-if="props.cnc.device.message.status">
-                <el-button class="cnc" :class="props.cnc.header.right.limit" :disabled="props.cnc.header.right.limit === 'disabled'" type="warning" :icon="icons.DeleteLocation" @click="onDeviceOverrideLimits">忽略限位</el-button>
+                <el-button class="cnc" :class="props.cnc.header.right.limit" :disabled="props.cnc.header.right.limit === 'disabled' || props.cnc.device.machine.info.state === 2" type="warning" :icon="icons.DeleteLocation" @click="onDeviceOverrideLimits">忽略限位</el-button>
             </div>
         </div>
     </div>
@@ -226,7 +226,7 @@ export default defineComponent({
         }
 
         function onDeviceOverrideLimits(){
-            if(props.cnc.device.machine.info){
+            if(props.cnc.device.machine.info && props.cnc.device.machine.info.state !== 2){
                 ElMessageBox.confirm("是否确认忽略限位？", "操作确认", {
                     draggable: true,
                     confirmButtonText: "确认",

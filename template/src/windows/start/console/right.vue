@@ -64,23 +64,23 @@
         <div class="right-configure">
             <div class="configure-tools">
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled'" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled'" :icon="icons.TurnOff" @click="setSpindleEnabled">启动主轴</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.TurnOff" @click="setSpindleEnabled">启动主轴</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled'" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
+                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
                 </div>
             </div>
             <div class="configure-group">
                 <div class="group-title">主轴转速({{props.cnc.device.machine.angular_units}}/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.velocity" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.speed" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" />
                     </div>
                     <div class="slider-item">
-                        <div class="el-cnc-input" @click="updateSpindleVelocity(props.cnc.console.right.spindle.velocity, props.cnc.console.right.spindle.min_velocity, props.cnc.console.right.spindle.max_velocity)">{{props.cnc.console.right.spindle.velocity}}</div>
+                        <div class="el-cnc-input" @click="updateSpindleSpeed(props.cnc.console.right.spindle.speed, props.cnc.console.right.spindle.min_velocity, props.cnc.console.right.spindle.max_velocity)">{{props.cnc.console.right.spindle.speed}}</div>
                     </div>
                 </div>
             </div>
@@ -245,7 +245,7 @@ export default defineComponent({
         }
 
         function handleRockerDown(event: any, value: string){
-            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state == 1){
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2){
                 let axis = value.substr(0,1);
                 let direction = value.substr(1,1);
                 let speed = 0;
@@ -264,7 +264,7 @@ export default defineComponent({
         }
 
         function handleRockerUp(event: any, value: string) {
-            if(props.cnc.header.right.enabled === "active"){
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2){
                 let axis = value.substr(0, 1);
                 let increment = props.cnc.console.right.step.value;
                 if (increment === -1) {
@@ -275,27 +275,27 @@ export default defineComponent({
         }
 
         function setSpindleRight(){
-            if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:spindle", data: {value: 2}};
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2) {
+                let message = {command: "desktop:control:spindle", data: {value: "reverse", speed: props.cnc.console.right.spindle.speed}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
 
         function setSpindleEnabled(){
-            if(props.cnc.header.right.enabled === "active") {
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2) {
                 if(props.cnc.console.right.spindle.enabled === 0){
-                    let message = {command: "desktop:control:spindle", data: {value: 1}};
+                    let message = {command: "desktop:control:spindle", data: {value: "on", speed: props.cnc.console.right.spindle.speed}};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }else{
-                    let message = {command: "desktop:control:spindle", data: {value: 5}};
+                    let message = {command: "desktop:control:spindle", data: {value: "off", speed: 1}};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }
             }
         }
 
         function setSpindleLeft(){
-            if(props.cnc.header.right.enabled === "active") {
-                let message = {command: "desktop:control:spindle", data: {value: 1}};
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2) {
+                let message = {command: "desktop:control:spindle", data: {value: "forward", speed: props.cnc.console.right.spindle.speed}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
@@ -317,7 +317,7 @@ export default defineComponent({
             props.cnc.device.message.socket.send(JSON.stringify(message));
         }
 
-        function updateSpindleVelocity(value: any, min: any, max:any){
+        function updateSpindleSpeed(value: any, min: any, max:any){
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
@@ -328,7 +328,10 @@ export default defineComponent({
                 max: max,
                 first: true,
                 callback: (value: any)=>{
-                    props.cnc.console.right.spindle.velocity = parseInt(value);
+                    props.cnc.console.right.spindle.default_speed = parseInt(value);
+                    props.cnc.console.right.spindle.speed = parseInt(value);
+                    let message = {command: "desktop:control:spindle", data: {value: "speed", speed: parseInt(value)}};
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
                 }
             }
         }
@@ -440,7 +443,7 @@ export default defineComponent({
             setSpindleOverride,
             setMaxVelocity,
             setFeedRate,
-            updateSpindleVelocity,
+            updateSpindleSpeed,
             updateSpindleOverride,
             updateMaxVelocity,
             updateFeedOverride,

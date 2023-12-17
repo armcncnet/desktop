@@ -164,7 +164,7 @@ export default defineComponent({
             props.cnc.program.download_loading = true;
             (window as any).go.StartWindows.Api.SaveFile("保存文件", props.cnc.program.item.path).then((path: string)=>{
                 if(path !== ""){
-                    (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/programs/" + props.cnc.program.item.path, path).then((status: string)=>{
+                    (window as any).go.StartWindows.Api.DownloadFile(props.cnc.device.ip + ":" + props.cnc.device.message.port + "/resources/programs/" + props.cnc.program.item.path, path).then((status: string)=>{
                         if(status){
                             props.cnc.program.download_loading = false;
                             ElMessage.closeAll();

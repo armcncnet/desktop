@@ -152,7 +152,9 @@ export default defineComponent({
                             props.cnc.console.right.offset.options = props.cnc.device.machine.info.user_data.data.options;
                             props.cnc.console.right.spindle.enabled = message_json.data.user_data.spindle.enabled;
                             props.cnc.console.right.spindle.direction = message_json.data.user_data.spindle.direction;
-                            props.cnc.console.right.spindle.velocity_tmp = message_json.data.user_data.spindle.velocity;
+                            if(props.cnc.device.machine.info.state === 2){
+                                props.cnc.console.right.spindle.speed = message_json.data.user_data.spindle.speed;
+                            }
                             if(props.cnc.console.right.is_first){
                                 props.cnc.device.machine.linear_units = message_json.data.user_data.linear_units;
                                 props.cnc.device.machine.angular_units = message_json.data.user_data.angular_units;
@@ -230,10 +232,11 @@ export default defineComponent({
                                 });
                                 props.cnc.console.right.spindle.min_velocity = message_json.data.user_data.spindle.min_velocity;
                                 props.cnc.console.right.spindle.max_velocity = message_json.data.user_data.spindle.max_velocity;
-                                props.cnc.console.right.spindle.velocity = message_json.data.user_data.spindle.velocity / 100 * 100;
                                 props.cnc.console.right.spindle.min_override = message_json.data.user_data.spindle.min_override * 100;
                                 props.cnc.console.right.spindle.max_override = message_json.data.user_data.spindle.max_override * 100;
                                 props.cnc.console.right.spindle.override = message_json.data.user_data.spindle.override * 100;
+                                props.cnc.console.right.spindle.default_speed = message_json.data.user_data.spindle.default_speed;
+                                props.cnc.console.right.spindle.speed = message_json.data.user_data.spindle.default_speed;
                                 props.cnc.console.right.feed.max_override = message_json.data.user_data.feed.max_override * 100;
                                 props.cnc.console.right.feed.override = message_json.data.user_data.feed.override * 100;
                                 props.cnc.console.right.max_velocity = message_json.data.user_data.max_velocity * 60;
