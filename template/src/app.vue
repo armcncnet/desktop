@@ -218,6 +218,7 @@ export default defineComponent({
                             hide: true,
                         }
                     ],
+                    rocker_status: false,
                     home: "",
                     homed: false,
                     relative_offset: "",

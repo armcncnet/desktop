@@ -64,20 +64,20 @@
         <div class="right-configure">
             <div class="configure-tools">
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === -1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
+                    <el-button class="cnc" type="primary" :class="(props.cnc.console.right.spindle.enabled === 1 && props.cnc.console.right.spindle.direction === -1) ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.DArrowLeft" @click="setSpindleRight">反转</el-button>
                 </div>
                 <div class="configure-tools-item">
                     <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.enabled === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.TurnOff" @click="setSpindleEnabled">启动主轴</el-button>
                 </div>
                 <div class="configure-tools-item">
-                    <el-button class="cnc" type="primary" :class="props.cnc.console.right.spindle.direction === 1 ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
+                    <el-button class="cnc" type="primary" :class="(props.cnc.console.right.spindle.enabled === 1 && props.cnc.console.right.spindle.direction === 1) ? 'active' : ''" :disabled="props.cnc.header.right.enabled === 'disabled' || props.cnc.device.machine.info.state === 2" :icon="icons.DArrowRight" @click="setSpindleLeft">正转</el-button>
                 </div>
             </div>
             <div class="configure-group">
                 <div class="group-title">主轴转速({{props.cnc.device.machine.angular_units}}/min)</div>
                 <div class="group-slider">
                     <div class="slider-item">
-                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.speed" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" />
+                        <el-slider class="cnc" size="small" v-model="props.cnc.console.right.spindle.speed" :step="100" :min="props.cnc.console.right.spindle.min_velocity" :max="props.cnc.console.right.spindle.max_velocity" :show-input-controls="false" @change="setSpindleSpeed"/>
                     </div>
                     <div class="slider-item">
                         <div class="el-cnc-input" @click="updateSpindleSpeed(props.cnc.console.right.spindle.speed, props.cnc.console.right.spindle.min_velocity, props.cnc.console.right.spindle.max_velocity)">{{props.cnc.console.right.spindle.speed}}</div>
@@ -166,13 +166,15 @@ export default defineComponent({
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: data,
-                set: data,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.left.simulation.g5x_offset[index] = value;
-                    setRelativeOffset("");
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2) {
+                props.cnc.layer.number = {
+                    value: data,
+                    set: data,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.left.simulation.g5x_offset[index] = value;
+                        setRelativeOffset("");
+                    }
                 }
             }
         }
@@ -181,60 +183,60 @@ export default defineComponent({
             if(props.cnc.layer.select){
                 props.cnc.layer.select = false;
             }
-            props.cnc.layer.select = {
-                value: props.cnc.console.right.offset.index,
-                options: props.cnc.console.right.offset.options,
-                callback: (value: any)=>{
-                    let message: any = {command: "desktop:control:set:offset", data: {name: ""}};
-                    message.data.name = props.cnc.console.right.offset.options[value - 1].name;
-                    props.cnc.device.message.socket.send(JSON.stringify(message));
-                    props.cnc.console.right.offset.index = value;
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2) {
+                props.cnc.layer.select = {
+                    value: props.cnc.console.right.offset.index,
+                    options: props.cnc.console.right.offset.options,
+                    callback: (value: any)=>{
+                        let message: any = {command: "desktop:control:set:offset", data: {name: ""}};
+                        message.data.name = props.cnc.console.right.offset.options[value - 1].name;
+                        props.cnc.device.message.socket.send(JSON.stringify(message));
+                        props.cnc.console.right.offset.index = value;
+                    }
                 }
             }
         }
 
         function onHome(axis: string){
-            if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2) {
-                return;
-            }
-            ElMessageBox.confirm("是否确认回零？", "操作确认", {
-                draggable: true,
-                confirmButtonText: "确认",
-                cancelButtonText: "取消",
-                type: "warning",
-                customClass: "cnc"
-            }).then(() => {
-                let message = {command: "desktop:control:device:home", data: axis};
-                props.cnc.device.message.socket.send(JSON.stringify(message));
-            }).catch(() => {});
-        }
-
-        function setRelativeOffset(current: string){
-            if (props.cnc.device.machine.info.task_state !== 4 || props.cnc.device.machine.info.state === 2 || !props.cnc.device.machine.info.user_data.is_homed) {
-                return;
-            }
-            if(current === "all"){
-                ElMessageBox.confirm("是否确认设置原点？", "操作确认", {
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2){
+                ElMessageBox.confirm("是否确认回零？", "操作确认", {
                     draggable: true,
                     confirmButtonText: "确认",
                     cancelButtonText: "取消",
                     type: "warning",
                     customClass: "cnc"
                 }).then(() => {
-                    let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
-                    message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
-                    message.data.x = parseFloat("0.000").toFixed(3);
-                    message.data.y = parseFloat("0.000").toFixed(3);
-                    message.data.z = parseFloat("0.000").toFixed(3);
+                    let message = {command: "desktop:control:device:home", data: axis};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }).catch(() => {});
-            }else{
-                let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
-                message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
-                message.data.x = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
-                message.data.y = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
-                message.data.z = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
-                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
+        }
+
+        function setRelativeOffset(current: string){
+            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2 && props.cnc.device.machine.info.user_data.is_homed) {
+                if(current === "all"){
+                    ElMessageBox.confirm("是否确认设置原点？", "操作确认", {
+                        draggable: true,
+                        confirmButtonText: "确认",
+                        cancelButtonText: "取消",
+                        type: "warning",
+                        customClass: "cnc"
+                    }).then(() => {
+                        let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
+                        message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
+                        message.data.x = parseFloat("0.000").toFixed(3);
+                        message.data.y = parseFloat("0.000").toFixed(3);
+                        message.data.z = parseFloat("0.000").toFixed(3);
+                        props.cnc.device.message.socket.send(JSON.stringify(message));
+                    }).catch(() => {});
+                }else{
+                    let message: any = {command: "desktop:control:relative:offset", data: {name: "", x: 0.000, y: 0.000, z: 0.000}};
+                    message.data.name = props.cnc.console.right.offset.options[props.cnc.console.right.offset.index - 1].p_name;
+                    message.data.x = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[0]).toFixed(3);
+                    message.data.y = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[1]).toFixed(3);
+                    message.data.z = "-" + parseFloat(props.cnc.console.left.simulation.g5x_offset[2]).toFixed(3);
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }
             }
         }
 
@@ -258,19 +260,21 @@ export default defineComponent({
                 if(direction === "-"){
                     speed = 0 - speed;
                 }
+                props.cnc.console.right.rocker_status = true;
                 let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
 
         function handleRockerUp(event: any, value: string) {
-            if(props.cnc.header.right.enabled === "active" && props.cnc.device.machine.info.state !== 2){
+            if(props.cnc.header.right.enabled === "active" && props.cnc.console.right.rocker_status){
                 let axis = value.substr(0, 1);
                 let increment = props.cnc.console.right.step.value;
                 if (increment === -1) {
                     let message = {command: "desktop:control:jog:stop", data: {axis: axis}};
                     props.cnc.device.message.socket.send(JSON.stringify(message));
                 }
+                props.cnc.console.right.rocker_status = false;
             }
         }
 
@@ -300,6 +304,18 @@ export default defineComponent({
             }
         }
 
+        function setSpindleSpeed(value: any){
+            if(props.cnc.header.right.enabled === "active" && props.cnc.console.right.spindle.enabled > 0) {
+                if (props.cnc.device.machine.info.state === 2){
+                    let message = {command: "desktop:control:mdi", data: {value: (props.cnc.console.right.spindle.direction === 1 ? "M3" : "M4") + " S" + parseInt(value)}};
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }else {
+                    let message = {command: "desktop:control:spindle", data: {value: "speed", speed: parseInt(value)}};
+                    props.cnc.device.message.socket.send(JSON.stringify(message));
+                }
+            }
+        }
+
         function setSpindleOverride(value: any){
             if(props.cnc.header.right.enabled === "active") {
                 let message = {command: "desktop:control:spindle:override", data: {value: value}};
@@ -308,30 +324,35 @@ export default defineComponent({
         }
 
         function setMaxVelocity(value: any){
-            let message = {command: "desktop:control:max:velocity", data: {value: value}};
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:max:velocity", data: {value: value}};
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
         }
 
         function setFeedRate(value: any){
-            let message = {command: "desktop:control:feed:rate", data: {value: value}};
-            props.cnc.device.message.socket.send(JSON.stringify(message));
+            if(props.cnc.header.right.enabled === "active") {
+                let message = {command: "desktop:control:feed:rate", data: {value: value}};
+                props.cnc.device.message.socket.send(JSON.stringify(message));
+            }
         }
 
         function updateSpindleSpeed(value: any, min: any, max:any){
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: value,
-                set: value,
-                min: min,
-                max: max,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.right.spindle.default_speed = parseInt(value);
-                    props.cnc.console.right.spindle.speed = parseInt(value);
-                    let message = {command: "desktop:control:spindle", data: {value: "speed", speed: parseInt(value)}};
-                    props.cnc.device.message.socket.send(JSON.stringify(message));
+            if(props.cnc.header.right.enabled === "active") {
+                props.cnc.layer.number = {
+                    value: value,
+                    set: value,
+                    min: min,
+                    max: max,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.right.spindle.default_speed = parseInt(value);
+                        props.cnc.console.right.spindle.speed = parseInt(value);
+                        setSpindleSpeed(props.cnc.console.right.spindle.speed);
+                    }
                 }
             }
         }
@@ -340,15 +361,17 @@ export default defineComponent({
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: value,
-                set: value,
-                min: min,
-                max: max,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.right.spindle.override = parseInt(value);
-                    setSpindleOverride(props.cnc.console.right.spindle.override);
+            if(props.cnc.header.right.enabled === "active") {
+                props.cnc.layer.number = {
+                    value: value,
+                    set: value,
+                    min: min,
+                    max: max,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.right.spindle.override = parseInt(value);
+                        setSpindleOverride(props.cnc.console.right.spindle.override);
+                    }
                 }
             }
         }
@@ -357,15 +380,17 @@ export default defineComponent({
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: value,
-                set: value,
-                min: min,
-                max: max,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.right.max_velocity = parseInt(value);
-                    setMaxVelocity(props.cnc.console.right.spindle.override);
+            if(props.cnc.header.right.enabled === "active") {
+                props.cnc.layer.number = {
+                    value: value,
+                    set: value,
+                    min: min,
+                    max: max,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.right.max_velocity = parseInt(value);
+                        setMaxVelocity(props.cnc.console.right.spindle.override);
+                    }
                 }
             }
         }
@@ -374,15 +399,17 @@ export default defineComponent({
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: value,
-                set: value,
-                min: min,
-                max: max,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.right.feed.override = parseInt(value);
-                    setFeedRate(props.cnc.console.right.feed.override);
+            if(props.cnc.header.right.enabled === "active") {
+                props.cnc.layer.number = {
+                    value: value,
+                    set: value,
+                    min: min,
+                    max: max,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.right.feed.override = parseInt(value);
+                        setFeedRate(props.cnc.console.right.feed.override);
+                    }
                 }
             }
         }
@@ -391,14 +418,16 @@ export default defineComponent({
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: value,
-                set: value,
-                min: min,
-                max: max,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.right.default_linear_velocity = parseInt(value);;
+            if(props.cnc.header.right.enabled === "active") {
+                props.cnc.layer.number = {
+                    value: value,
+                    set: value,
+                    min: min,
+                    max: max,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.right.default_linear_velocity = parseInt(value);;
+                    }
                 }
             }
         }
@@ -407,14 +436,16 @@ export default defineComponent({
             if(props.cnc.layer.number){
                 props.cnc.layer.number = false;
             }
-            props.cnc.layer.number = {
-                value: value,
-                set: value,
-                min: min,
-                max: max,
-                first: true,
-                callback: (value: any)=>{
-                    props.cnc.console.right.default_angular_velocity = parseInt(value);
+            if(props.cnc.header.right.enabled === "active") {
+                props.cnc.layer.number = {
+                    value: value,
+                    set: value,
+                    min: min,
+                    max: max,
+                    first: true,
+                    callback: (value: any)=>{
+                        props.cnc.console.right.default_angular_velocity = parseInt(value);
+                    }
                 }
             }
         }
@@ -440,6 +471,7 @@ export default defineComponent({
             setSpindleRight,
             setSpindleEnabled,
             setSpindleLeft,
+            setSpindleSpeed,
             setSpindleOverride,
             setMaxVelocity,
             setFeedRate,

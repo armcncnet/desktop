@@ -22,9 +22,8 @@
                             </el-tag>
                             <el-tag class="cnc" size="small" :disable-transitions="true" v-if="item.control === 0">仿真模拟</el-tag>
                             <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 1">GPIO</el-tag>
-                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 2">Arduino</el-tag>
-                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 3">MACH3</el-tag>
-                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 4">EtherCAT</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 2">MACH3</el-tag>
+                            <el-tag class="cnc" size="small" :disable-transitions="true" v-else-if="item.control === 3">EtherCAT</el-tag>
                             <el-tag class="cnc" size="small" :disable-transitions="true" v-else>-</el-tag>
                             <el-tag class="cnc" size="small" :disable-transitions="true">{{item.coordinate}}</el-tag>
                         </div>

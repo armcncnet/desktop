@@ -7,8 +7,8 @@
                         <el-radio-group class="cnc max" v-model="props.cnc.machine.item.user.Base.Control">
                             <el-radio-button label="0">仿真模拟</el-radio-button>
                             <el-radio-button label="1">GPIO</el-radio-button>
-                            <el-radio-button label="3">MACH3</el-radio-button>
-                            <el-radio-button label="4">EtherCAT</el-radio-button>
+                            <el-radio-button label="2">MACH3</el-radio-button>
+                            <el-radio-button label="3">EtherCAT</el-radio-button>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="名称">
