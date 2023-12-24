@@ -7,4 +7,5 @@ node_modules
 release
 !release/appicon.png
 !release/appicon.psd
+template/dist
 template/src/package/wailsjs
