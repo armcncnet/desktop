@@ -50,7 +50,7 @@ export default defineComponent({
     setup(props, context) {
 
         function onSimulation(){
-            if(!(window as any).simulation){
+            if(!(window as any).simulation && props.cnc.platform !== "Debian"){
                 let world: any = document.getElementById("world");
                 world.innerHTML = "";
                 (window as any).simulation = new Simulation(props.cnc.platform, (message: any)=>{

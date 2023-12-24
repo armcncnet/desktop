@@ -42,7 +42,6 @@ export default class Simulation {
         _this.object = {
             box: false
         }
-        _this.is_animate = true;
     }
 
     InitEngine(){
@@ -132,9 +131,6 @@ export default class Simulation {
                     box: object.userData.dimensions,
                     view: _this.view
                 });
-            }
-            if(_this.platform === "Debian"){
-                _this.is_animate = false;
             }
         });
     }
@@ -259,14 +255,12 @@ export default class Simulation {
 
     onEngineAnimate(){
         const _this: any = this;
-        if(_this.is_animate){
-            _this.engine.clock_delta = _this.engine.clock.getDelta();
-            _this.engine.control.update();
-            _this.engine.renderer.clear();
-            _this.engine.renderer.render(_this.engine.scene, _this.engine.control_camera);
-            _this.engine.view_helper.render(_this.engine.renderer);
-            requestAnimationFrame(_this.onEngineAnimate.bind(_this));
-        }
+        _this.engine.clock_delta = _this.engine.clock.getDelta();
+        _this.engine.control.update();
+        _this.engine.renderer.clear();
+        _this.engine.renderer.render(_this.engine.scene, _this.engine.control_camera);
+        _this.engine.view_helper.render(_this.engine.renderer);
+        requestAnimationFrame(_this.onEngineAnimate.bind(_this));
         _this.onEngineResize();
     }
 
