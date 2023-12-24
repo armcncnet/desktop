@@ -70,6 +70,8 @@ export default defineComponent({
                     }
                 });
                 (window as any).simulation.InitEngine();
+            }else{
+                props.cnc.console.left.simulation.mask = false;
             }
         }
 
