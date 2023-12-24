@@ -81,7 +81,9 @@ export default defineComponent({
         });
 
         function onCode(file: string){
-            props.cnc.console.left.simulation.mask = true;
+            if((window as any).simulation && props.cnc.platform !== "Debian") {
+                props.cnc.console.left.simulation.mask = true;
+            }
             props.cnc.console.bottom.line.loading = true;
             props.cnc.console.bottom.line.page = 0;
             props.cnc.console.bottom.line.tmp = [];
