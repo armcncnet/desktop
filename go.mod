@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gookit/color v1.5.2
-	github.com/wailsapp/wails/v2 v2.6.0
+	github.com/wailsapp/wails/v2 v2.7.0
 	golang.org/x/sync v0.5.0
 )
 
