@@ -4,6 +4,7 @@
 .vscode
 yarn.lock
 node_modules
-release/bin
-release/windows
+release
+!release/appicon.png
+!release/appicon.psd
 template/src/package/wailsjs
