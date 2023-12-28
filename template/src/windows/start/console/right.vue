@@ -261,7 +261,7 @@ export default defineComponent({
                     speed = 0 - speed;
                 }
                 props.cnc.console.right.rocker_status = true;
-                let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed, increment: increment}};
+                let message = {command: "desktop:control:jog:start", data: {axis: axis, speed: speed * (1 / 25.4), increment: increment}};
                 props.cnc.device.message.socket.send(JSON.stringify(message));
             }
         }
@@ -426,7 +426,7 @@ export default defineComponent({
                     max: max,
                     first: true,
                     callback: (value: any)=>{
-                        props.cnc.console.right.default_linear_velocity = parseInt(value);;
+                        props.cnc.console.right.default_linear_velocity = parseInt(value);
                     }
                 }
             }
